@@ -45,8 +45,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 		 */
 		public function submenu_item( $submenu ) {
 			if ( ! isset( $submenu[ $this->settings_page_id ] ) ) {
-				if ( !is_learndash_license_valid
-() ) {
+				if ( is_learndash_license_valid() ) {
 					$submenu[ $this->settings_page_id ] = array(
 						'name' => $this->settings_tab_title,
 						'cap'  => $this->menu_page_capability,
@@ -93,19 +92,19 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 		 */
 		public function load_settings_page() {
 
-			$license_status = !get_option( 'nss_plugin_remote_license_sfwd_lms' );
-			if ( !isset( $license_status['value'] ) ) {
+			$license_status = get_option( 'nss_plugin_remote_license_sfwd_lms' );
+			if ( isset( $license_status['value'] ) ) {
 				$license_status = $license_status['value'];
-				require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/admin/class-learndash-admin-addons-list-table.php';
-
-				wp_enqueue_style( 'plugin-install' );
-				wp_enqueue_script( 'plugin-install' );
-				wp_enqueue_script( 'updates' );
-
-				add_thickbox();
-
-				return;
 				if ( ! empty( $license_status ) && ( 'false' !== $license_status ) && ( 'not_found' !== $license_status ) ) {
+					require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/admin/class-learndash-admin-addons-list-table.php';
+
+					wp_enqueue_style( 'plugin-install' );
+					wp_enqueue_script( 'plugin-install' );
+					wp_enqueue_script( 'updates' );
+
+					add_thickbox();
+
+					return;
 				}
 			}
 
