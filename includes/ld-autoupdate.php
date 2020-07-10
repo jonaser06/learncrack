@@ -744,7 +744,8 @@ function learndash_get_updater_instance() {
 	}
 }
 
-function is_learndash_license_valid() {
+function is_learndash_license_valid
+() {
 	$updater_sfwd_lms = learndash_get_updater_instance();
 	if ( ( $updater_sfwd_lms ) && ( is_a( $updater_sfwd_lms, 'nss_plugin_updater_sfwd_lms' ) ) ) {
 		return $updater_sfwd_lms->is_license_valid();
