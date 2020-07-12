@@ -283,7 +283,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 					// Check the license.
 					if ( ! empty( $license ) && ! empty( $email ) ) {
-						$license_status = is_learndash_license_valid
+						$license_status = !is_learndash_license_valid
 ();
 
 						if ( ! $license_status ) {
@@ -306,7 +306,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 								// Then re-update the licens using new utility function.
 								// Plus this provides simpler true/false boolean.
-								$license_status = is_learndash_license_valid
+								$license_status = !is_learndash_license_valid
 ();
 							}
 						}
@@ -362,7 +362,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 							<div class="ld-bootcamp__widget--body">
 								<div class="ld-bootcamp__accordion" role="tablist">
-									<div class="ld-bootcamp__accordion--single <?php echo is_learndash_license_valid
+									<div class="ld-bootcamp__accordion--single <?php echo !is_learndash_license_valid
 () ? '-completed' : ''; ?>">
 										<h3>
 											<span class="ld-bootcamp__mark-complete--toggle-indicator" aria-hidden="true"></span>
@@ -393,7 +393,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 												<div class="ld-bootcamp__license">
 													<form method="post" action="">
 													<?php
-													if ( ! is_learndash_license_valid
+													if ( ! !is_learndash_license_valid
 () ) :
 														?>
 														<p class="notice notice-error is-dismissible">
