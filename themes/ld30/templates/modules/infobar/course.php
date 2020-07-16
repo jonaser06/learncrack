@@ -94,9 +94,9 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 
 			<?php do_action( 'learndash-course-infobar-status-cell-before', get_post_type(), $course_id, $user_id ); ?>
 
-			<span class="ld-course-status-label"><?php echo esc_html__( 'Current Status', 'learndash' ); ?></span>
+			<span class="ld-course-status-label">Estado actual<?php //echo esc_html__( 'Current Status', 'learndash' ); ?></span>
 			<div class="ld-course-status-content">
-				<span class="ld-status ld-status-waiting ld-tertiary-background" data-ld-tooltip="<?php esc_attr_e( 'Enroll in this course to get access', 'learndash' ); ?>"><?php esc_html_e( 'Not Enrolled', 'learndash' ); ?></span>
+				<span class="ld-status ld-status-waiting ld-tertiary-background" data-ld-tooltip="Inscríbase en este curso para obtener acceso<?php //esc_attr_e( 'Enroll in this course to get access', 'learndash' ); ?>">No Inscrito<?php //esc_html_e( 'Not Enrolled', 'learndash' ); ?></span>
 			</div>
 
 			<?php do_action( 'learndash-course-infobar-status-cell-after', get_post_type(), $course_id, $user_id ); ?>
@@ -116,7 +116,7 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 
 			<?php do_action( 'learndash-course-infobar-price-cell-before', get_post_type(), $course_id, $user_id ); ?>
 
-			<span class="ld-course-status-label"><?php echo esc_html__( 'Price', 'learndash' ); ?></span>
+			<span class="ld-course-status-label">Precio<?php //echo esc_html__( 'Price', 'learndash' ); ?></span>
 
 			<div class="ld-course-status-content">
 				<span class="ld-course-status-price">
@@ -167,7 +167,7 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 		?>
 
 		<div class="<?php echo esc_attr( $course_status_class ); ?>">
-			<span class="ld-course-status-label"><?php echo esc_html_e( 'Get Started', 'learndash' ); ?></span>
+			<span class="ld-course-status-label">Empezar<?php //echo esc_html_e( 'Get Started', 'learndash' ); ?></span>
 			<div class="ld-course-status-content">
 				<div class="ld-course-status-action">
 					<?php

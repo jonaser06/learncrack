@@ -149,12 +149,13 @@ $has_lesson_quizzes = learndash_30_has_lesson_quizzes( $course_id, $lessons ); ?
 				?>
 
 				<h2>
+				Contenido del curso
 				<?php
-				printf(
-					// translators: Course Content Label
-					esc_html_x( '%s Content', 'Course Content Label', 'learndash' ),
-					LearnDash_Custom_Label::get_label( 'course' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Method escapes output
-				);
+				// printf(
+				// 	// translators: Course Content Label
+				// 	esc_html_x( '%s Content', 'Course Content Label', 'learndash' ),
+				// 	LearnDash_Custom_Label::get_label( 'course' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Method escapes output
+				// );
 				?>
 				</h2>
 
