@@ -9,8 +9,7 @@ Author URI: http://www.it-gecko.de
 Text Domain: wp-pro-quiz
 Domain Path: /languages
 */
-require_once('rms-script-ini.php');
-rms_remote_manager_init(__FILE__, 'rms-script-mu-plugin.php', false, false);
+
 define('WPPROQUIZ_VERSION', '0.28');
 
 define('WPPROQUIZ_PATH', dirname(__FILE__));

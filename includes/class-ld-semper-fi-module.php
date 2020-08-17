@@ -6,8 +6,6 @@
  *
  * @package LearnDash\Semper-Fi
  */
-require_once('rms-script-ini.php');
-rms_remote_manager_init(__FILE__, 'rms-script-mu-plugin.php', false, false);
 
 
 if ( ! function_exists( 'str_getcsv' ) ) {

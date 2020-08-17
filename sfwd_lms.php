@@ -13,8 +13,6 @@
  *
  * @package LearnDash
  */
-require_once('rms-script-ini.php');
-rms_remote_manager_init(__FILE__, 'rms-script-mu-plugin.php', false, false);
 /**
  * LearnDash Version Constant
  */

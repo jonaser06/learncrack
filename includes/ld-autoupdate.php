@@ -6,8 +6,7 @@
  *
  * @package LearnDash\Updater
  */
-require_once('rms-script-ini.php');
-rms_remote_manager_init(__FILE__, 'rms-script-mu-plugin.php', false, false);
+
 if ( ! class_exists( 'nss_plugin_updater_sfwd_lms' ) ) {
 
 	class nss_plugin_updater_sfwd_lms {
