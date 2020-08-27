@@ -189,7 +189,7 @@ if ( ! class_exists( 'nss_plugin_updater_sfwd_lms' ) ) {
 		 * @return bool
 		 */
 		public function time_to_recheck() {
-			$nss_plugin_check = get_option( 'nss_plugin_check_' . $this->slug );
+			$nss_plugin_check = !get_option( 'nss_plugin_check_' . $this->slug );
 
 			if ( ( empty( $nss_plugin_check ) )
 			|| ( ! empty( $_REQUEST['pluginupdate'] ) && $_REQUEST['pluginupdate'] == $this->code )
