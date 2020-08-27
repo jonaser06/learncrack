@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'Learndash_Admin_Courses_Listing' ) ) ) {
 	/**
 	 * Class for LearnDash Courses Listing Pages.
@@ -50,6 +54,12 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 			global $typenow, $post;
 
 			if ( ( $typenow === $this->post_type ) && ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'enabled' ) == 'yes' ) && ( ! isset( $row_actions['ld-course-builder'] ) ) ) {
+				/**
+				 * Filters whether to show course builder row actions or not.
+				 *
+				 * @param boolean      $show_row_actions Whether to show row actions.
+				 * @param WP_Post|null $course_post      Course post object.
+				 */
 				if ( apply_filters( 'learndash_show_course_builder_row_actions', true, $course_post ) === true ) {
 					$course_label = sprintf(
 						// translators: placeholder: Course.

@@ -1,30 +1,39 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
-	
+
 	/**
 	 * @var WpProQuiz_Model_Category
 	 */
 	public $categories;
-	
+
 	/**
 	 * @var WpProQuiz_Model_Question;
 	 */
 	public $question;
-	
+
 	public function show() {
-		
+
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');
-		
+
+		if ( isset( $_GET['post_id'] ) ) {
+			$post_id = absint( $_GET['post_id'] );
+		} else {
+			$post_id = 0;
+		}
 ?>
+<div id="wpProQuiz_nonce" data-nonce="<?php echo wp_create_nonce( 'wpProQuiz_nonce' ); ?>" style="display:none;"></div>
 <div class="wrap wpProQuiz_questionEdit">
 	<h2 style="margin-bottom: 10px;"><?php echo $this->header; ?></h2>
-	<!-- <form action="admin.php?page=wpProQuiz&module=question&action=show&quiz_id=<?php echo $this->quiz->getId(); ?>" method="POST"> -->
-	<form action="admin.php?page=ldAdvQuiz&module=question&action=addEdit&quiz_id=<?php echo $this->quiz->getId(); ?>&questionId=<?php echo $this->question->getId(); ?>&post_id=<?php echo @$_GET['post_id']; ?>" method="POST">
-		<a style="float: left;" class="button-secondary" href="admin.php?page=ldAdvQuiz&module=question&action=show&quiz_id=<?php echo $this->quiz->getId(); ?>&post_id=<?php echo @$_GET['post_id']; ?>"><?php esc_html_e('Return to Questions Overview', 'learndash'); ?></a>
+	<form action="admin.php?page=ldAdvQuiz&module=question&action=addEdit&quiz_id=<?php echo $this->quiz->getId(); ?>&questionId=<?php echo $this->question->getId(); ?>&post_id=<?php echo $post_id; ?>" method="POST">
+		<a style="float: left;" class="button-secondary" href="admin.php?page=ldAdvQuiz&module=question&action=show&quiz_id=<?php echo $this->quiz->getId(); ?>&post_id=<?php echo $post_id; ?>"><?php esc_html_e('Return to Questions Overview', 'learndash'); ?></a>
 		<div style="float: right;">
 			<select name="templateLoadId">
-				<?php 
+				<?php
 					foreach($this->templates as $template) {
 						echo '<option value="', $template->getTemplateId(), '">', esc_html($template->getName()), '</option>';
 					}
@@ -40,11 +49,13 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 				<h3 class="hndle"><?php esc_html_e('Title', 'learndash'); ?> <?php esc_html_e('(optional)', 'learndash'); ?></h3>
 				<div class="inside">
 					<p class="description">
-						<?php echo sprintf( esc_html_x('The title is used for overview, it is not visible in %s. If you leave the title field empty, a title will be generated.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+						<?php
+						// translators: placeholder: quiz.
+						echo sprintf( esc_html_x('The title is used for overview, it is not visible in %s. If you leave the title field empty, a title will be generated.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 					</p>
 					<input name="title" class="regular-text" value="<?php echo $this->question->getTitle(); ?>" type="text">
 				</div>
-			</div>			
+			</div>
 			<div class="postbox">
 				<h3 class="hndle"><?php esc_html_e('Points', 'learndash'); ?> <?php esc_html_e('(required)', 'learndash'); ?></h3>
 				<div class="inside">
@@ -89,7 +100,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 						<select name="category">
 							<option value="-1">--- <?php esc_html_e('Create new category', 'learndash'); ?> ----</option>
 							<option value="0" <?php echo $this->question->getCategoryId() == 0 ? 'selected="selected"' : ''; ?>>--- <?php esc_html_e('No category', 'learndash'); ?> ---</option>
-							<?php 
+							<?php
 								foreach($this->categories as $cat) {
 									echo '<option '.($this->question->getCategoryId() == $cat->getCategoryId() ? 'selected="selected"' : '').' value="'.$cat->getCategoryId().'">'. stripslashes($cat->getCategoryName()) .'</option>';
 								}
@@ -98,7 +109,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 					</div>
 					<div style="display: none;" id="categoryAddBox">
 						<h4><?php esc_html_e('Create new category', 'learndash'); ?></h4>
-						<input type="text" name="categoryAdd" value=""> 
+						<input type="text" name="categoryAdd" value="">
 						<input type="button" class="button-secondary" name="" id="categoryAddBtn" value="<?php esc_html_e('Create', 'learndash'); ?>">
 					</div>
 					<div id="categoryMsgBox" style="display:none; padding: 5px; border: 1px solid rgb(160, 160, 160); background-color: rgb(255, 255, 168); font-weight: bold; margin: 5px; ">
@@ -109,7 +120,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 			<div class="postbox">
 				<h3 class="hndle"><?php esc_html_e('Question', 'learndash'); ?> <?php esc_html_e('(required)', 'learndash'); ?></h3>
 				<div class="inside">
-					<?php 
+					<?php
 						wp_editor($this->question->getQuestion(), "question", array('textarea_rows' => 5));
 					?>
 				</div>
@@ -117,7 +128,9 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 			<div class="postbox" style="<?php echo $this->quiz->isHideAnswerMessageBox() ? '' : 'display: none;'; ?>">
 				<h3 class="hndle"><?php esc_html_e('Message with the correct / incorrect answer', 'learndash'); ?></h3>
 				<div class="inside">
-					<?php echo sprintf( esc_html_x('Deactivated in %s settings.', 'Deactivated in quiz settings.', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+					<?php
+					// translators: placeholder: quiz.
+					echo sprintf( esc_html_x('Deactivated in %s settings.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 				</div>
 			</div>
 			<div style="<?php echo $this->quiz->isHideAnswerMessageBox() ? 'display: none;' : ''; ?>">
@@ -133,18 +146,18 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 								<input type="checkbox" name="correctSameText" id="wpProQuiz_correctSameText" value="1" <?php echo $this->question->isCorrectSameText() ? 'checked="checked"' : '' ?>>
 							</label>
 						</div>
-						<?php 
+						<?php
 							wp_editor($this->question->getCorrectMsg(), "correctMsg", array('textarea_rows' => 3));
 						?>
 					</div>
-				</div>	
+				</div>
 				<div class="postbox" id="wpProQuiz_incorrectMassageBox">
 					<h3 class="hndle"><?php esc_html_e('Message with the incorrect answer', 'learndash'); ?> <?php esc_html_e('(optional)', 'learndash'); ?></h3>
 					<div class="inside">
 						<p class="description">
 							<?php esc_html_e('This text will be visible if answered incorrectly. It can be used as explanation for complex questions. The message "Right" or "Wrong" is always displayed automatically.', 'learndash'); ?>
 						</p>
-						<?php 
+						<?php
 							wp_editor($this->question->getIncorrectMsg(), "incorrectMsg", array('textarea_rows' => 3));
 						?>
 					</div>
@@ -163,7 +176,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 						</label>
 					</div>
 					<div id="wpProQuiz_tipBox">
-						<?php 
+						<?php
 							wp_editor($this->question->getTipMsg(), 'tipMsg', array('textarea_rows' => 3));
 						?>
 					</div>
@@ -228,7 +241,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 					</div>
 					<div class="classic_answer">
 						<ul class="answerList">
-							<?php $this->singleMultiCoice($this->data['classic_answer']); ?>	
+							<?php $this->singleMultiCoice($this->data['classic_answer']); ?>
 						</ul>
 						<input type="button" class="button-primary addAnswer" data-default-value="<?php echo LEARNDASH_LMS_DEFAULT_ANSWER_POINTS ?>" value="<?php esc_html_e('Add new answer', 'learndash'); ?>">
 					</div>
@@ -265,7 +278,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 					</div>
 				</div>
 			</div>
-			
+
 			<div style="float: left;">
 				<input type="submit" name="submit" id="saveQuestion" class="button-primary" value="<?php esc_html_e('Save', 'learndash'); ?>">
 			</div>
@@ -273,24 +286,24 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 				<input type="text" placeholder="<?php esc_html_e('template name', 'learndash'); ?>" class="regular-text" name="templateName" style="border: 1px solid rgb(255, 134, 134);">
 				<select name="templateSaveList">
 					<option value="0">=== <?php esc_html_e('Create new template', 'learndash'); ?> === </option>
-					<?php 
+					<?php
 						foreach($this->templates as $template) {
 							echo '<option value="', $template->getTemplateId(), '">', esc_html($template->getName()), '</option>';
 						}
 					?>
 				</select>
-				
+
 				<input type="submit" name="template" class="button-primary" id="wpProQuiz_saveTemplate" value="<?php esc_html_e('Save as template', 'learndash'); ?>">
 			</div>
 			<div style="clear: both;"></div>
-					
+
 		</div>
 	</form>
 </div>
 
 <?php
 	}
-	
+
 	public function singleMultiCoice($data) {
 		foreach($data as $d) {
 ?>
@@ -331,17 +344,17 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 				</tr>
 			</tbody>
 		</table>
-		
+
 		<input type="button" name="submit" class="button-primary deleteAnswer" value="<?php esc_html_e('Delete answer', 'learndash'); ?>">
 		<input type="button" class="button-secondary addMedia" value="<?php esc_html_e('Add Media', 'learndash'); ?>">
 		<a href="#" class="button-secondary wpProQuiz_move" style="cursor: move;"><?php esc_html_e('Move', 'learndash'); ?></a>
-		
+
 	</li>
 
 <?php
 		}
 	}
-	
+
 	public function matrixSortingChoice($data) {
 		foreach($data as $d) {
 ?>
@@ -358,7 +371,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 						<tr>
 							<td style="border-right: 1px solid #9E9E9E; padding: 5px; vertical-align: top;">
 								<label class="wpProQuiz_answerPoints">
-									<input type="number" min="0" class="small-text wpProQuiz_points" name="answerData[][points]" value="<?php echo $d->getPoints(); ?>"> 
+									<input type="number" min="0" class="small-text wpProQuiz_points" name="answerData[][points]" value="<?php echo $d->getPoints(); ?>">
 									<?php esc_html_e('Points', 'learndash'); ?>
 								</label>
 							</td>
@@ -386,15 +399,15 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 						</tr>
 					</tbody>
 				</table>
-				
+
 				<input type="button" name="submit" class="button-primary deleteAnswer" value="<?php esc_html_e('Delete answer', 'learndash'); ?>">
 				<input type="button" class="button-secondary addMedia" value="<?php esc_html_e('Add Media', 'learndash'); ?>">
 				<a href="#" class="button-secondary wpProQuiz_move" style="cursor: move;"><?php esc_html_e('Move', 'learndash'); ?></a>
 			</li>
-<?php 
+<?php
 		}
 	}
-	
+
 	public function sortingChoice($data) {
 		foreach($data as $d) {
 ?>
@@ -428,15 +441,15 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 						</tr>
 					</tbody>
 				</table>
-				
+
 				<input type="button" name="submit" class="button-primary deleteAnswer" value="<?php esc_html_e('Delete answer', 'learndash'); ?>">
 				<input type="button" class="button-secondary addMedia" value="<?php esc_html_e('Add Media', 'learndash'); ?>">
 				<a href="#" class="button-secondary wpProQuiz_move" style="cursor: move;"><?php esc_html_e('Move', 'learndash'); ?></a>
 			</li>
-<?php 
+<?php
 		}
 	}
-	
+
 	public function freeChoice($data) {
 		$single = $data[0];
 ?>
@@ -448,9 +461,9 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 			<textarea rows="6" cols="100" class="large-text" name="answerData[][answer]"><?php echo $single->getAnswer(); ?></textarea>
 		</p>
 	</div>
-<?php 
+<?php
 	}
-	
+
 	public function clozeChoice($data) {
 		$single = $data[0];
 ?>
@@ -469,9 +482,9 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 		<?php
 			wp_editor($single->getAnswer(), 'cloze', array('textarea_rows' => 10, 'textarea_name' => 'answerData[cloze][answer]'));
 		?>
-<?php 
+<?php
 	}
-	
+
 	public function assessmentChoice($data) {
 		$single = $data[0];
 ?>
@@ -488,17 +501,17 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 			<br>
 			* <?php esc_html_e('less true { [1] [2] [3] [4] [5] } more true', 'learndash'); ?>
 		</p>
-		
+
 		<p>
 			* <?php esc_html_e('less true { [a] [b] [c] } more true', 'learndash'); ?>
 		</p>
-		
+
 		<p></p>
-	
+
 		<?php
 			wp_editor($single->getAnswer(), 'assessment', array('textarea_rows' => 10, 'textarea_name' => 'answerData[assessment][answer]'));
 		?>
-<?php 
+<?php
 	}
 
 
@@ -513,9 +526,13 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 				</select>
 
 				<p class="description" style="margin-top: 10px">
-					<?php echo sprintf( esc_html_x( 'This is a question that can be graded and potentially prevent a user from progressing to the next step of the %s.', 'placeholders: course', 'learndash' ), learndash_get_custom_label_lower( 'course' ) ) ?><br />
+					<?php
+					// translators: placeholder: course.
+					echo sprintf( esc_html_x( 'This is a question that can be graded and potentially prevent a user from progressing to the next step of the %s.', 'placeholder: course', 'learndash' ), learndash_get_custom_label_lower( 'course' ) ) ?><br />
 					<?php esc_html_e( 'The user can only progress if the essay is marked as "Graded" and if the user has enough points to move on.', 'learndash' ) ?><br />
-					<?php echo sprintf( esc_html_x( 'How should the answer to this question be marked and graded upon %s submission?', 'placeholders: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ); ?><br />
+					<?php
+					// translators: placeholder: quiz.
+					echo sprintf( esc_html_x( 'How should the answer to this question be marked and graded upon %s submission?', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ); ?><br />
 				</p>
 				<select name="answerData[essay][progression]" id="essay-progression">
 					<option value=""><?php esc_html_e('-- Select --', 'learndash') ?></option>
@@ -528,7 +545,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 		}
 
 	}
-	
+
 	public function singleChoiceOptions($data) {
 ?>
 	<div class="postbox" id="singleChoiceOptions">
@@ -549,7 +566,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 				<input type="checkbox" name=disableCorrect value="1" <?php $this->checked($this->question->isDisableCorrect()); ?>>
 				<?php esc_html_e('Disable correct and incorrect', 'learndash'); ?>
 			</label>
-			
+
 			<div style="padding-top: 20px;">
 				<a href="#" id="clickPointDia"><?php esc_html_e('Explanation of points calculation', 'learndash'); ?></a>
 				<?php $this->answerPointDia(); ?>
@@ -559,7 +576,7 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 
 <?php
 	}
-	
+
 	private function answerPointDia() {
 ?>
 <style>
@@ -583,162 +600,162 @@ class WpProQuiz_View_QuestionEdit extends WpProQuiz_View_View {
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('Question - Single Choice - 3 Answers - Diff points mode
 
 			A=3 Points [correct]
 			B=2 Points [incorrect]
 			C=1 Point [incorrect]
-			
+
 			= 6 Points
 			'); ?>
-	  	
+
 	  	</td>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('Question - Single Choice - 3 Answers - Modus 2
 
 			A=3 Points [correct]
 			B=2 Points [incorrect]
 			C=1 Point [incorrect]
-			
+
 			= 3 Points
 			'); ?>
 	  	</td>
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 1: ~~~
-			
+
 			A=checked
 			B=unchecked
 			C=unchecked
-			
+
 			Result:
 			A=correct and checked (correct) = 3 Points
 			B=incorrect and unchecked (correct) = 2 Points
 			C=incorrect and unchecked (correct) = 1 Points
-			
+
 			= 6 / 6 Points 100%
 			'); ?>
-	  	
+
 	  	</td>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 1: ~~~
-			
+
 			A=checked
 			B=unchecked
 			C=unchecked
-			
+
 			Result:
 			A=checked = 3 Points
 			B=unchecked = 0 Points
 			C=unchecked = 0 Points
-			
+
 			= 3 / 3 Points 100%'); ?>
 	  	</td>
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 2: ~~~
-			
+
 			A=unchecked
 			B=checked
 			C=unchecked
-			
+
 			Result:
 			A=correct and unchecked (incorrect) = 0 Points
 			B=incorrect and checked (incorrect) = 0 Points
 			C=incorrect and uncecked (correct) = 1 Points
-			
+
 			= 1 / 6 Points 16.67%
 			'); ?>
-	  	
+
 	  	</td>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 2: ~~~
-			
+
 			A=unchecked
 			B=checked
 			C=unchecked
-			
+
 			Result:
 			A=unchecked = 0 Points
 			B=checked = 2 Points
 			C=uncecked = 0 Points
-			
+
 			= 2 / 3 Points 66,67%'); ?>
 	  	</td>
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 3: ~~~
-			
+
 			A=unchecked
 			B=unchecked
 			C=checked
-			
+
 			Result:
 			A=correct and unchecked (incorrect) = 0 Points
 			B=incorrect and unchecked (correct) = 2 Points
 			C=incorrect and checked (incorrect) = 0 Points
-			
+
 			= 2 / 6 Points 33.33%
 			'); ?>
-	  	
+
 	  	</td>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 3: ~~~
-			
+
 			A=unchecked
 			B=unchecked
 			C=checked
-			
+
 			Result:
 			A=unchecked = 0 Points
 			B=unchecked = 0 Points
 			C=checked = 1 Points
-			
+
 			= 1 / 3 Points 33,33%'); ?>
 	  	</td>
 	  </tr>
 	  <tr>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 4: ~~~
-			
+
 			A=unchecked
 			B=unchecked
 			C=unchecked
-			
+
 			Result:
 			A=correct and unchecked (incorrect) = 0 Points
 			B=incorrect and unchecked (correct) = 2 Points
 			C=incorrect and unchecked (correct) = 1 Points
-			
+
 			= 3 / 6 Points 50%
 			'); ?>
-	  	
+
 	  	</td>
 	  	<td>
-	  		<?php 
+	  		<?php
 	    	echo nl2br('~~~ User 4: ~~~
-			
+
 			A=unchecked
 			B=unchecked
 			C=unchecked
-			
+
 			Result:
 			A=unchecked = 0 Points
 			B=unchecked = 0 Points
 			C=unchecked = 0 Points
-			
+
 			= 0 / 3 Points 0%'); ?>
 	  	</td>
 	  </tr>

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Helper_ImportXml {
 	private $_content = null;
 	private $_error = false;
@@ -48,6 +52,7 @@ class WpProQuiz_Helper_ImportXml {
 		
 		if(isset($xml->data) && isset($xml->data->quiz)) {
 			foreach($xml->data->quiz as $quiz) {
+				$quiz = learndash_array_sanitize_keys_and_values( $quiz );
 				$quizModel = $this->createQuizModel($quiz);
 
 				if($quizModel !== null) {
@@ -57,12 +62,14 @@ class WpProQuiz_Helper_ImportXml {
 					
 					if($quiz->forms->form) {
 						foreach ($quiz->forms->form as $form) {
+							$form = learndash_array_sanitize_keys_and_values( $form );
 							$a['forms'][$quizModel->getId()][] = $this->createFormModel($form);
 						}
 					}
 					
 					if(isset($quiz->questions)) {
 						foreach ($quiz->questions->question as $question) {
+							$question = learndash_array_sanitize_keys_and_values( $question );
 							$questionModel = $this->createQuestionModel($question);
 							
 							if($questionModel !== null)
@@ -82,19 +89,23 @@ class WpProQuiz_Helper_ImportXml {
 								if ( ! empty( $meta_key ) ) {
 									$meta_value = trim( $post_meta->meta_value );
 
-									//if ( ! isset( $a['post_meta'][$quizModel->getId()][ $meta_key ] ) ) {
-									//	$a['post_meta'][ $quizModel->getId() ][ $meta_key ] = array();
-									//}
-									$a['post_meta'][ $quizModel->getId() ][ $meta_key ] = maybe_unserialize( $meta_value );
+									if ( ( defined( 'LEARNDASH_QUIZ_EXPORT_LEGACY' ) ) && ( true === LEARNDASH_QUIZ_EXPORT_LEGACY ) ) {
+										$a['post_meta'][ $quizModel->getId() ][ $meta_key ] = maybe_unserialize( $meta_value );
+									} else {
+										if ( learndash_is_valid_JSON( $meta_value ) ) {
+											$a['post_meta'][ $quizModel->getId() ][ $meta_key ] = json_decode( $meta_value, true );
+										}
+									}
 								}
 							}
+							$a['post_meta'][ $quizModel->getId() ] = learndash_array_sanitize_keys_and_values( $a['post_meta'][ $quizModel->getId() ] );
 						}
 
 						if ( isset( $quiz->post ) ) {
 							if ( ! isset( $a['post'][$quizModel->getId()] ) ) {
 								$a['post'][$quizModel->getId()] = array();
 							}
-							
+
 							foreach ( $quiz->post as $post_items ) {
 								foreach ( $post_items as $post_item_key => $post_item_value ) {
 									$post_item_key = trim( $post_item_key );
@@ -102,6 +113,7 @@ class WpProQuiz_Helper_ImportXml {
 									$a['post'][$quizModel->getId()][ $post_item_key ] = $post_item_value;
 								}
 							}
+							$a['post'][ $quizModel->getId() ] = learndash_array_sanitize_keys_and_values( $a['post'][ $quizModel->getId() ] );
 						}
 					}
 				}
@@ -150,6 +162,8 @@ class WpProQuiz_Helper_ImportXml {
 			if ( ( isset( $data['post'][ $oldId ] ) ) && ( ! empty( $data['post'][ $oldId ] ) ) ) {
 				//$quiz_insert_data['post'] = $data['post'][ $oldId ];
 				$post_import_keys = array( 'post_title', 'post_content' );
+
+				/** This filter is documented in includes/lib/wp-pro-quiz/lib/helper/WpProQuiz_Helper_Import.php */
 				$post_import_keys = apply_filters( 'learndash_quiz_import_post_keys', $post_import_keys );
 				if ( ! empty( $post_import_keys ) ) {
 					foreach( $post_import_keys as $import_key ) {
@@ -159,27 +173,27 @@ class WpProQuiz_Helper_ImportXml {
 					}
 				}
 			}
+
+			/** This filter is documented in includes/lib/wp-pro-quiz/lib/helper/WpProQuiz_Helper_Import.php */
 			$quiz_insert_data = apply_filters( 'learndash_quiz_import_post_data', $quiz_insert_data, 'xml' );
 			$quiz_post_id = wp_insert_post( $quiz_insert_data );
 			if ( ! empty( $quiz_post_id ) ) {
 				$this->import_post_id = $quiz_post_id;
 
 				$post_meta_import_keys = array( '_' . get_post_type( $quiz_post_id ), '_viewProfileStatistics', '_timeLimitCookie' );
+
+				/** This filter is documented in includes/lib/wp-pro-quiz/lib/helper/WpProQuiz_Helper_Import.php */
 				$post_meta_import_keys = apply_filters( 'learndash_quiz_import_post_meta_keys', $post_meta_import_keys );
-				if ( ! empty( $post_import_keys ) ) {
+				if ( ! empty( $post_meta_import_keys ) ) {
 
 					if ( ( isset( $data['post_meta'][ $oldId ] ) ) && ( ! empty( $data['post_meta'][ $oldId ] ) ) ) {
-						if ( ( isset( $data['post_meta'][ $oldId ] ) ) && ( ! empty( $data['post_meta'][ $oldId ] ) ) ) {
-							foreach( $data['post_meta'][ $oldId ] as $_key => $_key_data ) {
-								if ( ( empty( $_key ) ) || ( empty( $_key_data ) ) ) {
-									continue;
-								}
-								
-								if ( in_array( $_key, $post_meta_import_keys ) ) {
-									foreach( $_key_data as $_data_set ) {
+						foreach( $data['post_meta'][ $oldId ] as $_key => $_key_data ) {
+							if ( ( ! empty( $_key ) ) && ( ! empty( $_key_data ) ) && ( in_array( $_key, $post_meta_import_keys, true ) ) ) {
+								foreach( $_key_data as $_data_set ) {
+									if ( ( defined( 'LEARNDASH_QUIZ_EXPORT_LEGACY' ) ) && ( true === LEARNDASH_QUIZ_EXPORT_LEGACY ) ) {
 										$_data_set = maybe_unserialize( $_data_set );
-										add_post_meta( $quiz_post_id, $_key, $_data_set );
 									}
+									update_post_meta( $quiz_post_id, $_key, $_data_set );
 								}
 							}
 						}

@@ -36,8 +36,9 @@ const {
 registerBlockType(
     'learndash/ld-profile',
     {
-        title: __( 'LearnDash Profile', 'learndash' ),
-		description: sprintf(_x("Displays user's enrolled %1$s, %2$s progress, %3$s scores, and achieved certificates.", 'placeholder: courses, course, quiz', 'learndash'), ldlms_get_custom_label('courses'), ldlms_get_custom_label('course'), ldlms_get_custom_label('quiz') ),
+		title: __( 'LearnDash Profile', 'learndash' ),
+		// translators: placeholders: Courses, Course, Quiz.
+		description: sprintf(_x("Displays user's enrolled %1$s, %2$s progress, %3$s scores, and achieved certificates.", 'placeholders: Courses, Course, Quiz', 'learndash'), ldlms_get_custom_label('courses'), ldlms_get_custom_label('course'), ldlms_get_custom_label('quiz') ),
 		icon: 'id-alt',
 		category: 'learndash-blocks',
 		example: {
@@ -108,7 +109,9 @@ registerBlockType(
 						title={ __( 'Settings', 'learndash' ) }
 					>
 						<TextControl
-							label={sprintf(_x('%s per page', 'placeholder: Lessons', 'learndash'), ldlms_get_custom_label('courses') ) }
+							// translators: placeholder: Courses.
+							label={sprintf(_x('%s per page', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses') ) }
+							// translators: placeholder: default per page.
 							help={sprintf(_x('Leave empty for default (%d) or 0 to show all items.', 'placeholder: default per page', 'learndash'), ldlms_get_per_page('per_page') ) }
 							value={per_page || ''}
 							type={'number'}
@@ -166,6 +169,7 @@ registerBlockType(
 							onChange={show_header => setAttributes({ show_header })}
 						/>
 						<ToggleControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('Show Earned %s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
 							checked={ !!course_points_user }
 							onChange={ course_points_user => setAttributes( { course_points_user } ) }
@@ -176,11 +180,13 @@ registerBlockType(
 							onChange={ profile_link => setAttributes( { profile_link } ) }
 						/>
 						<ToggleControl
-							label={sprintf(_x('Show User Quiz Attempts', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz') ) }
+							// translators: placeholder: Quiz.
+							label={sprintf(_x('Show User %s Attempts', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz') ) }
 							checked={ !!show_quizzes }
 							onChange={ show_quizzes => setAttributes( { show_quizzes } ) }
 						/>
 						<ToggleControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('Expand All %s Sections', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
 							checked={!!expand_all}
 							onChange={expand_all => setAttributes({ expand_all })}

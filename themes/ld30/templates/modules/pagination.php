@@ -7,6 +7,10 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
 * Available Variables:
 * $pager_context : (string) value defining context of pager output. For example 'course_lessons' would be the course template lessons listing.
@@ -36,7 +40,7 @@ if ( ( isset( $pager_results ) ) && ( ! empty( $pager_results ) ) ) {
 	$pager_json = htmlspecialchars( wp_json_encode( $pager_results ) );
 
 	// Generic wrappers. These can be changes via the switch below
-	$wrapper_before = '<div class="ld-pagination ld-pagination-page-' . esc_attr( $pager_context ) . '" data-pager-results="' . $pager_json . '">
+	$wrapper_before = '<div class="ld-pagination ld-pagination-page-' . esc_attr( $pager_context ) . '" data-pager-nonce="' . wp_create_nonce( 'ld30_ajax_pager' ) . '" data-pager-results="' . $pager_json . '">
 						<div class="ld-pages">';
 	$wrapper_after  = '</div>
 						</div>';
@@ -66,6 +70,10 @@ if ( ( isset( $pager_results ) ) && ( ! empty( $pager_results ) ) ) {
 					$href_query_arg = 'ld-user-status';
 					break;
 
+				case 'group_courses':
+					$href_query_arg = 'ld-group-courses-page';
+					break;
+
 				// These are just here to show the existing different context items.
 				case 'course_info_registered':
 				case 'course_info_quizzes':
@@ -93,27 +101,30 @@ if ( ( isset( $pager_results ) ) && ( ! empty( $pager_results ) ) ) {
 		}
 		$next_page_number = ( $pager_results['paged'] < $pager_results['total_pages'] ) ? $pager_results['paged'] + 1 : $pager_results['total_pages'];
 
-		$data_lesson_id = ( isset( $lesson_id ) ? 'data-lesson_id="' . $lesson_id . '"' : '' );
-
-		$course_id = ( isset( $course_id ) ? $course_id : '' );
+		$data_course_id = ( isset( $course_id ) ? 'data-course_id="' . absint( $course_id ) . '"' : '' );
+		$data_lesson_id = ( isset( $lesson_id ) ? 'data-lesson_id="' . absint( $lesson_id ) . '"' : '' );
+		$data_group_id  = ( isset( $group_id ) ? 'data-group_id="' . absint( $group_id ) . '"' : '' );
 
 		$search_arg = ( isset( $search ) ? '&ld-profile-search=' . $search : '' );
 
+		/**
+		 * Fires before the pagination wrapper.
+		 */
 		do_action( 'learndash_pagination_before_wrapper' );
 
 		echo $wrapper_before; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Outputs HTML
 
 		/**
 		 *
-		 * Action to add custom content before the register modal heading
+		 * Fires before the register modal heading.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
 		 */
 		do_action( 'learndash_pagination_before' ); ?>
 
 		<a class="prev ld-primary-color-hover <?php echo esc_attr( $pager_left_class ); ?>" <?php if ( ( isset( $href_query_arg ) ) && ( ! empty( $href_query_arg ) ) ) { ?>
 			href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . $prev_page_number ) ); ?>"
-		<?php } ?> data-context="<?php echo esc_attr( $pager_context ); ?>" data-paged="<?php echo esc_attr( $href_val_prefix . $prev_page_number . $search_arg ); ?>" data-course_id="<?php echo esc_attr( $course_id ); ?>" <?php echo $data_lesson_id; ?> class="<?php echo esc_attr( $pager_left_class ); ?>" <?php echo esc_attr( $pager_left_disabled ); ?> title="<?php esc_attr_e( 'Previous Page', 'learndash' ); ?>">
+		<?php } ?> data-context="<?php echo esc_attr( $pager_context ); ?>" data-paged="<?php echo esc_attr( $href_val_prefix . $prev_page_number . $search_arg ); ?>" <?php echo $data_course_id; ?> <?php echo $data_lesson_id; ?> <?php echo $data_group_id; ?> class="<?php echo esc_attr( $pager_left_class ); ?>" <?php echo esc_attr( $pager_left_disabled ); ?> title="<?php esc_attr_e( 'Previous Page', 'learndash' ); ?>">
 		<?php if ( is_rtl() ) { ?>
 			<span class="ld-icon-arrow-right ld-icon"></span></a>
 		<?php } else { ?>
@@ -133,7 +144,7 @@ if ( ( isset( $pager_results ) ) && ( ! empty( $pager_results ) ) ) {
 		</span>
 			<a class="next ld-primary-color-hover <?php echo esc_attr( $pager_right_class ); ?>" <?php if ( ( isset( $href_query_arg ) ) && ( ! empty( $href_query_arg ) ) ) { ?>
 				href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . $next_page_number ) ); ?>"
-			<?php } ?> data-context="<?php echo esc_attr( $pager_context ); ?>" data-paged="<?php echo esc_attr( $href_val_prefix . $next_page_number . $search_arg ); ?>" data-course_id="<?php echo esc_attr( $course_id ); ?>" <?php echo $data_lesson_id; ?> class="<?php echo esc_attr( $pager_right_class ); ?>" <?php echo esc_attr( $pager_right_disabled ); ?> title="<?php esc_attr_e( 'Next Page', 'learndash' ); ?>">
+			<?php } ?> data-context="<?php echo esc_attr( $pager_context ); ?>" data-paged="<?php echo esc_attr( $href_val_prefix . $next_page_number . $search_arg ); ?>" <?php echo $data_course_id; ?> <?php echo $data_lesson_id; ?> <?php echo $data_group_id; ?> class="<?php echo esc_attr( $pager_right_class ); ?>" <?php echo esc_attr( $pager_right_disabled ); ?> title="<?php esc_attr_e( 'Next Page', 'learndash' ); ?>">
 			<?php if ( is_rtl() ) { ?>
 				<span class="ld-icon-arrow-left ld-icon"></span></a>
 			<?php } else { ?>
@@ -144,14 +155,17 @@ if ( ( isset( $pager_results ) ) && ( ! empty( $pager_results ) ) ) {
 
 		/**
 		 *
-		 * Action to add custom content before the register modal heading
+		 * Fires before the register modal heading.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
 		 */
 		do_action( 'learndash_pagination_after' );
 
 		echo $wrapper_after; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Outputs HTML
 
+		/**
+		 * Fires after the pagination wrapper.
+		 */
 		do_action( 'learndash_pagination_after_wrapper' );
 
 	}

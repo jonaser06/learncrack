@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Timer_Entry' ) ) ) {
 
 	/**
@@ -33,7 +37,10 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		public function create_section_field( $field_args = array() ) {
 			global $wp_locale;
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html       = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 
 			if ( ( isset( $field_args['value'] ) ) && ( ! empty( $field_args['value'] ) ) ) {
@@ -65,6 +72,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$second_field
 			) . '</div>';
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_after', $html, $field_args );
 
 			echo $html;

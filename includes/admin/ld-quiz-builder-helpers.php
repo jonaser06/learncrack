@@ -9,11 +9,16 @@
 
 namespace LearnDash\Admin\QuizBuilderHelpers;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Provide Quiz Data to Builder.
+ * Gets the quiz data for the quiz builder.
  *
- * @param Object $data The data passed down to front-end.
- * @return Object
+ * @param array $data The data passed down to the front-end.
+ *
+ * @return array The data passed down to the front-end.
  */
 function get_quiz_data( $data ) {
 	global $pagenow, $typenow;
@@ -24,67 +29,74 @@ function get_quiz_data( $data ) {
 		$quiz_id = get_the_ID();
 		if ( ! empty( $quiz_id ) ) {
 			// Get quiz's questions.
-			$questions_ids    = array_keys( learndash_get_quiz_questions( $quiz_id ) );
+			$questions_ids = learndash_get_quiz_questions( $quiz_id );
 
-			// Loop quiz's questions.
-			foreach ( $questions_ids as $question_id ) {
+			if ( ! empty( $questions_ids ) ) {
+				foreach ( $questions_ids as $question_id => $question_pro_id ) {
+					$question_id     = absint( $question_id );
+					$question_pro_id = absint( $question_pro_id );
 
-				// Get answers from question.
-				$question_pro_id = (int) get_post_meta( $question_id, 'question_pro_id', true );
-				$question_mapper = new \WpProQuiz_Model_QuestionMapper();
+					// Get answers from question.
+					//$question_pro_id = (int) get_post_meta( $question_id, 'question_pro_id', true );
+					$question_mapper = new \WpProQuiz_Model_QuestionMapper();
 
-				if ( ! empty( $question_pro_id ) ) {
-					$question_model = $question_mapper->fetch( $question_pro_id );
-				} else {
-					$question_model = $question_mapper->fetch( null );
-				}
-
-				$question_data       = $question_model->get_object_as_array();
-				$controller_question = new \WpProQuiz_Controller_Question();
-
-				if ( $question_model && is_a( $question_model, 'WpProQuiz_Model_Question' ) ) {
-					$answers_data = $controller_question->setAnswerObject( $question_model );
-				} else {
-					$answers_data = $controller_question->setAnswerObject();
-				}
-
-				// Store answers in our format used at FE.
-				$processed_answers = [];
-
-				foreach ( $answers_data as $answer_type => $answers ) {
-					foreach ( $answers as $answer ) {
-						$processed_answers[ $answer_type ][] = [
-							'answer'             => $answer->getAnswer(),
-							'html'               => $answer->isHtml(),
-							'points'             => $answer->getPoints(),
-							'correct'            => $answer->isCorrect(),
-							'sortString'         => $answer->getSortString(),
-							'sortStringHtml'     => $answer->isSortStringHtml(),
-							'graded'             => $answer->isGraded(),
-							'gradingProgression' => $answer->getGradingProgression(),
-							'gradedType'         => $answer->getGradedType(),
-							'type'               => 'answer',
-						];
+					if ( ! empty( $question_pro_id ) ) {
+						$question_model = $question_mapper->fetch( $question_pro_id );
+					} else {
+						$question_model = $question_mapper->fetch( null );
 					}
-				}
 
-				// Output question's data and answers.
-				$output_questions[] = [
-					'ID'              => $question_id,
-					'expanded'        => false,
-					'post_title'      => $question_data['_title'],
-					'post_content'    => $question_data['_question'],
-					'edit_link'       => get_edit_post_link( $question_id, '' ),
-					'type'            => get_post_type( $question_id ),
-					'question_type'   => $question_data['_answerType'],
-					'points'          => $question_data['_points'],
-					'answers'         => $processed_answers,
-					'correctMsg'      => $question_data['_correctMsg'],
-					'incorrectMsg'    => $question_data['_incorrectMsg'],
-					'correctSameText' => $question_data['_correctSameText'],
-					'tipEnabled'      => $question_data['_tipEnabled'],
-					'tipMsg'          => $question_data['_tipMsg'],
-				];
+					if ( ( empty( $question_model->getId() ) ) || ( $question_model->getId() !== $question_pro_id ) ) {
+						continue;
+					}
+
+					$question_data       = $question_model->get_object_as_array();
+					$controller_question = new \WpProQuiz_Controller_Question();
+
+					if ( $question_model && is_a( $question_model, 'WpProQuiz_Model_Question' ) ) {
+						$answers_data = $controller_question->setAnswerObject( $question_model );
+					} else {
+						$answers_data = $controller_question->setAnswerObject();
+					}
+
+					// Store answers in our format used at FE.
+					$processed_answers = [];
+
+					foreach ( $answers_data as $answer_type => $answers ) {
+						foreach ( $answers as $answer ) {
+							$processed_answers[ $answer_type ][] = [
+								'answer'             => $answer->getAnswer(),
+								'html'               => $answer->isHtml(),
+								'points'             => $answer->getPoints(),
+								'correct'            => $answer->isCorrect(),
+								'sortString'         => $answer->getSortString(),
+								'sortStringHtml'     => $answer->isSortStringHtml(),
+								'graded'             => $answer->isGraded(),
+								'gradingProgression' => $answer->getGradingProgression(),
+								'gradedType'         => $answer->getGradedType(),
+								'type'               => 'answer',
+							];
+						}
+					}
+
+					// Output question's data and answers.
+					$output_questions[] = [
+						'ID'              => $question_id,
+						'expanded'        => false,
+						'post_title'      => $question_data['_title'],
+						'post_content'    => $question_data['_question'],
+						'edit_link'       => get_edit_post_link( $question_id, '' ),
+						'type'            => get_post_type( $question_id ),
+						'question_type'   => $question_data['_answerType'],
+						'points'          => $question_data['_points'],
+						'answers'         => $processed_answers,
+						'correctMsg'      => $question_data['_correctMsg'],
+						'incorrectMsg'    => $question_data['_incorrectMsg'],
+						'correctSameText' => $question_data['_correctSameText'],
+						'tipEnabled'      => $question_data['_tipEnabled'],
+						'tipMsg'          => $question_data['_tipMsg'],
+					];
+				}
 			}
 		}
 	}

@@ -10,6 +10,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Populate a list of topics and quizzes for this lesson
  *
@@ -26,6 +30,11 @@ $content_count = learndash_get_lesson_content_count( $lesson, $course_id );
 $count    = ( isset( $count ) ? $count : 0 );
 $sections = ( isset( $sections ) ? $sections : array() );
 
+/**
+ * Filters lesson row attributes. Used while displaying lesson lists in a course.
+ *
+ * @param string $attribute Lesson row attribute. The value is data-ld-tooltip if a user does not have access to the course otherwise an empty string.
+ */
 $atts = apply_filters( 'learndash_lesson_row_atts', ( isset( $has_access ) && ! $has_access && 'is_not_sample' === $lesson['sample'] ? 'data-ld-tooltip="' . esc_html__( "You don't currently have access to this content", 'learndash' ) . '"' : '' ), $lesson['post']->ID, $course_id, $user_id );
 
 /**
@@ -33,16 +42,29 @@ $atts = apply_filters( 'learndash_lesson_row_atts', ( isset( $has_access ) && ! 
  */
 if ( ( empty( $atts ) ) && ( ! is_user_logged_in() ) ) {
 	if ( 'is_sample' === $lesson['sample'] ) {
+		/** This filter is documented in themes/ld30/includes/helpers.php */
 		if ( true !== (bool) apply_filters( 'learndash_lesson_sample_access', true, $lesson['post']->ID, $course_id, $user_id ) ) {
+			/**
+			 * Filters lesson row attributes if the access to sample lesson is not allowed to a user.
+			 *
+			 * @param string $attribute Lesson row attribute. The attribute value to show if the sample lesson is not accessible.
+			 * @param int    $lesson_id Lesson ID.
+			 * @param int    $course_id Course ID.
+			 * @param int    $user_id   User ID.
+			 */
 			$atts = apply_filters( 'learndash_lesson_row_atts_sample_no_access', 'data-ld-tooltip="' . esc_html__( 'Please login to view sample content', 'learndash' ) . '"', $lesson['post']->ID, $course_id, $user_id );
 		}
 	}
 }
 
 /**
- * Action to add custom content before a row
+ * Fires before a lesson row.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $lesson_id Lesson ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-lesson-row-before', $lesson['post']->ID, $course_id, $user_id );
 
@@ -64,9 +86,13 @@ endif; ?>
 	<div class="ld-item-list-item-preview">
 		<?php
 		/**
-		 * Action to add custom content before lesson title
+		 * Fires before a lesson title.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-lesson-row-title-before', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -89,13 +115,22 @@ endif; ?>
 				/**
 				 * Display content counts if the lesson has topics
 				 */
+				/**
+				 * Filters whether to show lesson row attributes in lesson listing.
+				 *
+				 * @param boolean $show_row_attributes Whether to show lesson row attributes.
+				 */
 				if ( ! empty( $topics ) || ! empty( $quizzes ) || ! empty( $attributes ) || apply_filters( 'learndash-lesson-row-attributes', false ) ) :
 
 					/**
-					* Action to add custom content after the lesson topic counts
-					*
-					* @since 3.0
-					*/
+					 * Fires after the lesson topic counts.
+					 *
+					 * @since 3.0.0
+					 *
+					 * @param int $lesson_id Lesson ID.
+					 * @param int $course_id Course ID.
+					 * @param int $user_id   User ID.
+					 */
 					do_action( 'learndash-lesson-row-topic-count-before', $lesson['post']->ID, $course_id, $user_id );
 					?>
 
@@ -103,9 +138,13 @@ endif; ?>
 
 						<?php
 						/**
-						 * Action to add custom content after the lesson topic counts
+						 * Fires after the lesson topic counts.
 						 *
-						 * @since 3.0
+						 * @since 3.0.0
+						 *
+						 * @param int $lesson_id Lesson ID.
+						 * @param int $course_id Course ID.
+						 * @param int $user_id   User ID.
 						 */
 						do_action( 'learndash-lesson-components-before', $lesson['post']->ID, $course_id, $user_id );
 
@@ -169,19 +208,27 @@ endif; ?>
 						endif;
 
 						/**
-						* Action to add custom content after the lesson topic counts
-						*
-						* @since 3.0
-						*/
+						 * Fires after the lesson topic counts.
+						 *
+						 * @since 3.0.0
+						 *
+						 * @param int $lesson_id Lesson ID.
+						 * @param int $course_id Course ID.
+						 * @param int $user_id   User ID.
+						 */
 						do_action( 'learndash-lesson-components-after', $lesson['post']->ID, $course_id, $user_id );
 						?>
 
 					</span> <!--/.ld-item-components-->
 					<?php
 					/**
-					 * Action to add custom content after the lesson topic counts
+					 * Fires after the lesson topic counts.
 					 *
-					 * @since 3.0
+					 * @since 3.0.0
+					 *
+					 * @param int $lesson_id Lesson ID.
+					 * @param int $course_id Course ID.
+					 * @param int $user_id   User ID.
 					 */
 					do_action( 'learndash-lesson-preview-after', $lesson['post']->ID, $course_id, $user_id );
 					?>
@@ -192,9 +239,13 @@ endif; ?>
 
 		<?php
 		/**
-		 * Action to add custom content after lesson title
+		 * Fires after the lesson title.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-lesson-row-title-after', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -203,9 +254,13 @@ endif; ?>
 			<?php
 
 			/**
-			 * Action to add custom content before the attribute bubbles
+			 * Fires before the attribute bubbles.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-lesson-row-attributes-before', $lesson['post']->ID, $course_id, $user_id );
 
@@ -216,9 +271,13 @@ endif; ?>
 			 */
 			if ( ! empty( $topics ) || ! empty( $quizzes ) ) :
 				/**
-				 * Action to add custom content before expand button
+				 * Fires before the expand button.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $lesson_id Lesson ID.
+				 * @param int $course_id Course ID.
+				 * @param int $user_id   User ID.
 				 */
 				do_action( 'learndash-lesson-row-expand-before', $lesson['post']->ID, $course_id, $user_id );
 				?>
@@ -230,9 +289,13 @@ endif; ?>
 
 				<?php
 				/**
-				 * Action to add custom content after lesson title
+				 * Fires after the lesson title.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $lesson_id Lesson ID.
+				 * @param int $course_id Course ID.
+				 * @param int $user_id   User ID.
 				 */
 				do_action( 'learndash-lesson-row-expand-after', $lesson['post']->ID, $course_id, $user_id );
 
@@ -242,9 +305,13 @@ endif; ?>
 
 		<?php
 		/**
-		 * Action to add custom content after the attribute bubbles
+		 * Fires after the attribute bubbles.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-lesson-row-attributes-after', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -262,9 +329,13 @@ endif; ?>
 		<div class="ld-item-list-item-expanded">
 			<?php
 			/**
-			 * Action to add custom content before the topic/quiz list
+			 * Fires before the topic/quiz list
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-lesson-row-topic-list-before', $lesson['post']->ID, $course_id, $user_id );
 
@@ -282,10 +353,14 @@ endif; ?>
 			);
 
 			/**
-			* Action to add custom content after the topic/quiz list
-			*
-			* @since 3.0
-			*/
+			 * Fires after the topic/quiz list.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
+			 */
 			do_action( 'learndash-lesson-row-topic-list-after', $lesson['post']->ID, $course_id, $user_id );
 			?>
 		</div> <!--/.ld-item-list-item-expanded-->
@@ -293,8 +368,12 @@ endif; ?>
 </div> <!--/.ld-item-list-item-->
 	<?php
 	/**
-	 * Action to add custom content after a row
+	 * Fires after a lesson row.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $lesson_id Lesson ID.
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-lesson-row-after', $lesson['post']->ID, $course_id, $user_id ); ?>

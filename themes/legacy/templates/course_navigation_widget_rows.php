@@ -68,10 +68,9 @@ if ( ! empty( $lessons) ) {
 									$current_topic_class = ( $topic->ID == $widget_instance['current_step_id'] ) ? 'learndash-current-menu-item' : '';
 									?>
 									<li class="<?php echo $current_topic_class ?>">
-										<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $topic->post_title ); ?>'><span><?php echo $topic->post_title; ?></span></a></span>
+										<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_html( $topic->post_title ); ?>'><span><?php echo apply_filters( 'the_title',$topic->post_title, $topic->ID ); ?></span></a></span>
 									<?php 
 										if ( ( isset( $widget_instance['show_topic_quizzes'] ) ) && ( $widget_instance['show_topic_quizzes'] == true ) ) {
-									
 											$topic_quiz_list = learndash_get_lesson_quiz_list( $topic->ID, get_current_user_id(), $course_id ); 
 											if ( !empty( $topic_quiz_list ) ) {
 												?><ul id="learndash-lesson-quiz-list-<?php echo $topic->ID ?>" class="learndash-topic-quiz-list"><?php
@@ -79,14 +78,12 @@ if ( ! empty( $lessons) ) {
 													$quiz_completed = learndash_is_quiz_complete( get_current_user_id(), $quiz['post']->ID, $course_id );
 													$completed_class = empty( $quiz_completed ) ? 'topic-notcompleted' : 'topic-completed';
 													$current_topic_class = ( $quiz['post']->ID == $widget_instance['current_step_id'] ) ? 'learndash-current-menu-item' : '';
-												
 													if ( !empty( $current_topic_class ) ) {
 														$lesson_topic_child_item_active = true;
 													}
-												
 													?>
 													<li class="quiz-item <?php echo $current_topic_class ?>">
-														<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $quiz['post']->post_title ); ?>'><span><?php echo $quiz['post']->post_title; ?></span></a></span>
+														<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>' title='<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>'><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a></span>
 													</li>
 													<?php 
 												} 
@@ -112,7 +109,9 @@ if ( ! empty( $lessons) ) {
 												}
 												?>
 												<li class="quiz-item <?php echo $current_topic_class ?>">
-													<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $quiz['post']->post_title ); ?>'><span><?php echo $quiz['post']->post_title; ?></span></a></span>
+													<span class="topic_item"><a class="<?php echo esc_attr( $completed_class ); ?>" 
+													href="<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>" 
+													title="<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>"><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a></span>
 												</li>
 												<?php 
 											} 
@@ -139,7 +138,7 @@ if ( ! empty( $lessons) ) {
 										}
 										?>
 										<li class="quiz-item <?php echo $current_topic_class ?>">
-											<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $quiz['post']->post_title ); ?>'><span><?php echo $quiz['post']->post_title; ?></span></a></span>
+											<span class="topic_item"><a class="<?php echo esc_attr( $completed_class ); ?>" href="<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>" title="<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>"><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a></span>
 										</li>
 										<?php 
 									} 
@@ -207,8 +206,8 @@ if ( $show_course_quizzes == true ) {
 				$completed_class = empty( $quiz_completed ) ? 'topic-notcompleted' : 'topic-completed';
 				$current_topic_class = ( $quiz['post']->ID == $widget_instance['current_step_id'] ) ? 'learndash-current-menu-item' : '';
 				?>
-				<li class="quiz-item <?php echo $current_topic_class ?>">
-					<span class="topic_item"><a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $quiz['post']->post_title ); ?>'><span><?php echo $quiz['post']->post_title; ?></span></a></span>
+				<li class="quiz-item <?php echo esc_attr( $current_topic_class ); ?>">
+					<span class="topic_item"><a class="<?php echo esc_attr( $completed_class ); ?>" href="<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>" title="<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>"><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a></span>
 				</li>
 				<?php 
 			} 

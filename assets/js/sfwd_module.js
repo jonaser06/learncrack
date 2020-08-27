@@ -207,66 +207,6 @@ jQuery(document).ready(function(){
 			sfwd_do_condshow( sfwd_data.condshow );
 		}
 	}
-
-//	jQuery( '#ld_course_info' ).on( 'click', 'a.user_statistic', show_user_statistic );
-//	jQuery( '#learndash_profile' ).on( 'click', 'a.user_statistic', show_user_statistic );
-/*
-	function show_user_statistic( e ) {
-		e.preventDefault();
-
-		var refId 				= 	jQuery(this).data('ref_id');
-		var quizId 				= 	jQuery(this).data('quiz_id');
-		var userId 				= 	jQuery(this).data('user_id');
-		var statistic_nonce 	= 	jQuery(this).data('statistic_nonce');
-		var post_data = {
-			'action': 'wp_pro_quiz_admin_ajax',
-			'func': 'statisticLoadUser',
-			'data': {
-				'quizId': quizId,
-            	'userId': userId,
-            	'refId': refId,
-				'statistic_nonce': statistic_nonce,
-            	'avg': 0
-			}
-		}
-
-		jQuery('#wpProQuiz_user_overlay, #wpProQuiz_loadUserData').show();
-		var content = jQuery('#wpProQuiz_user_content').hide();
-
-		
-
-		jQuery.ajax({
-			type: "POST",
-			url: ajaxurl,
-			dataType: "json",
-			cache: false,
-			data: post_data,
-			error: function(jqXHR, textStatus, errorThrown ) {
-			},
-			success: function(reply_data) {
-				if ( typeof reply_data.html !== 'undefined' ) {
-					content.html(reply_data.html);
-
-					jQuery('#wpProQuiz_user_content').show();
-					//console.log('trigger event change - sfwd_module');
-					//jQuery('body').trigger('learndash-statistics-contentchanged');
-
-					jQuery('#wpProQuiz_loadUserData').hide();
-
-					content.find('.statistic_data').click(function() {
-						jQuery(this).parents('tr').next().toggle('fast');
-
-						return false;
-					});
-				}
-			}
-		});
-
-		jQuery('#wpProQuiz_overlay_close').click(function() {
-			jQuery('#wpProQuiz_user_overlay').hide();
-		});
-	}
-	*/
 });
 
 jQuery(document).ready(function() {
@@ -1667,6 +1607,7 @@ jQuery(document).ready(function(){
 
 		e.preventDefault();
 
+		var form_nonce = jQuery('input#ld-group-list-view-nonce' ).val();
 		var data_template 	= jQuery(e.target).attr('data-template');
 		var data_slug 		= jQuery(e.target).attr('data-slug');
 		var data_nonce 		= jQuery(e.target).attr('data-nonce');
@@ -1678,6 +1619,7 @@ jQuery(document).ready(function(){
 
 		var post_data = {
 			'action': 'learndash_data_group_reports',
+			'nonce': form_nonce,
 			'data': {
 				'init': 1,
 				'nonce': data_nonce,

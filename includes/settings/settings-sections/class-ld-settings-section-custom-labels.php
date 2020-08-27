@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Custom_Labels' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -149,12 +153,36 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'value'     => isset( $this->setting_option_values['questions'] ) ? $this->setting_option_values['questions'] : '',
 					'class'     => 'regular-text',
 				),
+				'group'                      => array(
+					'name'      => 'group',
+					'type'      => 'text',
+					'label'     => esc_html__( 'Group', 'learndash' ),
+					'help_text' => esc_html__( 'Label to replace "group" (singular).', 'learndash' ),
+					'value'     => isset( $this->setting_option_values['group'] ) ? $this->setting_option_values['group'] : '',
+					'class'     => 'regular-text',
+				),
+				'groups'                     => array(
+					'name'      => 'groups',
+					'type'      => 'text',
+					'label'     => esc_html__( 'Groups', 'learndash' ),
+					'help_text' => esc_html__( 'Label to replace "groups" (plural).', 'learndash' ),
+					'value'     => isset( $this->setting_option_values['groups'] ) ? $this->setting_option_values['groups'] : '',
+					'class'     => 'regular-text',
+				),
 				'button_take_this_course'       => array(
 					'name'      => 'button_take_this_course',
 					'type'      => 'text',
 					'label'     => esc_html__( 'Take this Course (Button)', 'learndash' ),
 					'help_text' => esc_html__( 'Label to replace "Take this Course" button.', 'learndash' ),
 					'value'     => isset( $this->setting_option_values['button_take_this_course'] ) ? $this->setting_option_values['button_take_this_course'] : '',
+					'class'     => 'regular-text',
+				),
+				'button_take_this_group'       => array(
+					'name'      => 'button_take_this_group',
+					'type'      => 'text',
+					'label'     => esc_html__( 'Join Group (Button)', 'learndash' ),
+					'help_text' => esc_html__( 'Label to replace "Join Group" button.', 'learndash' ),
+					'value'     => isset( $this->setting_option_values['button_take_this_group'] ) ? $this->setting_option_values['button_take_this_group'] : '',
 					'class'     => 'regular-text',
 				),
 				'button_mark_complete'          => array(
@@ -175,7 +203,14 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 			// Legacy custom labels filter.
+			/**
+			 * Filters custom labels setting fields.
+			 *
+			 * @param array $setting_option_fields Associative array of Setting field details like name,type,label,value.
+			 */
 			$this->setting_option_fields = apply_filters( 'learndash_custom_label_fields', $this->setting_option_fields );
+
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();

@@ -12,6 +12,10 @@
  *
  * @package LearnDash\Groups
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 
 <div class="learndash-wrapper">

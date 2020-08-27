@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 foreach ( $quizzes as $k => $v ) :
 
 	$quiz = get_post( $v['quiz'] );
@@ -53,7 +57,7 @@ foreach ( $quizzes as $k => $v ) :
 	if ( ! empty( $quiz_title ) ) : ?>
 
 		<div class="ld-item-list-item">
-			<a class="ld-item-list-item-preview" href="<?php echo esc_attr( learndash_get_step_permalink( $quiz->ID, $course_id ) ); ?>">
+			<a class="ld-item-list-item-preview" href="<?php echo esc_url( learndash_get_step_permalink( $quiz->ID, $course_id ) ); ?>">
 
 				<span class="<?php echo esc_attr( $quiz_icon_class ); ?>">
 					<span class="ld-icon ld-icon-quiz ld-status-icon"></span>

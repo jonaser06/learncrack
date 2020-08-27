@@ -17,7 +17,7 @@ if ( $courses_registered ) {
 		<div class='ld-course-info-my-courses'><?php 
 			if ( ( isset( $shortcode_atts['registered_show_thumbnail'] ) ) && ( $shortcode_atts['registered_show_thumbnail'] == 'true' ) ) {
 				echo get_the_post_thumbnail( $course_id ); 
-			} ?><h2 class="ld-entry-title entry-title"><a href="<?php echo get_permalink( $course_id ) ?>"  rel="bookmark"><?php echo get_the_title( $course_id ) ?></a></h2>
+			} ?><h2 class="ld-entry-title entry-title"><a href="<?php echo esc_url( get_permalink( $course_id ) ); ?>"  rel="bookmark"><?php echo get_the_title( $course_id ) ?></a></h2>
 		</div>
 		<?php
 	}

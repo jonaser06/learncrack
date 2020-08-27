@@ -23,7 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // First generate the message
-$message = '<strong>'. sprintf( esc_html_x( 'Earned %s Points:', 'placeholders: Course Label, course points', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ) . '</strong> '. $user_course_points;
+// translators: placeholder: Course.
+$message = '<strong>'. sprintf( esc_html_x( 'Earned %s Points:', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ) . '</strong> '. $user_course_points;
 
 // The figure out how to display it
 if ( $shortcode_atts['context'] == 'ld_profile' ) {

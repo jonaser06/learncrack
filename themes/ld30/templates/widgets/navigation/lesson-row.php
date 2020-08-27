@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $attributes = learndash_get_lesson_attributes( $lesson );
 $quizzes    = learndash_get_lesson_quiz_list( $lesson['post']->ID, get_current_user_id(), $course_id );
 
@@ -38,10 +42,20 @@ if ( isset( $_GET['widget_instance']['widget_instance']['current_lesson_id'] ) )
 $is_current_lesson = ( absint( $current_lesson_id ) === absint( $lesson['post']->ID ) ? true : false );
 
 $lesson_class  = 'ld-lesson-item ' . ( $is_current_lesson ? 'ld-is-current-lesson' : 'ld-is-not-current-lesson' );
-$lesson_class .= ( ! empty( $lesson['lesson_access_from'] ) || ! $has_access ? ' learndash-not-available' : '' );
+
+$bypass_course_limits_admin_users = learndash_can_user_bypass( $user_id, 'learndash_course_lesson_access_from', $lesson['post']->ID, $course_id );
+if ( true !== $bypass_course_limits_admin_users ) {
+	$lesson_class .= ( ! empty( $lesson['lesson_access_from'] ) || ! $has_access ? ' learndash-not-available' : '' );
+}
+
 $lesson_class .= ' ' . ( 'completed' === $lesson['status'] ? 'learndash-complete' : 'learndash-incomplete' );
 $lesson_class .= ( isset( $lesson['sample'] ) ? ' ' . $lesson['sample'] : '' );
 
+/**
+ * Filters navigation widget lesson item class
+ *
+ * @param string $lesson_class List of lesson item CSS class.
+ */
 $lesson_class = apply_filters( 'learndash-nav-widget-lesson-class', $lesson_class );
 
 if ( isset( $sections[ $lesson['post']->ID ] ) ) :
@@ -60,7 +74,7 @@ endif; ?>
 
 <div class="<?php echo esc_attr( $lesson_class ); ?>">
 	<div class="ld-lesson-item-preview">
-		<a class="ld-lesson-item-preview-heading ld-primary-color-hover" href="<?php echo esc_attr( learndash_get_step_permalink( $lesson['post']->ID, $course_id ) ); ?>">
+		<a class="ld-lesson-item-preview-heading ld-primary-color-hover" href="<?php echo esc_url( learndash_get_step_permalink( $lesson['post']->ID, $course_id ) ); ?>">
 
 			<?php
 			$lesson_progress = learndash_lesson_progress( $lesson['post'] );
@@ -91,13 +105,14 @@ endif; ?>
 		if ( $expandable ) :
 
 			/**
-			 * Filter to contol auto-expanding of lessons in Focus Mode sidebar.
-			 * @since 3.0
+			 * Filters the auto-expanding control of lessons in Focus Mode sidebar.
 			 *
-			 * @var string $expand_class Value will be 'ld-expanded' if current lesson or empty string.
-			 * @var integer $lesson_id Lesson Post ID. @since 3.1
-			 * @var integer $course_id Course Post ID. @since 3.1
-			 * @var integer $user_id User ID. @since 3.1
+			 * @since 3.0.0
+			 *
+			 * @param string $expand_class Value will be 'ld-expanded' if it is a current lesson or an empty string.
+			 * @param int    $lesson_id    Lesson Post ID. @since 3.1
+			 * @param int    $course_id    Course Post ID. @since 3.1
+			 * @param int    $user_id      User ID.        @since 3.1
 			 */
 			$expand_class  = apply_filters( 'learndash-nav-widget-expand-class', ( $is_current_lesson ? 'ld-expanded' : '' ), $lesson['post']->ID, $course_id, $user_id );
 			$content_count = learndash_get_lesson_content_count( $lesson, $course_id );
@@ -178,6 +193,7 @@ endif; ?>
 							$show_lesson_quizzes = ( absint( $course_pager_results[ $lesson['post']->ID ]['pager']['paged'] ) === absint( $course_pager_results[ $lesson['post']->ID ]['pager']['total_pages'] ) ? true : false );
 						endif;
 
+						/** This filter is documented in themes/ld30/includes/helpers.php */
 						$show_lesson_quizzes = apply_filters( 'learndash-show-lesson-quizzes', $show_lesson_quizzes, $lesson['post']->ID, $course_id, $user_id );
 
 						if ( $quizzes && ! empty( $quizzes ) && $show_lesson_quizzes ) :

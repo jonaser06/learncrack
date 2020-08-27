@@ -252,10 +252,15 @@ body.post-type-sfwd-lessons .column-taxonomy-ld_lesson_tag,
 body.post-type-sfwd-topic .column-categories,
 body.post-type-sfwd-topic .column-tags,
 body.post-type-sfwd-topic .column-taxonomy-ld_topic_category, 
-body.post-type-sfwd-topic .column-taxonomy-ld_topic_tag {
+body.post-type-sfwd-topic .column-taxonomy-ld_topic_tag,
+
+body.post-type-groups .column-categories,
+body.post-type-groups .column-tags,
+body.post-type-groups .column-taxonomy-ld_group_category, 
+body.post-type-groups .column-taxonomy-ld_group_tag,
+body.post-type-groups .column-groups_courses_users {
 	width: 10%;
 }
-
 
 /* CSS style for the post type editor showing the drip date. Replaces date picker */
 .sfwd .ld_date_selector select {

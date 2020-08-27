@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_PrerequisiteMapper extends WpProQuiz_Model_Mapper {
 	public function delete($prerequisiteQuizId) {
 		global $wpdb;

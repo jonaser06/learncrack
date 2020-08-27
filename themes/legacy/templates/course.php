@@ -55,18 +55,18 @@ global $course_pager_results;
 	<br />
 
 	<?php
-		/**
-		 * Filter to add custom content after the Course Status section of the Course template output.
-		 *
-		 * @since 2.3
-		 * See https://bitbucket.org/snippets/learndash/7oe9K for example use of this filter.
-		 */
+		/** This filter is documeted in themes/ld30/templates/course.php */
 		echo apply_filters( 'ld_after_course_status_template_container', '', learndash_course_status_idx( $course_status ), $course_id, $user_id );
 	?>
 
 	<?php if ( ! empty( $course_certficate_link ) ) : ?>
 		<div id="learndash_course_certificate" class="learndash_course_certificate">
-			<a href='<?php echo esc_attr( $course_certficate_link ); ?>' class="btn-blue" target="_blank"><?php echo apply_filters( 'ld_certificate_link_label', esc_html__( 'PRINT YOUR CERTIFICATE', 'learndash' ), $user_id, $post->ID ); ?></a>
+			<a href='<?php echo esc_url( $course_certficate_link ); ?>' class="btn-blue" target="_blank">
+			<?php
+			/** This filter is documented in includes/ld-certificates.php */
+			echo apply_filters( 'ld_certificate_link_label', esc_html__( 'PRINT YOUR CERTIFICATE', 'learndash' ), $user_id, $post->ID );
+			?>
+			</a>
 		</div>
 		<br />
 	<?php endif; ?>
@@ -77,18 +77,24 @@ global $course_pager_results;
 <?php if ( ! $has_access ) : ?>
 	<?php 
 	/**
-	 * Filter to add custom content before the Course Payment Button.
+	 * Fires before the Course Payment Button.
 	 *
 	 * @since 2.5.8
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-course-payment-buttons-before', $course_id, $user_id ); 
 	?>
 	<?php echo learndash_payment_buttons( $post ); ?>
 	<?php 
 	/**
-	 * Filter to add custom content after the Course Payment Button.
+	 * Fires after the course payment button.
 	 *
 	 * @since 2.5.8
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-course-payment-buttons-after', $course_id, $user_id ); 
 	?>
@@ -98,8 +104,8 @@ global $course_pager_results;
 	<div id="learndash_course_materials" class="learndash_course_materials">
 		<h4>
 		<?php
-			// translators: Course Materials Label.
-			printf( esc_html_x( '%s Materials', 'Course Materials Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
+			// translators: placeholder: Course.
+			printf( esc_html_x( '%s Materials', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
 		?>
 		</h4>
 		<p><?php echo $materials; ?></p>
@@ -120,8 +126,8 @@ global $course_pager_results;
 	<div id="learndash_course_content" class="learndash_course_content">
 		<h4 id="learndash_course_content_title">
 			<?php
-			// translators: Course Content Label.
-			printf( esc_html_x( '%s Content', 'Course Content Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
+			// translators: placeholder: Course.
+			printf( esc_html_x( '%s Content', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
 			?>
 		</h4>
 
@@ -136,7 +142,10 @@ global $course_pager_results;
 				<div class="expand_collapse">
 					<a href="#" onClick='jQuery("#learndash_post_<?php echo $course_id; ?> .learndash_topic_dots").slideDown(); return false;'><?php esc_html_e( 'Expand All', 'learndash' ); ?></a> | <a href="#" onClick='jQuery("#learndash_post_<?php echo esc_attr( $course_id ); ?> .learndash_topic_dots").slideUp(); return false;'><?php esc_html_e( 'Collapse All', 'learndash' ); ?></a>
 				</div>
-				<?php if ( apply_filters( 'learndash_course_steps_expand_all', false, $course_id, 'course_lessons_listing_main' ) ) { ?>
+				<?php
+				/** This filter is documented in themes/ld30/templates/course.php */
+				if ( apply_filters( 'learndash_course_steps_expand_all', false, $course_id, 'course_lessons_listing_main' ) ) {
+					?>
 					<script>
 						jQuery(document).ready(function(){
 							setTimeout(function(){
@@ -164,7 +173,7 @@ global $course_pager_results;
 							</div>
 
 							<h4>
-								<a class='<?php echo esc_attr( $lesson['status'] ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $lesson['post']->ID, $course_id ) ); ?>'><?php echo $lesson['post']->post_title; ?></a>
+								<a class="<?php echo esc_attr( $lesson['status'] ); ?>" href="<?php echo esc_url( learndash_get_step_permalink( $lesson['post']->ID, $course_id ) ); ?>"><?php echo apply_filters( 'the_title', $lesson['post']->post_title, $lesson['post']->ID ); ?></a>
 
 
 								<?php
@@ -212,8 +221,8 @@ global $course_pager_results;
 												<?php $completed_class = empty( $topic->completed ) ? 'topic-notcompleted' : 'topic-completed'; ?>												
 												<li class='<?php echo esc_attr( $odd_class ); ?>'>
 													<span class="topic_item">
-														<a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $topic->post_title ); ?>'>
-															<span><?php echo $topic->post_title; ?></span>
+														<a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_html( $topic->post_title ); ?>'>
+															<span><?php echo apply_filters( 'the_title', $topic->post_title, $topic->ID ); ?></span>
 														</a>
 													</span>
 												</li>
@@ -287,7 +296,7 @@ global $course_pager_results;
 								<div id='post-<?php echo esc_attr( $quiz['post']->ID ); ?>' class='<?php echo esc_attr( $quiz['sample'] ); ?>'>
 									<div class="list-count"><?php echo $quiz['sno']; ?></div>
 									<h4>
-										<a class='<?php echo esc_attr( $quiz['status'] ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>'><?php echo $quiz['post']->post_title; ?></a>
+										<a class='<?php echo esc_attr( $quiz['status'] ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>'><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></a>
 									</h4>
 								</div>						
 							<?php endforeach; ?>

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_GlobalSettings extends WpProQuiz_Model_Model {
 	
 	protected $_addRawShortcode = false;

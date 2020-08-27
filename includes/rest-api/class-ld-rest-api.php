@@ -72,7 +72,11 @@ if ( ! class_exists( 'LearnDash_REST_API' ) ) {
 		public function rest_api_init() {
 
 			if ( self::enabled() ) {
-
+				/**
+				 * Filters the list of REST API controllers.
+				 *
+				 * @param array $controllers An array of REST API controllers data.
+				 */
 				$this->controllers = apply_filters( 'learndash-rest-api-controllers', $this->controllers );
 				if ( ! empty( $this->controllers ) ) {
 					include_once dirname( __FILE__ ) . '/v1/class-ld-rest-posts-controller.php';
@@ -126,6 +130,12 @@ if ( ! class_exists( 'LearnDash_REST_API' ) ) {
 				}
 			}
 
+			/**
+			 * Filters whether the LearnDash REST API is enabled or not.
+			 *
+			 * @param boolean $enabled   Whether the REST API is enabled or not.
+			 * @param string  $post_type The slug of the post type to be checked.
+			 */
 			return apply_filters( 'learndash_rest_api_enabled', $return, $post_type );
 		}
 
@@ -136,6 +146,12 @@ if ( ! class_exists( 'LearnDash_REST_API' ) ) {
 				$return = true;
 			}
 
+			/**
+			 * Filters whether the Gutenberg editor is enabled for the plugin or not.
+			 *
+			 * @param boolean $enabled   Whether the Gutenberg editor is enabled or not.
+			 * @param string  $post_type The slug of the post type to be checked.
+			 */
 			return apply_filters( 'learndash_gutenberg_enabled', $return, $post_type );
 		}
 

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! empty( $previous_item ) && $previous_item instanceof WP_Post ) {
 
 	$alert = array(
@@ -47,20 +51,40 @@ if ( ! empty( $previous_item ) && $previous_item instanceof WP_Post ) {
 
 }
 
+/**
+ * Filters the progress alert arguments.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context of progress,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param array $alert An array of Progress alert arguments.
+ */
 $alert = apply_filters( 'learndash_' . $context . '_progress_alert', $alert, get_the_ID(), $course_id );
 
 /**
- * Action to add custom content before the lesson progression alert
+ * Fires before the lesson progression alert.
  *
- * @since 3.0
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @since 3.0.0
+ *
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
  */
 do_action( 'learndash-' . $context . '-progession-alert-before', get_the_ID(), $course_id );
 
 learndash_get_template_part( 'modules/alert.php', $alert, true );
 
 /**
- * Action to add custom content after the lesson progression alert
+ * Fires after the lesson progression alert.
  *
- * @since 3.0
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @since 3.0.0
+ *
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
  */
 do_action( 'learndash-' . $context . '-progession-alert-after', get_the_ID(), $course_id );

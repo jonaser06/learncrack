@@ -50,7 +50,7 @@ if ( ( isset( $quiz_id ) ) && ( ! empty( $quiz_id ) ) ) {
 			$question_edit_link = get_edit_post_link( $q_post_id );
 			$question_edit_link = add_query_arg('quiz_id', $quiz_id, $question_edit_link );
 
-			?><li class="learndash-quiz-question-item ld-question-overview-widget-item <?php echo $selected_class; ?>"></span> <a href="<?php echo $question_edit_link; ?>"><?php echo get_the_title( $q_post_id ); ?></a></li><?php
+			?><li class="learndash-quiz-question-item ld-question-overview-widget-item <?php echo $selected_class; ?>"></span> <a href="<?php echo esc_url( $question_edit_link ); ?>"><?php echo get_the_title( $q_post_id ); ?></a></li><?php
 			$question_label_idx += 1;
 		}
 		?></ul><?php
@@ -65,7 +65,7 @@ if ( ( isset( $quiz_id ) ) && ( ! empty( $quiz_id ) ) ) {
 		);
 	}
 	?>
-	<a href="<?php echo add_query_arg( 'currentTab', 'learndash_quiz_builder', get_edit_post_link( $quiz_id ) ); ?>" class="ld-question-overview-widget-add"><?php echo sprintf(
+	<a href="<?php echo esc_url( add_query_arg( 'currentTab', 'learndash_quiz_builder', get_edit_post_link( $quiz_id ) ) ); ?>" class="ld-question-overview-widget-add"><?php echo sprintf(
 		// translators: placeholder: Questions.
 		esc_html_x( 'Manage %s in builder', 'placeholder: Questions', 'learndash' ),
 		learndash_get_custom_label( 'questions' )

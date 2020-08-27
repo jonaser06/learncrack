@@ -96,9 +96,11 @@ if ( ! class_exists( 'LDLMS_Post_Types' ) ) {
 				$init_called = true;
 
 				/**
-				 * Fitler the list of custom database tables.
+				 * Filters the list of custom post types.
 				 *
 				 * @since 2.6.0
+				 * 
+				 * @param array $post_types An array of Post type list.
 				 */
 				self::$post_types = apply_filters( 'learndash_custom_post_types', self::$post_types );
 			}

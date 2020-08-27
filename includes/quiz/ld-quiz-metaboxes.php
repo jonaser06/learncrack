@@ -10,10 +10,14 @@
 
 namespace LearnDash\Quiz\Metaboxes;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Add the metaboxes to Quiz post type.
+ * Adds the metaboxes for quiz post type.
  *
- * @return void
+ * Fires on `add_meta_boxes_sfwd-quiz` and `learndash_add_meta_boxes` hook.
  */
 function add_meta_boxes() {
 
@@ -50,9 +54,7 @@ add_action( 'add_meta_boxes_sfwd-quiz', 'LearnDash\Quiz\Metaboxes\add_meta_boxes
 add_action( 'learndash_add_meta_boxes', 'LearnDash\Quiz\Metaboxes\add_meta_boxes' );
 
 /**
- * Callback to render questions metabox.
- *
- * @return void
+ * Prints the output for quiz navigation meta box.
  */
 function meta_box_questions_callback() {
 	?>

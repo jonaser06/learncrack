@@ -37,8 +37,10 @@ const {
 registerBlockType(
     'learndash/ld-quiz-complete',
     {
+        // translators: placeholder: Quiz.
         title: sprintf(_x('LearnDash %s Complete', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz')),
-        description: sprintf(_x('This block shows the content if the user is has completed the %s.', 'placeholders: quiz', 'learndash'), ldlms_get_custom_label('quiz')),
+        // translators: placeholder: Quiz.
+        description: sprintf(_x('This block shows the content if the user is has completed the %s.', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz')),
         icon: 'star-filled',
         category: 'learndash-blocks',
         supports: {
@@ -67,14 +69,18 @@ registerBlockType(
                         title={__('Settings', 'learndash')}
                     >
                         <TextControl
-                            label={sprintf(_x('%s ID', 'Quiz ID', 'learndash'), ldlms_get_custom_label('quiz'))}
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: quiz, quiz', 'learndash'), ldlms_get_custom_label('quiz'), ldlms_get_custom_label('quiz'))}
+                            // translators: placeholder: Quiz.
+                            label={sprintf(_x('%s ID', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz'))}
+                            // translators: placeholders: Quiz, Quiz.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Quiz, Quiz', 'learndash'), ldlms_get_custom_label('quiz'), ldlms_get_custom_label('quiz'))}
                             value={quiz_id || ''}
                             onChange={quiz_id => setAttributes({ quiz_id })}
                         />
                         <TextControl
-                            label={sprintf(_x('%s ID', 'Course ID', 'learndash'), ldlms_get_custom_label('course') )}
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course' ) ) }
+                            // translators: placeholder: Course.
+                            label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') )}
+                            // translators: placeholders: Course, Course.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course' ) ) }
                             value={course_id || ''}
                             onChange={course_id => setAttributes({ course_id })}
                         />
@@ -97,6 +103,7 @@ registerBlockType(
                     preview_quiz_id = ldlms_get_integer_value(preview_quiz_id);
                 }
                 if (preview_quiz_id == 0) {
+                    // translators: placeholders: Quiz, Quiz.
                     ld_block_error_message = sprintf(_x('%1$s ID is required when not used within a %2$s.', 'placeholders: Quiz, Quiz', 'learndash'), ldlms_get_custom_label('quiz'), ldlms_get_custom_label('quiz'));
                 }
             }

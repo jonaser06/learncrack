@@ -10,6 +10,11 @@
  *
  * @package LearnDash\Lesson
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 <div class="ld-table-list-item">
@@ -17,9 +22,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 		<?php
 		/**
-		 * Action to add custom content before assignment list
+		 * Fires before the assignment list.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param WP_Post $assignment WP_Post object for assignment.
+		 * @param int     $post_id    Post ID.
+		 * @param int     $course_id  Course ID.
+		 * @param int     $user_id    User ID.
 		 */
 		do_action( 'learndash-assignment-row-before', $assignment, get_the_ID(), $course_id, $user_id );
 		?>
@@ -28,9 +38,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 			<?php
 			/**
-			 * Action to add custom content before assignment delete link
+			 * Fires before the assignment delete link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-delete-before', $assignment, get_the_ID(), $course_id, $user_id );
 
@@ -49,14 +64,19 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 			endif;
 
 			/**
-			 * Action to add custom content before assignment title and link
+			 * Fires before the assignment title and link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-title-before', $assignment, get_the_ID(), $course_id, $user_id );
 			?>
 
-			<a href='<?php echo esc_attr( get_post_meta( $assignment->ID, 'file_link', true ) ); ?>' target="_blank">
+			<a href='<?php echo esc_url( get_post_meta( $assignment->ID, 'file_link', true ) ); ?>' target="_blank">
 				<span class="ld-item-icon">
 					<span class="ld-icon ld-icon-download" aria-label="<?php esc_html_e( 'Download Assignment', 'learndash' ); ?>"></span>
 				</span>
@@ -70,9 +90,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 			<?php
 			/**
-			 * Action to add custom content after assignment title and link
+			 * Fires after the assignment title and link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-title-after', $assignment, get_the_ID(), $course_id, $user_id );
 			?>
@@ -86,9 +111,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 			$row_columns = array();
 
 			/**
-			 * Action to add custom content before assignment post link
+			 * Fires before the assignment post link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-columns-before', $assignment, get_the_ID(), $course_id, $user_id );
 
@@ -97,15 +127,21 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 			<?php
 			/**
-			 * Action to add custom content before assignment comment count & link
+			 * Fires before assignment comment count & link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-comments-before', $assignment, get_the_ID(), $course_id, $user_id );
 
+			/** This filter is documented in https://developer.wordpress.org/reference/hooks/comments_open/ */
 			if ( post_type_supports( 'sfwd-assignment', 'comments' ) && apply_filters( 'comments_open', $assignment->comment_status, $assignment->ID ) ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP Core filter
 				?>
-				<a href='<?php echo esc_attr( get_comments_link( $assignment->ID ) ); ?>' data-ld-tooltip="
+				<a href='<?php echo esc_url( get_comments_link( $assignment->ID ) ); ?>' data-ld-tooltip="
 					<?php
 					echo sprintf(
 						// translators: placeholder: comment count.
@@ -124,9 +160,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 			ob_flush();
 
 			/**
-			 * Action to add custom content after assignment comment count & link
+			 * Fires after the assignment comment count & link.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param WP_Post $assignment WP_Post object for assignment.
+			 * @param int     $post_id    Post ID.
+			 * @param int     $course_id  Course ID.
+			 * @param int     $user_id    User ID.
 			 */
 			do_action( 'learndash-assignment-row-comments-after', $assignment, get_the_ID(), $course_id, $user_id );
 
@@ -170,23 +211,68 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 			endif;
 
-			// Apply a fitler so devs can add more info here later
+			/**
+			 * Filters assignment list columns content.
+			 *
+			 * @param array $row_columns Array of assignment row columns content
+			 */
 			$row_columns = apply_filters( 'learndash-assignment-list-columns-content', $row_columns );
 			if ( ! empty( $row_columns ) ) :
 				foreach ( $row_columns as $slug => $content ) :
 
+					/**
+					 * Fires before an assignment row.
+					 *
+					 * The dynamic part of the hook `$slug` refers to the slug of the column.
+					 *
+					 * @param WP_Post $assignment WP_Post object for assignment.
+					 * @param int     $post_id    Post ID.
+					 * @param int     $course_id  Course ID.
+					 * @param int     $user_id    User ID.
+					 */
 					do_action( 'learndash-assignment-row-' . $slug . '-before', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 				<div class="<?php echo esc_attr( 'ld-table-list-column ld-' . $slug . '-column' ); ?>">
 					<?php
+					/**
+					 * Fires before an assignment row content.
+					 *
+					 * The dynamic part of the hook `$slug` refers to the slug of the column.
+					 *
+					 * @param WP_Post $assignment WP_Post object for assignment.
+					 * @param int     $post_id    Post ID.
+					 * @param int     $course_id  Course ID.
+					 * @param int     $user_id    User ID.
+					 */
 					do_action( 'learndash-assignment-row-' . $slug . '-inside-before', $assignment, get_the_ID(), $course_id, $user_id );
 
 					echo wp_kses_post( $content );
 
+					/**
+					 * Fires after an assignment row content.
+					 *
+					 * The dynamic part of the hook `$slug` refers to the slug of the column.
+					 *
+					 * @param WP_Post $assignment WP_Post object for assignment.
+					 * @param int     $post_id    Post ID.
+					 * @param int     $course_id  Course ID.
+					 * @param int     $user_id    User ID.
+					 */
 					do_action( 'learndash-assignment-row-' . $slug . '-inside-after', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 				</div>
 					<?php
+
+					/**
+					 * Fires after an assignment row.
+					 *
+					 * The dynamic part of the hook `$slug` refers to the slug of the column.
+					 *
+					 * @param WP_Post $assignment WP_Post object for assignment.
+					 * @param int     $post_id    Post ID.
+					 * @param int     $course_id  Course ID.
+					 * @param int     $user_id    User ID.
+					 */
 					do_action( 'learndash-assignment-row-' . $slug . '-after', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 					<?php
@@ -198,9 +284,14 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID ); ?>
 
 	<?php
 	/**
-	 * Action to add custom content after all the assignment row content
+	 * Fires after all the assignment row content.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param WP_Post $assignment WP_Post object for assignment.
+	 * @param int     $post_id    Post ID.
+	 * @param int     $course_id  Course ID.
+	 * @param int     $user_id    User ID.
 	 */
 	do_action( 'learndash-assignment-row-after', $assignment, get_the_ID(), $course_id, $user_id );
 	?>

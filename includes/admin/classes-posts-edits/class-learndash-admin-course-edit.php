@@ -6,6 +6,10 @@
  * @subpackage Admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learndash_Admin_Course_Edit' ) ) ) {
 	/**
 	 * Class for LearnDash Admin Course Edit.
@@ -55,8 +59,14 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/settings/settings-metaboxes/class-ld-settings-metabox-course-display-content.php';
 				require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php';
 				require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/settings/settings-metaboxes/class-ld-settings-metabox-course-navigation-settings.php';
+				require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/settings/settings-metaboxes/class-ld-settings-metabox-course-groups.php';
 
 				if ( false === learndash_use_legacy_course_access_list() ) {
+					/**
+					 * Filters Whether to show course users metabox or not.
+					 *
+					 * @param boolean $show_metabox Whether to show metabox or not.
+					 */
 					if ( true === apply_filters( 'learndash_show_metabox_course_users', true ) ) {
 						require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/settings/settings-metaboxes/class-ld-settings-metabox-course-users.php';
 					}
@@ -66,12 +76,19 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 				if ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'enabled' ) == 'yes' ) {
 					$this->use_course_builder = true;
-
+					/**
+					 * Filters Whether to show course builder metabox or not.
+					 *
+					 * @since 2.5.0
+					 *
+					 * @param boolean $show_course_builder Whether to show course builder or not.
+					 */
 					if ( apply_filters( 'learndash_show_course_builder', $this->use_course_builder ) === true ) {
 						$this->course_builder = Learndash_Admin_Metabox_Course_Builder::add_instance( 'Learndash_Admin_Metabox_Course_Builder' );
 						$this->course_builder->builder_on_load();
 					}
 				}
+				/** This filter is documented in includes/admin/class-learndash-admin-posts-edit.php */
 				$this->_metaboxes = apply_filters( 'learndash_post_settings_metaboxes_init_' . $this->post_type, $this->_metaboxes );
 				add_filter( 'learndash_header_data', 'LearnDash\Admin\CourseBuilderHelpers\get_course_data', 100 );
 			}
@@ -88,13 +105,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 			if ( $this->post_type_check( $post_type ) ) {
 
-				//learndash_transition_course_shared_steps( $post->ID );
-
-				/**
-				 * Add Course Builder metabox.
-				 *
-				 * @since 2.5
-				 */
+				/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-course-edit.php */
 				if ( true === apply_filters( 'learndash_show_course_builder', $this->use_course_builder ) ) {
 					add_meta_box(
 						'learndash_course_builder',
@@ -111,62 +122,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				}
 
 				parent::add_metaboxes( $post_type );
-				if ( current_user_can( 'edit_groups' ) ) {
-					if ( true === apply_filters( 'learndash_show_metabox_course_groups', true ) ) {
-						add_meta_box(
-							'learndash_course_groups',
-							sprintf(
-								// translators: placeholder: Course.
-								esc_html_x( 'LearnDash %s Groups', 'LearnDash Course Groups', 'learndash' ),
-								LearnDash_Custom_Label::get_label( 'course' )
-							),
-							array( $this, 'course_groups_page_box' ),
-							$this->post_type,
-							'normal',
-							'high'
-						);
-					}
-				}
 			}
-		}
-
-		/**
-		 * Prints content for Groups meta box for admin
-		 *
-		 * @since 2.1.2
-		 *
-		 * @param object $post WP_Post.
-		 */
-		public function course_groups_page_box( $post ) {
-			$this->course_id = $post->ID;
-
-			$group_post_type = learndash_get_post_type_slug( 'group' );
-			?>
-			<div id="learndash_course_groups_page_box" class="learndash_course_groups_page_box">
-			<?php
-			if ( 0 !== learndash_get_total_post_count( $group_post_type ) ) {
-
-				// Use nonce for verification.
-				wp_nonce_field( 'learndash_course_groups_nonce_' . $this->course_id, 'learndash_course_groups_nonce' );
-
-				$ld_binary_selector_course_groups = new Learndash_Binary_Selector_Course_Groups(
-					array(
-						'html_title'            => '',
-						'course_id'             => $this->course_id,
-						'selected_ids'          => learndash_get_course_groups( $this->course_id, true ),
-						'search_posts_per_page' => 100,
-					)
-				);
-				$ld_binary_selector_course_groups->show();
-			} else {
-				// If there's an onboarding page, we render it.
-				if ( file_exists( LEARNDASH_LMS_PLUGIN_DIR . "/includes/admin/onboarding-templates/onboarding-{$group_post_type}.php" ) ) {
-					include_once LEARNDASH_LMS_PLUGIN_DIR . "/includes/admin/onboarding-templates/onboarding-{$group_post_type}.php";
-				}
-			}
-			?>
-			</div>
-			<?php
 		}
 
 		/**
@@ -185,28 +141,6 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				return false;
 			}
 
-			/**
-			 * Verify this came from the our screen and with proper authorization,
-			 * because save_post can be triggered at other times.
-			 */
-			if ( ( isset( $_POST['learndash_course_groups_nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash_course_groups_nonce'], 'learndash_course_groups_nonce_' . $post_id ) ) ) {
-				if ( ( isset( $_POST['learndash_course_groups'] ) ) && ( isset( $_POST['learndash_course_groups'][ $post_id ] ) ) && ( ! empty( $_POST['learndash_course_groups'][ $post_id ] ) ) ) {
-					$course_groups = (array) json_decode( stripslashes( $_POST['learndash_course_groups'][ $post_id ] ) );
-					learndash_set_course_groups( $post_id, $course_groups );
-				}
-			}
-
-			/*
-			if ( ( isset( $_POST['learndash_course_users_nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash_course_users_nonce'], 'learndash_course_users_nonce_' . $post_id ) ) ) {
-				if ( ( isset( $_POST['learndash_course_users'] ) ) && ( isset( $_POST['learndash_course_users'][ $post_id ] ) ) && ( ! empty( $_POST['learndash_course_users'][ $post_id ] ) ) ) {
-					$course_users = (array) json_decode( stripslashes( $_POST['learndash_course_users'][ $post_id ] ) );
-					learndash_set_users_for_course( $post_id, $course_users );
-				}
-			}
-			*/
-			
-			//error_log('_metaboxes<pre>'. print_r($this->_metaboxes, true) .'</pre>');
-
 			if ( ! empty( $this->_metaboxes ) ) {
 				foreach ( $this->_metaboxes as $_metaboxes_instance ) {
 					$settings_fields = array();
@@ -215,10 +149,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				}
 			}
 
-			/**
-			 * Save Course Builder
-			 * Within CB will be security checks.
-			 */
+			/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-course-edit.php */
 			if ( apply_filters( 'learndash_show_course_builder', $this->use_course_builder ) === true ) {
 				$this->course_builder->save_course_builder( $post_id, $post, $update );
 			}

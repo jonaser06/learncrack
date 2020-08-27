@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_QuizMapper extends WpProQuiz_Model_Mapper
 {
 	protected $_table; 
@@ -26,9 +30,12 @@ class WpProQuiz_Model_QuizMapper extends WpProQuiz_Model_Mapper
 		$sql_str = $this->_wpdb->prepare("SELECT * FROM {$this->_table} WHERE id = %d", $id );
 		$results = $this->_wpdb->get_row( $sql_str, ARRAY_A );
 		
-		if($results['result_grade_enabled'])
-			$results['result_text'] = unserialize($results['result_text']);
-		
+		if ( ( isset( $results['result_grade_enabled'] ) ) && ( $results['result_grade_enabled'] ) ) {
+			if ( ( isset( $results['result_text'] ) ) && ( ! empty( $results['result_text'] ) ) ) {
+				$results['result_text'] = maybe_unserialize( $results['result_text'] );
+			}
+		}
+
 		return new WpProQuiz_Model_Quiz($results);
 	}
 	

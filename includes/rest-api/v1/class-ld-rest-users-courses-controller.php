@@ -86,11 +86,42 @@ if ( ( !class_exists( 'LD_REST_Users_Courses_Controller_V1' ) ) && ( class_exist
 							),
 						),
 					),
-					
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 		}
-		
+
+		/**
+		 * Gets the user courses schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = array(
+				'$schema'    => 'http://json-schema.org/draft-04/schema#',
+				'title'      => 'user-course',
+				'type'       => 'object',
+				'properties' => array(
+					'id'         => array(
+						'description' => __( 'Unique identifier for the object.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'course_ids' => array(
+						'description' => __( 'The Course IDs.', 'learndash' ),
+						'type'        => 'array',
+						'items'       => array(
+							'type' => 'integer',
+						),
+						'context'     => array( 'view', 'edit' ),
+					),
+				),
+			);
+
+			return $schema;
+		}
+
 		function get_user_courses_permissions_check( $request ) {
 			if ( learndash_is_admin_user( ) ) {
 				return true;
@@ -241,7 +272,7 @@ if ( ( !class_exists( 'LD_REST_Users_Courses_Controller_V1' ) ) && ( class_exist
 				unset( $args['fields'] );
 
 			/**
-			 * Filters the query arguments for a request.
+			 * Filters the query arguments for user's courses REST request.
 			 *
 			 * Enables adding extra arguments or setting defaults for a post collection request.
 			 *
@@ -249,8 +280,8 @@ if ( ( !class_exists( 'LD_REST_Users_Courses_Controller_V1' ) ) && ( class_exist
 			 *
 			 * @link https://developer.wordpress.org/reference/classes/wp_query/
 			 *
-			 * @param array           $args    Key value array of query var to query value.
-			 * @param WP_REST_Request $request The request used.
+			 * @param array           $args    An array of query arguments for getting user courses.
+			 * @param WP_REST_Request $request The REST request object.
 			 */
 			$args       = apply_filters( "learndash_rest_user_courses_query", $args, $request );
 			$query_args = $this->prepare_items_query( $args, $request );

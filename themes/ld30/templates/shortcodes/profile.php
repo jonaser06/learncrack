@@ -15,6 +15,9 @@
  * @package LearnDash\User
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 global $learndash_assets_loaded;
 $learndash_shortcode_data_json = htmlspecialchars( wp_json_encode( $shortcode_atts ) );
@@ -77,6 +80,11 @@ endif; ?>
 					<?php endif; ?>
 
 					<?php
+					/**
+					 * Filters whether to show the user profile link.
+					 *
+					 * @param boolean $show_profile Whether to show profile link.
+					 */
 					if ( current_user_can( 'read' ) && isset( $shortcode_atts['profile_link'] ) && true === (bool) $shortcode_atts['profile_link'] && apply_filters( 'learndash_show_profile_link', $shortcode_atts['profile_link'] ) ) :
 						?>
 						<a class="ld-profile-edit-link" href='<?php echo esc_url( get_edit_user_link() ); ?>'><?php esc_html_e( 'Edit profile', 'learndash' ); ?></a>
@@ -113,6 +121,12 @@ endif; ?>
 						);
 					}
 
+					/**
+					 * Filters LearnDash user profile statistics.
+					 *
+					 * @param array $ld_profile_stats An array of profile stats data.
+					 * @param int   $user_id         User ID.
+					 */
 					$learndash_profile_stats = apply_filters( 'learndash_profile_stats', $learndash_profile_stats, $user_id );
 					if ( ( ! empty( $learndash_profile_stats ) ) && ( is_array( $learndash_profile_stats ) ) ) {
 						foreach ( $learndash_profile_stats as $learndash_profile_stat ) {
@@ -222,6 +236,7 @@ endif; ?>
 
 </div> <!--/.ld-course-wrapper-->
 <?php
+/** This filter is documented in themes/ld30/templates/course.php */
 if ( apply_filters( 'learndash_course_steps_expand_all', $shortcode_atts['expand_all'], 0, 'profile_shortcode' ) ) :
 	?>
 	<script>

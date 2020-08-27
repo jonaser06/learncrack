@@ -110,13 +110,13 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 									$edit_url = add_query_arg( 'course_id', $course_id, $edit_url );
 								}
 								?>
-								<a href='<?php echo $edit_url; ?>'><?php //echo '('. $course_lesson['post']->ID .') '; ?><?php echo $course_lesson['post']->post_title; ?></a> 
+								<a href='<?php echo esc_url( $edit_url ); ?>'><?php echo apply_filters( 'the_title', $course_lesson['post']->post_title, $course_lesson['post']->ID ); ?></a> 
 							</div> 
 
 							<?php
 							if ( ( ! empty( $lesson_topics_list ) ) || ( ! empty( $lesson_quizzes_list ) ) ) {
 								?>
-								<div id='learndash_topic_dots-<?php echo $course_id; ?>-<?php echo $course_lesson['post']->ID; ?>' class="flip learndash_topic_widget_list"  style='<?php echo ( strpos( $list_arrow_class, 'collapse' ) !== false ) ? 'display:none' : ''; ?>'>
+								<div id='learndash_topic_dots-<?php echo absint( $course_id ); ?>-<?php echo absint( $course_lesson['post']->ID ); ?>' class="flip learndash_topic_widget_list"  style='<?php echo ( strpos( $list_arrow_class, 'collapse' ) !== false ) ? 'display:none' : ''; ?>'>
 									<ul class="learndash-topic-list">
 									<?php
 
@@ -164,20 +164,14 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 															$edit_url = add_query_arg( 'course_id', $course_id, $edit_url );
 														}
 														?>
-															
-														<a class='<?php echo $completed_class; ?>' href='<?php echo $edit_url; ?>' title='<?php echo $topic->post_title; ?>'><span><?php //echo '('. $topic->ID .') '; ?><?php echo $topic->post_title; ?></span></a>														
-														</span>
-											
+														<a class='<?php echo $completed_class; ?>' href='<?php echo esc_url( $edit_url ); ?>' title='<?php echo esc_html( $topic->post_title ); ?>'><span><?php echo apply_filters( 'the_title', $topic->post_title, $topic->ID ); ?></span></a>	</span>
 														<?php
-														//$topic_quiz_list = learndash_get_lesson_quiz_list( $topic->ID, $user_id, $course_id );
 														if ( ! empty( $topic_quiz_list ) ) {
 															?>
-															<ul id="learndash-quiz-list-<?php echo $course_id; ?>-<?php echo $topic->ID; ?>" class="learndash-quiz-list">
+															<ul id="learndash-quiz-list-<?php echo absint( $course_id ); ?>-<?php echo absint( $topic->ID ); ?>" class="learndash-quiz-list">
 																<?php foreach ( $topic_quiz_list as $quiz ) { ?>
 																		<li class="quiz-item">
 																			<?php
-																				//if ( ( ( $pagenow == 'profile.php' ) || ( $pagenow == 'user-edit.php' ) ) && ( learndash_is_admin_user( ) ) ) {
-																				//if ( ( learndash_is_admin_user( ) ) || ( learndash_is_group_leader_user() ) ) {
 																			if ( learndash_show_user_course_complete( $user_id ) ) {
 
 																				$user_quiz_progress              = array();
@@ -208,7 +202,7 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 																			}
 																			?>
 																
-																			<a href='<?php echo $edit_url; ?>' title='<?php echo $quiz['post']->post_title; ?>'><span><?php //echo '('. $quiz['post']->ID .') ' ?><?php echo $quiz['post']->post_title; ?></span></a>
+																			<a href='<?php echo esc_url( $edit_url ); ?>' title='<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>'><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a>
 																	
 																		</li>
 																	<?php } ?>
@@ -256,7 +250,7 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 													$edit_url = add_query_arg( 'course_id', $course_id, $edit_url );
 												}
 													?>
-													<a href='<?php echo $edit_url; ?>' title='<?php echo $quiz['post']->post_title; ?>'><span><?php //echo '('. $quiz['post']->ID .') '; ?><?php echo $quiz['post']->post_title; ?></span></a>
+													<a href="<?php echo esc_url( $edit_url ); ?>" title="<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>"><span><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></span></a>
 													</li>
 													<?php
 										}
@@ -328,8 +322,7 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 											<?php
 									}
 										?>
-										<a href='<?php echo add_query_arg( 'course_id', $course_id, get_edit_post_link( $quiz['post']->ID ) ); ?>' title='<?php echo $quiz['post']->post_title; ?>'><?php //echo '('. $quiz['post']->ID .') '; ?><?php echo $quiz['post']->post_title; ?></a>
-					
+										<a href="<?php echo esc_url( add_query_arg( 'course_id', $course_id, get_edit_post_link( $quiz['post']->ID ) ) ); ?>" title="<?php echo esc_html( apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ) ); ?>"><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></a>
 									</div>
 								</div>
 							</div>
@@ -379,8 +372,8 @@ if ( ( isset( $course_id ) ) && ( ! empty( $course_id ) ) ) {
 		?>
 		<?php if ( ( $widget['current_step_id'] != 0 ) && ( $widget['current_step_id'] != $course->ID ) ) { ?> 
 			<p class="widget_course_return">
-				<?php esc_html_e( 'Return to', 'learndash' ); ?> <a href='<?php echo get_edit_post_link( $course_id ); ?>'>
-					<?php echo $course->post_title; ?>
+				<?php esc_html_e( 'Return to', 'learndash' ); ?> <a href='<?php echo esc_url( get_edit_post_link( $course_id ) ); ?>'>
+					<?php echo apply_filters( 'the_title', $course->post_title, $course->ID ); ?>
 				</a>
 			</p>
 

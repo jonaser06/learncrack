@@ -69,7 +69,6 @@ if ( ( class_exists( 'LearnDash_Gutenberg_Block' ) ) && ( ! class_exists( 'Learn
 			}
 
 			if ( is_user_logged_in() ) {
-				error_log('attributes<pre>'. print_r($attributes, true) .'</pre>');
 
 				if ( ( isset( $attributes['example_show'] ) ) && ( ! empty( $attributes['example_show'] ) ) ) {
 					$attributes['preview_course_id'] = $this->get_example_post_id( learndash_get_post_type_slug( 'course' ) );

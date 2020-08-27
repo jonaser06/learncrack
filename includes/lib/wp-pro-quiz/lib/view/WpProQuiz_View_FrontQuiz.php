@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
@@ -251,14 +254,16 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 						array(
 							'quiz_post_id'	=>	$this->quiz->getID(),
 							'context' 		=> 	'quiz_quiz_summary_button_label',
-							'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'Quiz Summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+							// translators: placeholder: Quiz.
+							'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 						)
 					) : SFWD_LMS::get_template(
 						'learndash_quiz_messages',
 						array(
 							'quiz_post_id'	=>	$this->quiz->getID(),
 							'context' 		=> 	'quiz_finish_button_label',
-							'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+							// translators: placeholder: Quiz.
+							'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 						)
 					)
 				 ) . ",
@@ -341,10 +346,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 			$quiz_nonce = wp_create_nonce( 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $this->quiz->getId() .'-'. '0' );
 		}
 
-		// Original
-		// lbn: " . json_encode( ( $this->quiz->isShowReviewQuestion() && ! $this->quiz->isQuizSummaryHide() ) ? sprintf( esc_html_x( '%s-summary', 'Quiz-summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ) : sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ) ) . "
-
-
 		echo "<script type='text/javascript'>
 		jQuery(document).ready(function($) {
 			$('#wpProQuiz_" . $this->quiz->getId() . "').wpProQuizFront({
@@ -386,14 +387,16 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 						array(
 							'quiz_post_id'	=>	$this->quiz->getID(),
 							'context' 		=> 	'quiz_quiz_summary_button_label',
-							'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'Quiz Summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+							// translators: placeholder: Quiz.
+							'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 						)
 					) : SFWD_LMS::get_template(
 						'learndash_quiz_messages',
 						array(
 							'quiz_post_id'	=>	$this->quiz->getID(),
 							'context' 		=> 	'quiz_finish_button_label',
-							'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+							// translators: placeholder: Quiz.
+							'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 						)
 					)
 				) . "
@@ -493,14 +496,14 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 	private function showAddToplist() {
 		?>
 		<div class="wpProQuiz_addToplist" style="display: none;">
-			<?php /* ?><span style="font-weight: bold;"><?php esc_html_e( 'Your result has been entered into leaderboard', 'learndash' ); ?></span><?php */ ?>
 			<?php
 				echo SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_toplist_results_message',
-						'message' 		=> 	'<span style="font-weight: bold;">'. esc_html__( 'Would you like to submit your quiz result to the leaderboard?', 'learndash' ) .'</span>'
+						// translators: placeholder: quiz.
+						'message' 		=> 	'<span style="font-weight: bold;">'. sprintf( esc_html_x( 'Would you like to submit your %s result to the leaderboard?', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ) .'</span>'
 					)
 				);
 			?>
@@ -597,6 +600,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 	}
 
 	private function fetchAssessment( $answerText, $quizId, $questionId ) {
+
+		/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 		$answerText = apply_filters( 'learndash_quiz_question_answer_preprocess', $answerText, 'assessment' );
 
 		preg_match_all( '#\{(.*?)\}#im', $answerText, $matches );
@@ -752,18 +757,14 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 	private function showLockBox() {
 		?>
 		<div style="display: none;" class="wpProQuiz_lock">
-			<?php /* ?>
-			<p>
-				<?php echo sprintf( esc_html_x( 'You have already completed the %s before. Hence you can not start it again.', 'You have already completed the quiz before. Hence you can not start it again.', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
-			</p>
-			<?php */ ?>
 			<?php
 				echo SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_locked_message',
-						'message' 		=> 	'<p>'. sprintf( esc_html_x( 'You have already completed the %s before. Hence you can not start it again.', 'You have already completed the quiz before. Hence you can not start it again.', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ) .'</p>'
+						// translators: placeholder: quiz.
+						'message' 		=> 	'<p>'. sprintf( esc_html_x( 'You have already completed the %s before. Hence you can not start it again.', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ) .'</p>'
 					)
 				);
 			?>
@@ -774,18 +775,14 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 	private function showStartOnlyRegisteredUserBox() {
 		?>
 		<div style="display: none;" class="wpProQuiz_startOnlyRegisteredUser">
-			<?php /* ?>
-			<p>
-				<?php echo sprintf( esc_html_x( 'You must sign in or sign up to start the %s.', 'You must sign in or sign up to start the quiz.', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
-			</p>
-			<?php */ ?>
 			<?php
 				echo SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_only_registered_user_message',
-						'message' 		=> 	'<p>'. sprintf( esc_html_x( 'You must sign in or sign up to start the %s.', 'You must sign in or sign up to start the quiz.', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ) .'</p>'
+						// translators: placeholder: quiz.
+						'message' 		=> 	'<p>'. sprintf( esc_html_x( 'You must sign in or sign up to start the %s.', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) ) .'</p>'
 					)
 				);
 			?>
@@ -796,12 +793,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 	private function showPrerequisiteBox() {
 		?>
 		<div style="display: none;" class="wpProQuiz_prerequisite">
-			<?php /* ?>
-			<p>
-				<?php echo sprintf( esc_html_x( "You have to pass the previous Module's %s in order to start this %s", "You have to pass the previous Module's Quiz in order to start this Quiz", 'learndash' ), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
-				<span></span>
-			</p>
-			<?php */ ?>
 			<?php
 				echo SFWD_LMS::get_template(
 					'learndash_quiz_messages',
@@ -825,22 +816,19 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_quiz_summary_header',
-						'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'Quiz Summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+						// translators: placeholder: Quiz.
+						'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 					)
 				);
 				?></h4>
-			<?php /* ?>
-			<p>
-				<?php printf( esc_html__( '%s of %s questions completed', 'learndash' ), '<span>0</span>', $questionCount ); ?>
-			</p>
-			<?php */ ?>
 			<?php
 				echo SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_checkbox_questions_complete_message',
-						'message' 		=> 	'<p>'. sprintf( esc_html_x( '%1$s of %2$s questions completed', 'placeholders: quiz count completed, quiz count total', 'learndash' ), '<span>0</span>', $questionCount ) .'</p>',
+						// translators: placeholders: Span element, Question Count.
+						'message' 		=> 	'<p>'. sprintf( esc_html_x( '%1$s of %2$s questions completed', 'placeholders: quiz count completed, quiz count total', 'placeholders: Span element, Question Count', 'learndash' ), '<span>0</span>', $questionCount ) .'</p>',
 						'placeholders'	=>	array( '0', $questionCount )
 					)
 				);
@@ -870,13 +858,13 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 			?>
 
 			<input type="button" name="endQuizSummary" value="<?php
-				//echo sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 				echo esc_html( SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_finish_button_label',
-						'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+						// translators: placeholder: Quiz.
+						'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'placeholder: Quiz.', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 					)
 				));
 				?>" class="wpProQuiz_button">
@@ -899,13 +887,13 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 			?>
 
 			<input type="button" name="endInfopage" value="<?php
-				//echo sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 				echo esc_html( SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_finish_button_label',
-						'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+						// translators: placeholder: Quiz.
+						'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 					)
 				));
 
@@ -927,13 +915,13 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
 			<div>
 				<input class="wpProQuiz_button" type="button" value="<?php
-				//echo sprintf( esc_html_x( 'Start %s', 'Start Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 				echo esc_html( SFWD_LMS::get_template(
 					'learndash_quiz_messages',
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_start_button_label',
-						'message' 		=> 	sprintf( esc_html_x( 'Start %s', 'Start Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+						// translators: placeholder: Quiz.
+						'message' 		=> 	sprintf( esc_html_x( 'Start %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 					)
 				));
 				?>"
@@ -950,33 +938,27 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
 
 		global $post;
-		//error_log('post<pre>'. print_r($post, true) .'</pre>');
 
 		if ( current_user_can( 'wpProQuiz_show_statistics' ) ) {
 			$user_quizzes = get_user_meta(get_current_user_id(), '_sfwd-quizzes', true);
-			//error_log('user_quizzes<pre>'. print_r($user_quizzes, true) .'</pre>');
 			if ( !empty( $user_quizzes ) ) {
-				//krsort($user_quizzes);
 				$user_quizzes = array_reverse($user_quizzes);
-				//error_log('sorted: user_quizzes<pre>'. print_r($user_quizzes, true) .'</pre>');
-
 
 				foreach( $user_quizzes as $user_quiz_idx => $user_quiz ) {
 					if ( ( isset( $user_quiz['quiz'] ) ) && ( $user_quiz['quiz'] == $post->ID ) ) {
 						if ( ( isset( $user_quiz['pro_quizid'] ) ) && ( $user_quiz['pro_quizid'] == $this->quiz->getID() ) ) {
 							if ( ( isset( $user_quiz['statistic_ref_id'] ) ) && ( !empty($user_quiz['statistic_ref_id']) ) ) {
-								//error_log('found idx['. $user_quiz_idx .']');
 								?>
 								<div class="wpProQuiz_text">
 									<div>
 										<input class="wpProQuiz_button" type="button" value="<?php
-											//echo sprintf( esc_html_x( 'View %s Statistics', 'Start Quiz Statistics Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 											echo esc_html( SFWD_LMS::get_template(
 												'learndash_quiz_messages',
 												array(
 													'quiz_post_id'	=>	$this->quiz->getID(),
 													'context' 		=> 	'quiz_view_statistics_button_label',
-													'message' 		=> 	sprintf( esc_html_x( 'View %s Statistics', 'Start Quiz Statistics Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+													// translators: placeholder: Quiz.
+													'message' 		=> 	sprintf( esc_html_x( 'View %s Statistics', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 												)
 											));
 
@@ -1078,7 +1060,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 								array(
 									'quiz_post_id'	=>	$this->quiz->getID(),
 									'context' 		=> 	'quiz_quiz_summary_button_label',
-									'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'Quiz Summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+									// translators: placeholder: Quiz.
+									'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 								)
 							));
 							?>"
@@ -1104,7 +1087,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_complete_message',
-						'message' 		=> 	sprintf( esc_html_x( "%s complete. Results are being recorded.", "Quiz complete. Results are being recorded.",  'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
+						// translators: placeholder: Quiz.
+						'message' 		=> 	sprintf( esc_html_x( "%s complete. Results are being recorded.", "placeholder: Quiz",  'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
 						)
 				);
 
@@ -1128,7 +1112,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 					array(
 						'quiz_post_id'	=>	$this->quiz->getID(),
 						'context' 		=> 	'quiz_questions_answered_correctly_message',
-						'message' 		=> 	'<p>'. sprintf( esc_html_x( '%1$s of %2$s questions answered correctly', 'placeholder: correct answer, question count', 'learndash' ), '<span class="wpProQuiz_correct_answer">0</span>', '<span>' . $questionCount . '</span>' ) .'</p>',
+						// translators: placeholders: correct answer, question count.
+						'message' 		=> 	'<p>'. sprintf( esc_html_x( '%1$s of %2$s questions answered correctly', 'placeholders: correct answer, question count', 'learndash' ), '<span class="wpProQuiz_correct_answer">0</span>', '<span>' . $questionCount . '</span>' ) .'</p>',
 						'placeholders'	=>	array( '0', $questionCount )
 					)
 				);
@@ -1143,7 +1128,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 						array(
 							'quiz_post_id'	=>	$this->quiz->getID(),
 							'context' 		=> 	'quiz_your_time_message',
-							'message' 		=> 	sprintf( esc_html_x( 'Your time: %s', 'placeholder: quiz time.', 'learndash' ), '<span></span>')
+							// translators: placeholder: quiz time.
+							'message' 		=> 	sprintf( esc_html_x( 'Your time: %s', 'placeholder: quiz time', 'learndash' ), '<span></span>')
 						)
 					);
 					?>
@@ -1171,7 +1157,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 							array(
 								'quiz_post_id'	=>	$this->quiz->getID(),
 								'context' 		=> 	'quiz_have_reached_points_message',
-								'message' 		=> 	sprintf( esc_html_x( 'You have reached %1$s of %2$s point(s), (%3$s)', 'placeholder: points earned, points total', 'learndash' ), '<span>0</span>', '<span>0</span>', '<span>0</span>' ),
+								// translators: placeholders: points earned, points total, percentage.
+								'message' 		=> 	sprintf( esc_html_x( 'You have reached %1$s of %2$s point(s), (%3$s)', 'placeholders: points earned, points total, percentage', 'learndash' ), '<span>0</span>', '<span>0</span>', '<span>0</span>' ),
 								'placeholders'	=>	array( '0', '0', '0' )
 							)
 						);
@@ -1184,7 +1171,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 							array(
 								'quiz_post_id'	=>	$this->quiz->getID(),
 								'context' 		=> 	'quiz_earned_points_message',
-								'message' 		=> 	sprintf( esc_html_x( 'Earned Point(s): %1$s of %2$s, (%3$s)', 'placeholder: points earned, points total, points percentage', 'learndash' ), '<span>0</span>', '<span>0</span>', '<span>0</span>' ),
+								// translators: placeholders: points earned, points total, points percentage.
+								'message' 		=> 	sprintf( esc_html_x( 'Earned Point(s): %1$s of %2$s, (%3$s)', 'placeholders: points earned, points total, points percentage', 'learndash' ), '<span>0</span>', '<span>0</span>', '<span>0</span>' ),
 								'placeholders'	=>	array( '0', '0', '0' )
 							)
 						);
@@ -1195,7 +1183,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 							array(
 								'quiz_post_id'	=>	$this->quiz->getID(),
 								'context' 		=> 	'quiz_essay_possible_points_message',
-								'message' 		=> 	sprintf( esc_html_x( '%1$s Essay(s) Pending (Possible Point(s): %2$s)', 'placeholder: number of essays, possible points ', 'learndash' ), '<span>0</span>', '<span>0</span>' ),
+								// translators: placeholders: number of essays, possible points.
+								'message' 		=> 	sprintf( esc_html_x( '%1$s Essay(s) Pending (Possible Point(s): %2$s)', 'placeholders: number of essays, possible points ', 'learndash' ), '<span>0</span>', '<span>0</span>' ),
 								'placeholders'	=>	array( '0', '0' )
 							)
 						);
@@ -1292,8 +1281,10 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 					<?php foreach ( $result['text'] as $resultText ) { ?>
 						<li style="display: none;">
 							<div>
-								<?php echo do_shortcode( apply_filters( 'comment_text', $resultText, null, null ) ); ?>
-								<?php //echo do_shortcode( apply_filters( 'the_content', $resultText, null, null ) ); ?>
+								<?php
+								/** This filter is documented in https://developer.wordpress.org/reference/hooks/comment_text/ */
+								echo do_shortcode( apply_filters( 'comment_text', $resultText, null, null ) );
+								?>
 							</div>
 						</li>
 					<?php } ?>
@@ -1311,8 +1302,14 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 			<div class="ld-quiz-actions" style="margin: 10px 0px;">
 				<?php
 					/**
-					 *	See snippet https://bitbucket.org/snippets/learndash/nMk9a
+					 * Filters whether to show continue button on fail in quiz.
+					 *
+					 * See snippet https://bitbucket.org/snippets/learndash/nMk9a
+					 *
 					 * @since 2.3.0.2
+					 *
+					 * @param boolean $show_continue Whether to show continue button on fail.
+					 * @param int     $quiz_post_id  Quiz post ID.
 					 */
 					$show_quiz_continue_buttom_on_fail = apply_filters( 'show_quiz_continue_buttom_on_fail', false, learndash_get_quiz_id_by_pro_quiz_id( $this->quiz->getId() ) );
 				?>
@@ -1327,7 +1324,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 								array(
 									'quiz_post_id'	=>	$this->quiz->getID(),
 									'context' 		=> 	'quiz_restart_button_label',
-									'message' 		=> 	sprintf( esc_html_x( 'Restart %s', 'Restart Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+									// translators: placeholder: Quiz.
+									'message' 		=> 	sprintf( esc_html_x( 'Restart %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 								)
 							));
 							?>">
@@ -1340,7 +1338,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 								array(
 									'quiz_post_id'	=>	$this->quiz->getID(),
 									'context' 		=> 	'quiz_view_questions_button_label',
-									'message' 		=> 	sprintf( esc_html_x( 'View %s', 'View Questions Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'questions' ) )
+									// translators: placeholder: Quiz.
+									'message' 		=> 	sprintf( esc_html_x( 'View %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'questions' ) )
 								)
 							));
 							?>">
@@ -1394,7 +1393,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
 					if ( $question->isAnswerPointsActivated() && $question->isAnswerPointsDiffModusActivated() && $question->isDisableCorrect() ) {
 						$json[ $question->getId() ]['disCorrect'] = (int) $question->isDisableCorrect();
-						//$json[$question->getId()]['discoordinates'] = (int)$question->isDisableCorrect();
 					}
 
 					if ( ! isset( $catPoints[ $question->getCategoryId() ] ) ) {
@@ -1405,12 +1403,9 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
 					if ( ! $question->isAnswerPointsActivated() ) {
 						$json[ $question->getId() ]['points'] = $question->getPoints();
-						//$json[$question->getId()]['version'] = $question->getPoints();
-						// 					$catPoints[$question->getCategoryId()] += $question->getPoints();
 					}
 
 					if ( $question->isAnswerPointsActivated() && $question->isAnswerPointsDiffModusActivated() ) {
-						// 					$catPoints[$question->getCategoryId()] += $question->getPoints();
 						$json[ $question->getId() ]['diffMode'] = 1;
 					}
 
@@ -1430,6 +1425,7 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 									array(
 										'quiz_post_id'	=>	$this->quiz->getID(),
 										'context' 		=> 	'quiz_question_list_2_message',
+										// translators: placeholder: question number, questions total.
 										'message' 		=> 	sprintf( esc_html_x( 'Question %1$s of %2$s', 'placeholder: question number, questions total', 'learndash' ), '<span>' . $index . '</span>', '<span>' . $questionCount . '</span>' ),
 										'placeholders'	=>	array( $index, $questionCount )
 									)
@@ -1459,6 +1455,7 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 									array(
 										'quiz_post_id'	=>	$this->quiz->getID(),
 										'context' 		=> 	'quiz_question_points_message',
+										// translators: placeholder: total quiz points.
 										'message' 		=> 	sprintf( esc_html_x( '%s point(s)', 'placeholder: total quiz points', 'learndash' ), '<span>'. $question->getPoints() . '</span>' ),
 										'placeholders'	=>	array( $question->getPoints() )
 									)
@@ -1476,6 +1473,7 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										array(
 											'quiz_post_id'	=>	$this->quiz->getID(),
 											'context' 		=> 	'quiz_question_category_message',
+											// translators: placeholder: Quiz Category.
 											'message' 		=> 	sprintf( esc_html_x( 'Category: %s', 'placeholder: Quiz Category', 'learndash' ), '<span>'. esc_html( $question->getCategoryName() ) .'</span>' ),
 											'placeholders'	=>	array( esc_html( $question->getCategoryName() ) )
 										)
@@ -1490,6 +1488,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 									$questionText =	sanitize_post_field( 'post_content', $questionText, 0, 'display' );
 									//$questionText = wp_unslash( $questionText );
 									$questionText = wpautop( $questionText );
+									global $wp_embed;
+									$questionText = $wp_embed->run_shortcode( $questionText );
 									$questionText = do_shortcode( $questionText );
 
 									echo $questionText;
@@ -1558,9 +1558,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 
 									if ( $question->isAnswerPointsActivated() ) {
 										$json[ $question->getId() ]['points'][] = $v->getPoints();
-										//$json[$question->getId()]['version'][] = $v->getPoints();
-										// if(!$question->isAnswerPointsDiffModusActivated())
-										// 		$catPoints[$question->getCategoryId()] += $question->getPoints();
 									}
 
 									$datapos = $answer_index;
@@ -1579,7 +1576,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										?>
 										<?php if ( $question->getAnswerType() === 'single' || $question->getAnswerType() === 'multiple' ) { ?>
 											<?php $json[ $question->getId() ]['correct'][] = (int) $v->isCorrect(); ?>
-											<?php /* $json[$question->getId()]['coordinates'][] = (int)$v->isCorrect(); */ ?>
 											<span <?php echo $this->quiz->isNumberedAnswer() ? '' : 'style="display:none;"' ?>></span>
 											<label>
 												<input class="wpProQuiz_questionInput"
@@ -1596,7 +1592,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										?>
 										<?php } else if ( $question->getAnswerType() === 'sort_answer' ) { ?>
 											<?php $json[ $question->getId() ]['correct'][] = (int) $answer_index; ?>
-											<?php /* $json[$question->getId()]['coordinates'][] = (int)$answer_index; */ ?>
 											<div class="wpProQuiz_sortable">
 												<?php echo $answer_text; ?>
 											</div>
@@ -1609,7 +1604,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										?>
 										<?php } else if ( $question->getAnswerType() === 'free_answer' ) { ?>
 											<?php $json[ $question->getId() ]['correct'] = $this->getFreeCorrect( $v ); ?>
-											<?php /* $json[$question->getId()]['coordinates'] = $this->getFreeCorrect($v); */ ?>
 											<label>
 												<input class="wpProQuiz_questionInput" type="text"
 												       name="question_<?php echo $this->quiz->getId(); ?>_<?php echo $question->getId(); ?>"
@@ -1625,7 +1619,6 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										<?php } else if ( $question->getAnswerType() === 'matrix_sort_answer' ) { ?>
 											<?php
 											$json[ $question->getId() ]['correct'][] = (int) $answer_index;
-											//$json[$question->getId()]['coordinates'][] = (int)$answer_index;
 											$msacwValue = $question->getMatrixSortAnswerCriteriaWidth() > 0 ? $question->getMatrixSortAnswerCriteriaWidth() : 20;
 											?>
 											<table>
@@ -1649,22 +1642,18 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										 */
 										?>
 										<?php } else if ( $question->getAnswerType() === 'cloze_answer' ) {
-											//$clozeData = $this->fetchCloze( $v->getAnswer() );
 											$clozeData = fetchQuestionCloze( $v->getAnswer() );
 
 											$this->_clozeTemp = isset( $clozeData['data'] ) ? $clozeData['data'] : [];
 
 											$json[ $question->getId() ]['correct'] = isset( $clozeData['correct'] ) ? $clozeData['correct'] : [];
-											//$json[$question->getId()]['coordinates'] = $clozeData['correct'];
 
 											if ( $question->isAnswerPointsActivated() ) {
 												$json[ $question->getId() ]['points'] = $clozeData['points'];
-												//$json[$question->getId()]['version'] = $clozeData['points'];
 											}
 
 											// Added the wpautop in LD 2.2.1 to retain line-break formatting.
 											$clozeData['replace'] = wpautop($clozeData['replace']);
-											//$cloze = do_shortcode( wp_kses_post( $clozeData['replace'], null, null ) );
 
 											$clozeData['replace'] = sanitize_post_field( 'post_content', $clozeData['replace'], 0, 'display' );
 											$clozeData['replace'] = do_shortcode( $clozeData['replace'] );
@@ -1683,9 +1672,7 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										 */
 										} else if ( $question->getAnswerType() === 'assessment_answer' ) {
 											$assessmentData = $this->fetchAssessment( $v->getAnswer(), $this->quiz->getId(), $question->getId() );
-											//$assessment     = do_shortcode( apply_filters( 'comment_text', $assessmentData['replace'], null, null ) );
 											$assessment 	= sanitize_post_field( 'post_content', $assessmentData['replace'], 0, 'display' );
-											//$assessment		= strip_tags($assessment);
 											$assessment		= wpautop( $assessment );
 											$assessment     = do_shortcode( $assessment );
 											$assessment     = preg_replace_callback( '#@@wpProQuizAssessment@@#im', array(
@@ -1693,6 +1680,7 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 												'assessmentCallback'
 											), $assessment );
 
+											/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 											$assessment = apply_filters( 'learndash_quiz_question_answer_postprocess', $assessment, 'assessment' );
 											$assessment = do_shortcode( $assessment );
 											echo $assessment;
@@ -1730,14 +1718,13 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 			  												)
 			  											);
 													?>
-													<p>
-														<form enctype="multipart/form-data" method="post" name="uploadEssay">
-															<input type='file' name='uploadEssay[]' id='uploadEssay_<?php echo $question->getId(); ?>' size='35' class='wpProQuiz_upload_essay' />
-															<input type="submit" id='uploadEssaySubmit_<?php echo $question->getId(); ?>' value="<?php esc_html_e('Upload', 'learndash') ?>" />
-															<input type="hidden" id="_uploadEssay_nonce_<?php echo $question->getId(); ?>" name="_uploadEssay_nonce" value="<?php echo wp_create_nonce('learndash-upload-essay-' . $question->getId() ); ?>" />
-														</form>
+													<form enctype="multipart/form-data" method="post" name="uploadEssay">
+														<input type='file' name='uploadEssay[]' id='uploadEssay_<?php echo $question->getId(); ?>' size='35' class='wpProQuiz_upload_essay' />
+														<input type="submit" id='uploadEssaySubmit_<?php echo $question->getId(); ?>' value="<?php esc_html_e('Upload', 'learndash') ?>" />
+														<input type="hidden" id="_uploadEssay_nonce_<?php echo $question->getId(); ?>" name="_uploadEssay_nonce" value="<?php echo wp_create_nonce('learndash-upload-essay-' . $question->getId() ); ?>" />
 														<input type="hidden" class="uploadEssayFile" id='uploadEssayFile_<?php echo $question->getId(); ?>' value="" />
-													</p>
+													</form>
+													<div id="uploadEssayMessage_<?php echo $question->getId(); ?>" class="uploadEssayMessage"></div>
 												<?php else : ?>
 													<?php esc_html_e( 'Essay type not found', 'learndash' ); ?>
 												<?php endif; ?>
@@ -1915,7 +1902,10 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 										);
 
 									?></h5>
-									<?php echo do_shortcode( apply_filters( 'comment_text', $question->getTipMsg(), null, null ) ); ?>
+									<?php
+									/** This filter is documented in https://developer.wordpress.org/reference/hooks/comment_text/ */
+									echo do_shortcode( apply_filters( 'comment_text', $question->getTipMsg(), null, null ) );
+									?>
 								</div>
 							</div>
 						<?php } ?>
@@ -2013,7 +2003,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 								array(
 									'quiz_post_id'	=>	$this->quiz->getID(),
 									'context' 		=> 	'quiz_quiz_summary_button_label',
-									'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'Quiz Summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+									// translators: placeholder: Quiz.
+									'message' 		=> 	sprintf( esc_html_x( '%s Summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 								)
 							));
 							?>"
@@ -2025,7 +2016,8 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 								array(
 									'quiz_post_id'	=>	$this->quiz->getID(),
 									'context' 		=> 	'quiz_finish_button_label',
-									'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'Finish Quiz Button Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
+									// translators: placeholder: Quiz.
+									'message' 		=> 	sprintf( esc_html_x( 'Finish %s', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) )
 									)
 								)
 							)
@@ -2047,7 +2039,10 @@ class WpProQuiz_View_FrontQuiz extends WpProQuiz_View_View {
 		?>
 		<div style="display: none;" class="wpProQuiz_loadQuiz">
 			<p>
-				<?php printf( esc_html_x('%s is loading...', 'quiz is loading... Label', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
+				<?php 
+				// translators: placeholder: Quiz.
+				printf( esc_html_x('%s is loading...', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) );
+				?>
 			</p>
 		</div>
 		<?php

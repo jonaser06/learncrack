@@ -82,10 +82,44 @@ if ( ( !class_exists( 'LD_REST_Groups_Leaders_Controller_V1' ) ) && ( class_exis
 							),
 						),
 					),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 	    }
-		
+
+		/**
+		 * Gets the group leaders schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+
+			$schema = array(
+				'$schema'    => 'http://json-schema.org/draft-04/schema#',
+				'title'      => 'group-leader',
+				'parent'     => 'group',
+				'type'       => 'object',
+				'properties' => array(
+					'id'       => array(
+						'description' => __( 'Unique identifier for the object.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'user_ids' => array(
+						'description' => __( 'The user IDs.', 'learndash' ),
+						'type'        => 'array',
+						'items'       => array(
+							'type' => 'integer',
+						),
+						'context'     => array( 'view', 'edit' ),
+					),
+				),
+			);
+
+			return $schema;
+		}
+
 		function get_groups_leaders_permissions_check( $request ) {
 			if ( learndash_is_admin_user( ) ) {
 				return true;
@@ -228,14 +262,14 @@ if ( ( !class_exists( 'LD_REST_Groups_Leaders_Controller_V1' ) ) && ( class_exis
 			} 
 			
 			/**
-			 * Filters WP_User_Query arguments when querying users via the REST API.
+			 * Filters WP_User_Query arguments when querying group leaders via the REST API.
 			 *
 			 * @link https://developer.wordpress.org/reference/classes/wp_user_query/
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param array           $prepared_args Array of arguments for WP_User_Query.
-			 * @param WP_REST_Request $request       The current request.
+			 * @param array           $prepared_args An array of arguments for WP_User_Query.
+			 * @param WP_REST_Request $request       The REST request object.
 			 */
 			$prepared_args = apply_filters( 'learndash_rest_groups_leaders_query', $prepared_args, $request );
 			

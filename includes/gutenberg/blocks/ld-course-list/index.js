@@ -37,8 +37,10 @@ const {
 registerBlockType(
     'learndash/ld-course-list',
     {
+		// translators: placeholder: Course.
 		title: sprintf(_x('LearnDash %s List', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
-		description: sprintf(_x('This block shows a list of %s.', 'placeholders: courses', 'learndash'), ldlms_get_custom_label('courses') ),
+		// translators: placeholder: Courses.
+		description: sprintf(_x('This block shows a list of %s.', 'placeholders: Courses', 'learndash'), ldlms_get_custom_label('courses') ),
 		icon: 'list-view',
 		category: 'learndash-blocks',
 		example: {
@@ -246,7 +248,9 @@ registerBlockType(
 						onChange={order => setAttributes({ order })}
 					/>
 					<TextControl
+						// translators: placeholder: Courses.
 						label={sprintf(_x('%s per page', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
+						// translators: placeholder: default per page.
 						help={sprintf(_x('Leave empty for default (%d) or 0 to show all items.', 'placeholder: default per page', 'learndash'), ldlms_get_per_page('per_page' ) ) }
 						value={per_page || ''}
 						type={'number'}
@@ -255,19 +259,23 @@ registerBlockType(
 
 					<SelectControl
 						key="mycourses"
+						// translators: placeholder: Courses.
 						label={sprintf(_x('My %s', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 						value={mycourses}
 						options={[
 							{
-								label: sprintf(_x('Show All %s (default)', 'placeholders: courses', 'learndash'), ldlms_get_custom_label('courses') ),
+								// translators: placeholder: Courses.
+								label: sprintf(_x('Show All %s (default)', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses') ),
 								value: '',
 							},
 							{
-								label: sprintf(_x('Show Enrolled %s only', 'placeholders: courses', 'learndash'), ldlms_get_custom_label('courses')),
+								// translators: placeholder: Courses.
+								label: sprintf(_x('Show Enrolled %s only', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses')),
 								value: 'enrolled',
 							},
 							{
-								label: sprintf(_x('Show not-Enrolled %s only', 'placeholders: courses', 'learndash'), ldlms_get_custom_label('courses')),
+								// translators: placeholder: Courses.
+								label: sprintf(_x('Show not-Enrolled %s only', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses')),
 								value: 'not-enrolled',
 							},
 						]}
@@ -277,6 +285,7 @@ registerBlockType(
 					<SelectControl
 						multiple
 						key="status"
+						// translators: placeholder: Courses.
 						label={sprintf(_x('Enrolled %s Status', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 						value={status}
 						options={[
@@ -309,24 +318,31 @@ registerBlockType(
 				}
 				panel_course_category_section = (
 					<PanelBody
+						// translators: placeholder: Course.
 						title={sprintf(_x('%s Category Settings', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
 						initialOpen={panel_course_category_section_open}
 					>
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Category Slug', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') )}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned category slug.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={course_category_name || ''}
 							onChange={course_category_name => setAttributes({ course_category_name })}
 						/>
 
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Category ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned category ID.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={course_cat || ''}
 							onChange={course_cat => setAttributes({ course_cat })}
 						/>
 						<ToggleControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Category Selector', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows a %s category dropdown.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							checked={!!course_categoryselector}
 							onChange={course_categoryselector => setAttributes({ course_categoryselector })}
@@ -343,18 +359,23 @@ registerBlockType(
 				}
 				panel_course_tag_section = (
 					<PanelBody
+						// translators: placeholder: Course.
 						title={sprintf(_x('%s Tag Settings', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
 						initialOpen={panel_course_tag_section_open}
 					>
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Tag Slug', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned tag slug.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={course_tag || ''}
 							onChange={course_tag => setAttributes({ course_tag })}
 						/>
 
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Tag ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned tag ID.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={course_tag_id || ''}
 							onChange={course_tag_id => setAttributes({ course_tag_id })}
@@ -376,13 +397,16 @@ registerBlockType(
 					>
 						<TextControl
 							label={__('WP Category Slug', 'learndash') }
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned WP category slug.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={category_name || ''}
 							onChange={category_name => setAttributes({ category_name })}
 						/>
 
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s Category ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned category ID.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={cat || ''}
 							onChange={cat => setAttributes({ cat })}
@@ -410,6 +434,7 @@ registerBlockType(
 					>
 						<TextControl
 							label={__('WP Tag Slug', 'learndash')}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned WP tag slug.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={tag || ''}
 							onChange={tag => setAttributes({ tag })}
@@ -417,6 +442,7 @@ registerBlockType(
 
 						<TextControl
 							label={__('WP Tag ID', 'learndash')}
+							// translators: placeholder: Courses.
 							help={sprintf(_x('shows %s with mentioned WP tag ID.', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses'))}
 							value={tag_id || ''}
 							onChange={tag_id => setAttributes({ tag_id })}

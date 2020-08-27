@@ -7,6 +7,10 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 	class LearnDash_Permalinks {
 
@@ -132,14 +136,11 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 				}
 
 				/**
-				 * Filter LearnDash Course Step Nested URLs.
+				 * Filters list of permalinks structure rules.
 				 *
-				 * @since 2.5.0
-				 * @paran array $ld_rewrite_rules Array of custom rewrite rules.
-				 *
-				 * @since 3.2
-				 * @param array $ld_rewrite_patterns Array of rewrite patterns.
-				 * @param array $ld_rewrite_values   Array of rewrite placeholder/value pairs.
+				 * @param array $permalink_structure An array of permalink structure rules. @since 2.5.0
+				 * @param array $ld_rewrite_patterns An array of rewrite patterns. @since 3.1.4
+				 * @param array $ld_rewrite_values   An array of rewrite placeholder/value pairs. @since 3.1.4
 				 */
 				$ld_rewrite_rules = apply_filters( 'learndash_permalinks_nested_urls', $ld_rewrite_rules, $ld_rewrite_patterns, $ld_rewrite_values );
 
@@ -185,15 +186,31 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 				$topics_cpt  = get_post_type_object( learndash_get_post_type_slug( 'topic' ) );
 				$quizzes_cpt = get_post_type_object( learndash_get_post_type_slug( 'quiz' ) );
 
+				/**
+				 * Filters the rewrite slug for a post type.
+				 *
+				 * @param string $rewrite_slug   Rewrite slug.
+				 * @param string $post_type_slug Post type slug.
+				 */
 				$courses_cpt->rewrite['slug_alt'] = apply_filters( 'learndash_post_type_rewrite_slug', $courses_cpt->rewrite['slug'], learndash_get_post_type_slug( 'course' ) );
+				/** This filter is documented in includes/class-ld-permalinks.php */
 				$lessons_cpt->rewrite['slug_alt'] = apply_filters( 'learndash_post_type_rewrite_slug', $lessons_cpt->rewrite['slug'], learndash_get_post_type_slug( 'lesson' ) );
-				$topics_cpt->rewrite['slug_alt']  = apply_filters( 'learndash_post_type_rewrite_slug', $topics_cpt->rewrite['slug'], learndash_get_post_type_slug( 'topic' ) );
+				/** This filter is documented in includes/class-ld-permalinks.php */
+				$topics_cpt->rewrite['slug_alt'] = apply_filters( 'learndash_post_type_rewrite_slug', $topics_cpt->rewrite['slug'], learndash_get_post_type_slug( 'topic' ) );
+				/** This filter is documented in includes/class-ld-permalinks.php */
 				$quizzes_cpt->rewrite['slug_alt'] = apply_filters( 'learndash_post_type_rewrite_slug', $quizzes_cpt->rewrite['slug'], learndash_get_post_type_slug( 'quiz' ) );
 
 				if ( $lessons_cpt->name == $post->post_type ) {
 
 					$lesson = $post;
 
+					/**
+					 * Filters course link post ID.
+					 *
+					 * @param int     $course_id Course ID.
+					 * @param string  $post_link Post Link.
+					 * @param WP_Post $post      Post Object.
+					 */
 					$course_id = apply_filters( 'learndash_post_link_course_id', learndash_get_course_id( $lesson->ID ), $post_link, $post );
 					if ( ! empty( $course_id ) ) {
 						$course = get_post( $course_id );
@@ -235,6 +252,7 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 
 					$topic = $post;
 
+					/** This filter is documented in includes/class-ld-permalinks.php */
 					$course_id = apply_filters( 'learndash_post_link_course_id', learndash_get_course_id( $topic->ID ), $post_link, $post );
 					if ( ! empty( $course_id ) ) {
 						if ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'shared_steps' ) == 'yes' ) {
@@ -285,6 +303,7 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 				} elseif ( $quizzes_cpt->name == $post->post_type ) {
 					$quiz = $post;
 
+					/** This filter is documented in includes/class-ld-permalinks.php */
 					$course_id = apply_filters( 'learndash_post_link_course_id', learndash_get_course_id( $quiz->ID ), $post_link, $post );
 
 					if ( ! empty( $course_id ) ) {
@@ -324,6 +343,8 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 												$quiz_parents[] = $topic_id;
 											}
 										}
+									} else {
+										$quiz_parents[] = $lesson_id;
 									}
 								}
 							}
@@ -369,43 +390,7 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 								$url_part_new = add_query_arg( $quizzes_cpt->name, $quiz->post_name, $url_part_new );
 							}
 						}
-					} 
-					/*
-					elseif ( ! empty( $course_id ) ) {
-						$course = get_post( $course_id );
-						if ( $course instanceof WP_Post ) {
-							if ( false === $sample ) {
-								if ( $wp_rewrite->using_permalinks() ) {
-									$url_part_old = '/' . $quizzes_cpt->rewrite['slug'] . '/' . $quiz->post_name;
-								} else {
-									$url_part_old = add_query_arg( $quizzes_cpt->name, $quiz->post_name, $url_part_old );
-								}
-							} else {
-								if ( $wp_rewrite->using_permalinks() ) {
-									$url_part_old = '/' . $quizzes_cpt->rewrite['slug'] . '/%' . $quizzes_cpt->name . '%';
-								} else {
-									$url_part_old = add_query_arg( $quizzes_cpt->name, $quiz->post_name, $url_part_old );
-								}
-							}
-
-							if ( false === $sample ) {
-								if ( $wp_rewrite->using_permalinks() ) {
-									$url_part_new = '/' . $courses_cpt->rewrite['slug'] . '/' . $course->post_name . '/' . $quizzes_cpt->rewrite['slug'] . '/' . $quiz->post_name;
-								} else {
-									$url_part_new = add_query_arg( $courses_cpt->rewrite['slug'], $course->post_name, $url_part_new );
-									$url_part_new = add_query_arg( $quizzes_cpt->rewrite['slug'], $quiz->post_name, $url_part_new );
-								}
-							} else {
-								if ( $wp_rewrite->using_permalinks() ) {
-									$url_part_new = '/' . $courses_cpt->rewrite['slug'] . '/' . $course->post_name . '/' . $quizzes_cpt->rewrite['slug'] . '/%pagename%';
-								} else {
-									$url_part_new = add_query_arg( $courses_cpt->rewrite['slug'], $course->post_name, $url_part_new );
-									$url_part_new = add_query_arg( $quizzes_cpt->rewrite['slug'], $quiz->post_name, $url_part_new );
-								}
-							}
-						}
 					}
-					*/
 				}
 			}
 
@@ -469,7 +454,7 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 					$course_id = 0;
 
 					if ( isset( $_GET['course_id'] ) ) {
-						$course_id = intval( $_GET['course_id'] );
+						$course_id = absint( $_GET['course_id'] );
 					}
 
 					if ( ( empty( $course_id ) ) && ( isset( $actions['view'] ) ) ) {
@@ -522,8 +507,8 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 		 * items so they include the full nested URL
 		 *
 		 * @since 2.5.0
-		 * @param array $permalink Array containing the sample permalink with placeholder for the post name, and the post name.
-		 * @param int   $post_id   Post ID.
+		 * @param array  $permalink Array containing the sample permalink with placeholder for the post name, and the post name.
+		 * @param int    $post_id   Post ID.
 		 * @param string $title    Post title.
 		 * @param string $name     Post name (slug).
 		 * @param object $post     (WP_Post) Post object.
@@ -573,9 +558,9 @@ if ( ! class_exists( 'LearnDash_Permalinks' ) ) {
 		 * Add the course_id to comment meta
 		 *
 		 * @since 2.5.5
-		 * @param int $comment_id              The comment ID.
+		 * @param int        $comment_id              The comment ID.
 		 * @param int|string $comment_approved 1 if the comment is approved, 0 if not, 'spam' if spam.
-		 * @param array $commentdata           Comment data.
+		 * @param array      $commentdata           Comment data.
 		 */
 		public function comment_post( $comment_id, $comment_approved, $commentdata ) {
 			if ( ( isset( $_POST['course_id'] ) ) && ( ! empty( $_POST['course_id'] ) ) ) {

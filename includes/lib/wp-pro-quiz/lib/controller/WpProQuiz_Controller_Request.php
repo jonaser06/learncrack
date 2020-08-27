@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Request {
 	static protected $_post = null;
 	static protected $_cookie = null;

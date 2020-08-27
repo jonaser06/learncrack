@@ -32,6 +32,10 @@
  * @package LearnDash\Lesson
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $in_focus_mode = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Theme_LD30', 'focus_mode_enabled' );
 
 add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
@@ -40,9 +44,13 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 
 	<?php
 	/**
-	 * Action to add custom content before the lesson
+	 * Fires before the lesson.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $post_id   Post ID.
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-lesson-before', get_the_ID(), $course_id, $user_id );
 
@@ -98,14 +106,17 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 		/**
 		 * Display Lesson Assignments
 		 */
-		$bypass_course_limits_admin_users = learndash_user_can_bypass_course_limits( $user_id );
-
+		$bypass_course_limits_admin_users = learndash_can_user_bypass( $user_id, 'learndash_lesson_assignment' );
 		if ( lesson_hasassignments( $post ) && ! empty( $user_id ) ) :
 			if ( ( learndash_lesson_progression_enabled() && learndash_lesson_topics_completed( $post->ID ) ) || ! learndash_lesson_progression_enabled() || $bypass_course_limits_admin_users ) :
 				/**
-				 * Action to add custom content before the lesson assignment
+				 * Fires before the lesson assignment.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $post_id   Post ID.
+				 * @param int $course_id Course ID.
+				 * @param int $user_id   User ID.
 				 */
 				do_action( 'learndash-lesson-assignment-before', get_the_ID(), $course_id, $user_id );
 
@@ -120,9 +131,13 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 				);
 
 				/**
-				 * Action to add custom content after the lesson assignment
+				 * Fires after the lesson assignment.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $post_id   Post ID.
+				 * @param int $course_id Course ID.
+				 * @param int $user_id   User ID.
 				 */
 				do_action( 'learndash-lesson-assignment-after', get_the_ID(), $course_id, $user_id );
 
@@ -135,9 +150,13 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 		if ( ! empty( $topics ) || ! empty( $quizzes ) ) :
 
 			/**
-			 * Action to add custom content before the course certificate link
+			 * Fires before the course certificate link
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $post_id   Post ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-lesson-content-list-before', get_the_ID(), $course_id, $user_id );
 
@@ -165,9 +184,13 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 
 			<?php
 			/**
-			 * Action to add custom content before the course certificate link
+			 * Fires before the course certificate link
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $post_id   Post ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-lesson-content-list-after', get_the_ID(), $course_id, $user_id );
 
@@ -182,6 +205,15 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 	$can_complete = false;
 
 	if ( $all_quizzes_completed && $logged_in && ! empty( $course_id ) ) :
+
+		/**
+		 * Filters whether a user can complete the lesson or not.
+		 *
+		 * @param boolean $can_complete Whether user can complete lesson or not.
+		 * @param int     $post_id      Lesson ID/Topic ID.
+		 * @param int     $course_id    Course ID.
+		 * @param int     $user_id      User ID.
+		 */
 		$can_complete = apply_filters( 'learndash-lesson-can-complete', true, get_the_ID(), $course_id, $user_id );
 	endif;
 
@@ -199,9 +231,13 @@ add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 ); ?>
 	);
 
 	/**
-	 * Action to add custom content after the lesson
+	 * Fires after the lesson
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $post_id   Post ID.
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-lesson-after', get_the_ID(), $course_id, $user_id );
 	?>

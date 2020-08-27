@@ -102,14 +102,18 @@ registerBlockType(
                         title={__('Settings', 'learndash')}
                     >
                         <TextControl
-                            label={sprintf(_x('%s ID', 'Course ID', 'learndash'), ldlms_get_custom_label('course') )}
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course' ) ) }
+                            // translators: placeholder: Course.
+                            label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') )}
+                            // translators: placeholders: Course, Course.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course' ) ) }
                             value={course_id || ''}
                             onChange={course_id => setAttributes({ course_id })}
                         />
                         <TextControl
-                            label={sprintf(_x('%s ID', 'Quiz ID', 'learndash'), ldlms_get_custom_label('quiz'))}
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: quiz, quiz', 'learndash'), ldlms_get_custom_label('quiz'), ldlms_get_custom_label('quiz'))}
+                            // translators: placeholder: Quiz.
+                            label={sprintf(_x('%s ID', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz'))}
+                            // translators: placeholders: Quiz, Quiz.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Quiz, Quiz', 'learndash'), ldlms_get_custom_label('quiz'), ldlms_get_custom_label('quiz'))}
                             value={quiz_id || ''}
                             onChange={quiz_id => setAttributes({ quiz_id })}
                         />
@@ -154,14 +158,18 @@ registerBlockType(
                             onChange={preview_show => setAttributes({ preview_show })}
                         />
                         <TextControl
+                            // translators: placeholder: Course.
                             label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+                            // translators: placeholder: Course.
                             help={sprintf(_x('Enter a %s ID to test preview', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
                             value={preview_course_id || ''}
                             type={'number'}
                             onChange={preview_course_id => setAttributes({ preview_course_id })}
                         />
                         <TextControl
+                            // translators: placeholder: Quiz.
                             label={sprintf(_x('%s ID', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz'))}
+                            // translators: placeholder: Quiz.
                             help={sprintf(_x('Enter a %s ID to test preview', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz'))}
                             value={preview_quiz_id || ''}
                             type={'number'}

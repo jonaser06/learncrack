@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_Mapper {
 	/**
 	 * Wordpress Datenbank Object 

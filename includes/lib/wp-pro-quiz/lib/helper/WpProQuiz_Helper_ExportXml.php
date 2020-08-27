@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Helper_ExportXml {
 
 	public function export( $ids ) {
@@ -96,6 +100,8 @@ class WpProQuiz_Helper_ExportXml {
 		$quiz_post_id = $quizModel->getPostId();
 		if ( ! empty( $quiz_post_id ) ) {
 			$post_export_keys = array( 'post_title', 'post_content' );
+
+			/** This filter is documented in includes/lib/wp-pro-quiz/lib/helper/WpProQuiz_Helper_Export.php */
 			$post_export_keys = apply_filters( 'learndash_quiz_export_post_keys', $post_export_keys, $quiz_post_id );
 			if ( ! empty( $post_export_keys ) ) {
 				$quiz_post = get_post( $quiz_post_id, ARRAY_A );
@@ -116,6 +122,8 @@ class WpProQuiz_Helper_ExportXml {
 		$quiz_post_id = $quizModel->getPostId( );
 		if ( ! empty( $quiz_post_id ) ) {
 			$post_meta_export_keys = array( '_' . get_post_type( $quiz_post_id ), '_viewProfileStatistics', '_timeLimitCookie' );
+
+			/** This filter is documented in includes/lib/wp-pro-quiz/lib/helper/WpProQuiz_Helper_Export.php */
 			$post_meta_export_keys = apply_filters( 'learndash_quiz_export_post_meta_keys', $post_meta_export_keys, $quiz_post_id );
 
 			$all_post_meta = get_post_meta( $quiz_post_id );
@@ -139,7 +147,19 @@ class WpProQuiz_Helper_ExportXml {
 					$quizPostMetaElement->appendChild( $post_meta_item_key );
 
 					$post_meta_item_value = $dom->createElement( 'meta_value' );
-					$post_meta_item_value->appendChild( $dom->createCDATASection( maybe_serialize( $_key_data ) ) );
+					if ( ( defined( 'LEARNDASH_QUIZ_EXPORT_LEGACY' ) ) && ( true === LEARNDASH_QUIZ_EXPORT_LEGACY ) ) {
+						$post_meta_item_value->appendChild( $dom->createCDATASection( maybe_serialize( $_key_data ) ) );
+					} else {
+						if ( is_array( $_key_data ) ) {
+							foreach( $_key_data as $_idx => $_d ) {
+								$_key_data[$_idx] = maybe_unserialize( $_d );
+							}
+						} else {
+							$_key_data = maybe_unserialize( $_key_data );
+						}
+
+						$post_meta_item_value->appendChild( $dom->createCDATASection( wp_json_encode( $_key_data ) ) );
+					}
 					$quizPostMetaElement->appendChild( $post_meta_item_value );
 
 					$quizElement->appendChild( $quizPostMetaElement );

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Admin {
 	
 	protected $_ajax;
@@ -11,7 +15,7 @@ class WpProQuiz_Controller_Admin {
 		
 		//deprecated - use WpProQuiz_Controller_Ajax
 		add_action('wp_ajax_wp_pro_quiz_update_sort', array($this, 'updateSort'));
-		add_action('wp_ajax_wp_pro_quiz_load_question', array($this, 'updateSort'));
+		add_action('wp_ajax_wp_pro_quiz_load_question', array($this, 'loadQuestions'));
 		
 		add_action('wp_ajax_wp_pro_quiz_reset_lock', array($this, 'resetLock'));
 		
@@ -37,7 +41,30 @@ class WpProQuiz_Controller_Admin {
 		add_action('admin_menu', array($this, 'register_page'));
 	}
 	
-	public function loadQuizData() {
+	public function loadQuizData() {		
+		if ( is_user_logged_in() ) {
+			$user_id			= 	get_current_user_id();
+		} else {
+			$user_id			=	0;
+		}
+
+		if ( isset( $_POST['quizId'] ) ) {
+			$id 				= 	absint( $_POST['quizId'] );
+		} else {
+			$id					= 	0;
+		}
+
+		if ( isset( $_POST['quiz'] ) ) {
+			$quiz_post_id 		= 	absint( $_POST['quiz'] );
+		} else {
+			$quiz_post_id		= 	0;
+		}
+
+		if ( ! wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $id .'-' . $user_id ) ) {
+			error_log('nonce failed');
+			die();
+		}
+		
 		$q = new WpProQuiz_Controller_Quiz();
 		
 		echo json_encode($q->loadQuizData());
@@ -46,21 +73,46 @@ class WpProQuiz_Controller_Admin {
 	}
 	
 	public function adminToplist() {
-		$t = new WpProQuiz_Controller_Toplist();
-		$t->route();
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-wpproquiz-toplist' ) ) ) {
+			$t = new WpProQuiz_Controller_Toplist();
+			$t->route();
+		}
 		
 		exit;
 	}
 	
 	public function showFrontToplist() {
-		$t = new WpProQuiz_Controller_Toplist();
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-wpproquiz-toplist' ) ) ) {
+			$t = new WpProQuiz_Controller_Toplist();
 		
-		$t->showFrontToplist();
-		
+			$t->showFrontToplist();
+		}
 		exit;
 	}
 	
 	public function addInToplist() {
+		if ( is_user_logged_in() ) {
+			$user_id			= 	get_current_user_id();
+		} else {
+			$user_id			=	0;
+		}
+
+		if ( isset( $_POST['quizId'] ) ) {
+			$id 				= 	absint( $_POST['quizId'] );
+		} else {
+			$id					= 	0;
+		}
+
+		if ( isset( $_POST['quiz'] ) ) {
+			$quiz_post_id 		= 	absint( $_POST['quiz'] );
+		} else {
+			$quiz_post_id		= 	0;
+		}
+
+		if ( ! wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $id .'-' . $user_id ) ) {
+			die();
+		}
+
 		$t = new WpProQuiz_Controller_Toplist();
 		
 		$t->addInToplist();
@@ -69,15 +121,39 @@ class WpProQuiz_Controller_Admin {
 	}
 	
 	public function resetLock() {
-		if ( ( isset( $_GET['post'] ) ) && ( !isset( $_GET['id'] ) ) ) {
-			$_GET['id'] = get_post_meta( $_GET['post'], 'quiz_pro_id', true );
-		}
-		
-		$c = new WpProQuiz_Controller_Quiz();
-		$c->route();
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-wpproquiz-reset-lock' ) ) ) {
+			if ( ( isset( $_GET['post'] ) ) && ( !isset( $_GET['id'] ) ) ) {
+				$_GET['id'] = get_post_meta( $_GET['post'], 'quiz_pro_id', true );
+			}
+			
+			$c = new WpProQuiz_Controller_Quiz();
+			$c->route();
+		}	
 	}
 	
 	public function quizCheckLock() {
+		if ( is_user_logged_in() ) {
+			$user_id			= 	get_current_user_id();
+		} else {
+			$user_id			=	0;
+		}
+
+		if ( isset( $_POST['quizId'] ) ) {
+			$id 				= 	absint( $_POST['quizId'] );
+		} else {
+			$id					= 	0;
+		}
+
+		if ( isset( $_POST['quiz'] ) ) {
+			$quiz_post_id 		= 	absint( $_POST['quiz'] );
+		} else {
+			$quiz_post_id		= 	0;
+		}
+
+		if ( ! wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $id .'-' . $user_id ) ) {
+			die();
+		}
+
 		$quizController = new WpProQuiz_Controller_Quiz();
 		
 		echo json_encode($quizController->isLockQuiz($_POST['quizId']));
@@ -86,32 +162,47 @@ class WpProQuiz_Controller_Admin {
 	}
 	
 	public function updateSort() {
-		$c = new WpProQuiz_Controller_Question();
-		$c->route();
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'wpProQuiz_nonce' ) ) ) {
+			$c = new WpProQuiz_Controller_Question();
+			$c->route();
+		}
 	}
 	
+	public function loadQuestions() {
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'wpProQuiz_nonce' ) ) ) {
+			$c = new WpProQuiz_Controller_Question();
+			$c->route();
+		}
+	}
 	public function completedQuiz() {
+
+		if ( is_user_logged_in() ) {
+			$user_id			= 	get_current_user_id();
+		} else {
+			$user_id			=	0;
+		}
+
+		if ( isset( $_POST['quizId'] ) ) {
+			$id 				= 	absint( $_POST['quizId'] );
+		} else {
+			$id					= 	0;
+		}
+
+		if ( isset( $_POST['quiz'] ) ) {
+			$quiz_post_id 		= 	absint( $_POST['quiz'] );
+		} else {
+			$quiz_post_id		= 	0;
+		}
+		
+		if ( ! wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $id .'-' . $user_id ) ) {
+			die();
+		}
+
 		// First we unpack the $_POST['results'] string
 		if ( ( isset( $_POST['results'] ) ) && ( !empty( $_POST['results'] ) ) && ( is_string( $_POST['results'] ) ) ) {
 			$_POST['results'] = json_decode(stripslashes($_POST['results']), true);
 		}
 		
-		if ( is_user_logged_in() )
-			$user_id			= 	get_current_user_id();
-		else
-			$user_id			=	0;
-		
-		if ( isset( $_POST['quizId'] ) )
-			$id 				= 	$_POST['quizId'];
-		else
-			$id					= 	0;
-
-		if ( isset( $_POST['quiz'] ) )
-			$quiz_post_id 		= 	$_POST['quiz'];
-		else
-			$quiz_post_id		= 	0;
-
-
 		// LD 2.4.3 - Change in logic. Instead of accepting the values for points, correct etc from JS we now pass the 'results' array on the complete quiz
 		// AJAX action. This now let's us verify the points, correct answers etc. as each have a unique nonce. 
 		$total_awarded_points = 0;
@@ -171,16 +262,19 @@ class WpProQuiz_Controller_Admin {
 		$isRtl = isset($wp_locale->is_rtl) ? $wp_locale->is_rtl : false;
 		
 		$translation_array = array(
-			'delete_msg' => sprintf( esc_html_x('Do you really want to delete the %s/question?', 'Do you really want to delete the quiz/question?', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
+			// translators: placeholder: quiz.
+			'delete_msg' => sprintf( esc_html_x('Do you really want to delete the %s/question?', 'placeholder: quiz.', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
 			'no_title_msg' => esc_html__('Title is not filled!', 'learndash'),
 			'no_question_msg' => esc_html__('No question deposited!', 'learndash'),
 			'no_correct_msg' => esc_html__('Correct answer was not selected!', 'learndash'),
 			'no_answer_msg' => esc_html__('No answer deposited!', 'learndash'),
-			'no_quiz_start_msg' => sprintf( esc_html_x('No %s description filled!', 'No quiz description filled!', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
+			// translators: placeholder: quiz.
+			'no_quiz_start_msg' => sprintf( esc_html_x('No %s description filled!', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
 			'fail_grade_result' => esc_html__('The percent values in result text are incorrect.', 'learndash'),
 			'no_nummber_points' => esc_html__('No number in the field "Points" or less than 1', 'learndash'),
 			'no_nummber_points_new' => esc_html__('No number in the field "Points" or less than 0', 'learndash'),
-			'no_selected_quiz' => sprintf( esc_html_x('No %s selected', 'No quiz selected', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
+			// translators: placeholder: quiz.
+			'no_selected_quiz' => sprintf( esc_html_x('No %s selected', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
 			'reset_statistics_msg' => esc_html__('Do you really want to reset the statistic?', 'learndash'),
 			'no_data_available' => esc_html__('No data available', 'learndash'),
 			'no_sort_element_criterion' => esc_html__('No sort element in the criterion', 'learndash'),
@@ -190,8 +284,7 @@ class WpProQuiz_Controller_Admin {
 			'not_all_fields_completed' => esc_html__('Not all fields completed.', 'learndash'),
 			'temploate_no_name' => esc_html__('You must specify a template name.', 'learndash'),
 			'no_delete_answer' => esc_html__('Cannot delete only answer', 'learndash'),
-				
-				
+
 			'closeText'         => esc_html__('Close', 'learndash'),
 			'currentText'       => esc_html__('Today', 'learndash'),
 			'monthNames'        => array_values($wp_locale->month),
@@ -203,10 +296,7 @@ class WpProQuiz_Controller_Admin {
 			'firstDay'          => get_option('start_of_week'),
 			'isRTL'             => $isRtl
 		);
-		
-		
-		
-		
+
 		wp_localize_script('wpProQuiz_admin_javascript', 'wpProQuizLocalize', $translation_array);
 	}
 	
@@ -225,7 +315,8 @@ class WpProQuiz_Controller_Admin {
 	}
 	
 	public function register_page() {
-		$quiz_title = sprintf( esc_html_x('Advanced %s', 'Advanced Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) );
+		// translators: placeholder: Quiz.
+		$quiz_title = sprintf( esc_html_x('Advanced %s', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) );
 	    $page = add_submenu_page(
 			"edit.php?post_type=sfwd-quiz", 
 			$quiz_title, 

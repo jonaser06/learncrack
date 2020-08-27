@@ -120,9 +120,10 @@ jQuery(document).ready(function($) {
 
 		var methode = {
 			saveSort: function() {
-
+				var nonce = jQuery('#wpProQuiz_nonce').data('nonce');
 				var data = {
 					action: 'wp_pro_quiz_update_sort',
+					nonce: nonce,
 					sort: methode.parseSortArray()
 				};
 
@@ -154,8 +155,10 @@ jQuery(document).ready(function($) {
 				var list = $('#questionCopySelect');
 				var location = window.location.pathname + window.location.search;
 				var url = location.replace('admin.php', 'admin-ajax.php') + '&action=load_question';
+				var nonce = jQuery('#wpProQuiz_nonce').data('nonce');
 				var data = {
 					action: 'wp_pro_quiz_load_question',
+					nonce: nonce,
 					excludeId: 1
 				};
 				
@@ -364,8 +367,11 @@ jQuery(document).ready(function($) {
 				var url = location.replace('post.php', 'admin-ajax.php');
 				url = url.replace('action=edit', 'action=reset_lock');
 				
+				var nonce = $('input[name="resetQuizLock"]').data('nonce');
+				
 				$.post(url, {
-					action: 'wp_pro_quiz_reset_lock'
+					action: 'wp_pro_quiz_reset_lock',
+					nonce: nonce,
 				}, function(data) {
 					$('#resetLockMsg').show('fast').delay(2000).hide('fast');
 				});
@@ -936,9 +942,12 @@ jQuery(document).ready(function($) {
 			loadData: function(action) {
 				var location = window.location.pathname + window.location.search;
 				var url = location.replace('admin.php', 'admin-ajax.php') + '&action=load_toplist';
+				var nonce = $('#wpProQuiz_loadData').data('nonce');
+
 				var th = this;
 				var data = {
 					action: 'wp_pro_quiz_load_toplist',
+					nonce: nonce,
 					sort: elements.sort.val(),
 					limit: elements.pageLimit.val(),
 					page: elements.currentPage.val()
@@ -1212,8 +1221,10 @@ jQuery(document).ready(function($) {
 			},
 			
 			ajaxPost: function(func, data, success) {
+				var nonce = jQuery('#wpProQuiz_nonce').data('nonce');
 				var d = {
 					action: 'wp_pro_quiz_admin_ajax',
+					nonce: nonce,
 					func: func,
 					data: data
 				};
@@ -1638,13 +1649,15 @@ jQuery(document).ready(function($) {
 					
 					addCategory: function() {
 						var name = $.trim($('input[name="categoryAdd"]').val());
-						
+						var nonce = jQuery('#wpProQuiz_nonce').data('nonce');
+
 						if(global.isEmpty(name)) {
 							return;
 						}
 						
 						var data = {
-							categoryName: name
+							categoryName: name,
+							nonce: nonce
 						};
 						
 						global.ajaxPost('categoryAdd', data, function(json) {
@@ -2536,12 +2549,14 @@ jQuery(document).ready(function($) {
 			
 			statisticNew: function() {
 				var quizId = $('#quizId').val();
+				var quiz = $('#quiz').val();
 				var historyNavigator = null;
 				var overviewNavigator = null;
 				
 				var historyFilter = {
 					data: {
 						quizId: quizId,
+						quiz: quiz,
 						users: -1,
 						pageLimit: 100,
 						dateFrom: 0,
@@ -2573,7 +2588,8 @@ jQuery(document).ready(function($) {
 						pageLimit: 100,
 						onlyCompleted: 0,
 						generateNav: 0,
-						quizId: quizId
+						quizId: quizId,
+						quiz: quiz,
 					},
 					
 					changeFilter: function() {

@@ -13,15 +13,23 @@
  * @package LearnDash\Lesson
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 
 	$post_settings = learndash_get_setting( $course_step_post->ID );
 	$assignments   = learndash_get_user_assignments( $course_step_post->ID, $user_id );
 
 	/**
-	 * Action to add custom content before assignment list
+	 * Fires before the assignment list alerts.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+	 * @param int $course_id           Course ID.
+	 * @param int $user_id             User ID.
 	 */
 	do_action( 'learndash-assignment-alerts-before', $course_step_post->ID, $course_id, $user_id );
 
@@ -42,6 +50,14 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 					$message['icon'] = 'checkmark';
 				}
 
+				/**
+				 * Filters message shown after assignment upload.
+				 *
+				 * @param string $message          The message showed after the assignment upload.
+				 * @param int $course_step_post_id Course step post ID.
+				 * @param int $course_id           Course ID.
+				 * @param int $user_id             User ID.
+				 */
 				$message = apply_filters( 'learndash_assignment_upload_message', $message, $course_step_post->ID, $course_id, $user_id );
 
 				learndash_get_template_part(
@@ -63,9 +79,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 
 
 	/**
-	 * Action to add custom content before assignment list
+	 * Fires after the assignment list alerts.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+	 * @param int $course_id           Course ID.
+	 * @param int $user_id             User ID.
 	 */
 	do_action( 'learndash-assignment-alerts-after', $course_step_post->ID, $course_id, $user_id );
 
@@ -75,9 +95,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 	}
 
 	/**
-	 * Action to add custom content before assignment list
+	 * Fires before the assignment list.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+	 * @param int $course_id           Course ID.
+	 * @param int $user_id             User ID.
 	 */
 	do_action( 'learndash-assignment-list-before', $course_step_post->ID, $course_id, $user_id ); ?>
 
@@ -86,6 +110,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 
 	if ( absint( $assignment_stats['complete'] ) !== absint( $assignment_stats['total'] ) ) :
 
+		/**
+		 * Fires before the assignment approval alert.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
 		do_action( 'learndash-assignment-list-before-aproval-alert', $course_step_post->ID, $course_id, $user_id );
 
 		$approval_needed = $assignment_stats['total'] - $assignment_stats['complete'];
@@ -100,15 +131,26 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 			true
 		);
 
+		/**
+		 * Fires after the assignment approval alert.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
 		do_action( 'learndash-assignment-list-after-aproval-alert', $course_step_post->ID, $course_id, $user_id );
 
 	endif;
 
 
 	/**
-	 * Action to add custom content before assignment list
+	 * Fires after the alert and before the table in assignment list.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+	 * @param int $course_id           Course ID.
+	 * @param int $user_id             User ID.
 	 */
 	do_action( 'learndash-assignment-list-after-alert-before-table', $course_step_post->ID, $course_id, $user_id );
 	?>
@@ -118,9 +160,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 			<div class="ld-table-list-title">
 				<?php
 				/**
-				 * Action to add custom content before assignment list header
+				 * Fires before the assignment list table header.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+				 * @param int $course_id           Course ID.
+				 * @param int $user_id             User ID.
 				 */
 				do_action( 'learndash-assignment-list-table-header-before', $course_step_post->ID, $course_id, $user_id );
 				?>
@@ -130,15 +176,25 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 				<?php
 				echo esc_html_e( 'Assignments', 'learndash' );
 				/**
-				 * Action to add custom content after assignment list header
+				 * Fires after the assignment list table header.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+				 * @param int $course_id           Course ID.
+				 * @param int $user_id             User ID.
 				 */
 				do_action( 'learndash-assignment-list-table-header-after', $course_step_post->ID, $course_id, $user_id );
 				?>
 			</div>
 			<div class="ld-table-list-columns">
 				<?php
+
+				/**
+				 * Filters assignments listing columns. Used to add new or remove existing columns in the assignment table.
+				 *
+				 * @param array $columns An Array of columns keyed with column CSS class and label as value
+				 */
 				$columns = apply_filters(
 					'learndash-assignment-list-columns',
 					array(
@@ -157,18 +213,30 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 						<?php
 
 						/**
-						 * Action to add custom content before assignment list column
+						 * Fires before the assignment list column.
 						 *
-						 * @since 3.0
+						 * The dynamic part of the hook `$class` refers to the slug of the column.
+						 *
+						 * @since 3.0.0
+						 *
+						 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+						 * @param int $course_id           Course ID.
+						 * @param int $user_id             User ID.
 						 */
 						do_action( 'learndash-assignment-list-table-before-column-' . $class, $course_step_post->ID, $course_id, $user_id );
 
 						echo esc_html( $label );
 
 						/**
-						 * Action to add custom content after assignment list column
+						 * Fires after the assignment list column.
 						 *
-						 * @since 3.0
+						 * The dynamic part of the hook `$class` refers to the slug of the column.
+						 *
+						 * @since 3.0.0
+						 *
+						 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+						 * @param int $course_id           Course ID.
+						 * @param int $user_id             User ID.
 						 */
 						do_action( 'learndash-assignment-list-table-after-column-' . $class, $course_step_post->ID, $course_id, $user_id );
 						?>
@@ -178,9 +246,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 		</div> <!--/.ld-table-list-header-->
 		<?php
 		/**
-		 * Action to add custom content before assignment list
+		 * Fires after the assignment list header.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
 		 */
 		do_action( 'learndash-assignment-list-header-after', $course_step_post->ID, $course_id, $user_id );
 		?>
@@ -189,11 +261,7 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 
 			<?php
 
-			/**
-			 * Action to add custom content after assignment list
-			 *
-			 * @since 3.0
-			 */
+			/** This action is documented in themes/ld30/templates/assignment/listing.php */
 			do_action( 'learndash-assignment-list-before', $course_step_post->ID, $course_id, $user_id );
 
 			if ( ! empty( $assignments ) ) :
@@ -221,9 +289,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 			endif;
 
 				/**
-				 * Action to add custom content after assignment list
+				 * Fires after the assignment list.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+				 * @param int $course_id           Course ID.
+				 * @param int $user_id             User ID.
 				 */
 				do_action( 'learndash-assignment-list-after', $course_step_post->ID, $course_id, $user_id );
 
@@ -240,9 +312,13 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 
 
 			/**
-			 * Action to add custom content after assignment list
+			 * Fires after the assignment upload.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+			 * @param int $course_id           Course ID.
+			 * @param int $user_id             User ID.
 			 */
 			do_action( 'learndash-assignment-upload-after', $course_step_post->ID, $course_id, $user_id );
 			?>
@@ -257,9 +333,5 @@ if ( isset( $course_step_post ) && $course_step_post instanceof WP_Post ) :
 	<?php
 endif;
 
-/**
- * Action to add custom content after assignment list
- *
- * @since 3.0
- */
+/** This action is documented in themes/ld30/templates/assignment/listing.php */
 do_action( 'learndash-assignment-list-after', $course_step_post->ID, $course_id, $user_id ); ?>

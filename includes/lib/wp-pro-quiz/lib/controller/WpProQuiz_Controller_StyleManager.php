@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_StyleManager extends WpProQuiz_Controller_Controller {
 	
 	public function route() {

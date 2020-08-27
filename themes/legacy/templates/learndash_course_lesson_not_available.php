@@ -27,7 +27,9 @@ $wrap_end = '</small>';
 // The figure out how to display it
 if ( $context == 'lesson' ) {
 	// On the lesson single we display additional information. 
-	$message .= '<br><br><a href="'. get_permalink( $course_id) . '">'. sprintf( esc_html_x( 'Return to %s Overview', 'Return to Course Overview Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ) . '</a>';
+	$message .= '<br><br><a href="'. get_permalink( $course_id) . '">'. 
+	// translators: placeholder: Course.
+	sprintf( esc_html_x( 'Return to %s Overview', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ) . '</a>';
 	
 	$wrap_start = '<div class="notavailable_message">';
 	$wrap_end = '</div>';
@@ -37,4 +39,5 @@ if ( $context == 'lesson' ) {
 } else {
 	// Default no changes
 }
+/** This filter is documented in themes/ld30/templates/modules/messages/lesson-not-available.php */
 echo $wrap_start . apply_filters( 'learndash_lesson_available_from_text', $message, get_post( $lesson_id ), $lesson_access_from_int ) . $wrap_end;

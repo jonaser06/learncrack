@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 
@@ -7,7 +10,8 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 	public function route() {
 
 		if ( ! isset( $_GET['quiz_id'] ) || empty( $_GET['quiz_id'] ) ) {
-			WpProQuiz_View_View::admin_notices( sprintf( esc_html_x( '%s not found', 'Quiz not found', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ), 'error' );
+			// translators: placeholder: Quiz.
+			WpProQuiz_View_View::admin_notices( sprintf( esc_html_x( '%s not found', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ), 'error' );
 
 			return;
 		}
@@ -18,32 +22,19 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 		$m = new WpProQuiz_Model_QuizMapper();
 
 		if ( $m->exists( $this->_quizId ) == 0 ) {
-			WpProQuiz_View_View::admin_notices( sprintf( esc_html_x( '%s not found', 'Quiz not found', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),'error' );
+			// translators: placeholder: Quiz.
+			WpProQuiz_View_View::admin_notices( sprintf( esc_html_x( '%s not found', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),'error' );
 
 			return;
 		}
 
-// 		if(isset($this->_post['hidden_action'])) {
-// 			switch ($this->_post['hidden_action']) {
-// 				case 'edit':
-// 					$this->editPostAction($this->_post['questionId']);
-// 					break;
-// 			}
-// 		}
-
 		switch ( $action ) {
-// 			case 'add':
-// 				$this->createAction();
-// 				break;
 			case 'show':
 				$this->showAction();
 				break;
 			case 'addEdit':
 				$this->addEditQuestion( (int) $_GET['quiz_id'] );
 				break;
-// 			case 'edit':
-// 				$this->editAction($_GET['id']);
-// 				break;
 			case 'delete':
 				$this->deleteAction( $_GET['id'] );
 				break;
@@ -78,7 +69,9 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 		$templateMapper = new WpProQuiz_Model_TemplateMapper();
 
 		if ( $questionId && $questionMapper->existsAndWritable( $questionId ) == 0 ) {
-			WpProQuiz_View_View::admin_notices( esc_html__( 'Question not found', 'learndash' ), 'error' );
+			WpProQuiz_View_View::admin_notices( sprintf( 
+				// translators: placeholder: Question.
+				esc_html_x( '%s not found', 'placeholder: Question', 'learndash' ), LearnDash_Custom_Label::get_label( 'question' ) ), 'error' );
 
 			return;
 		}
@@ -101,12 +94,8 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 			}
 		} else if ( isset( $this->_post['submit'] ) ) {
 			$add_new_question_url = admin_url( "admin.php?page=ldAdvQuiz&module=question&action=addEdit&quiz_id=" . $quizId . "&post_id=" . @$_REQUEST["post_id"] );
-			$add_new_question     = "<a href='" . $add_new_question_url . "'>" . esc_html__( "Click here to add another question.", 'learndash' ) . "</a>";
-			//if ( $questionId ) {
-			//	WpProQuiz_View_View::admin_notices( esc_html__( 'Question edited', 'learndash' ) . ". " . $add_new_question, 'info' );
-			//} else {
-			//	WpProQuiz_View_View::admin_notices( esc_html__( 'Question added', 'learndash' ) . ". " . $add_new_question, 'info' );
-			//}
+			// translators: placeholder: question.
+			$add_new_question     = "<a href='" . $add_new_question_url . "'>" . sprintf( esc_html_x( 'Click here to add another %s.', 'placeholder: question', 'learndash'), LearnDash_Custom_Label::get_label( 'question' ) ) . "</a>";
 
 			$question   = $questionMapper->save( $this->getPostQuestionModel( $quizId, $questionId ), true );
 
@@ -170,6 +159,7 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 
 		if ( ( isset( $post['title'] ) ) && ( empty( $post['title'] ) ) ) {
 			$count = $questionMapper->count( $quizId );
+			// translators: placeholder: question count.
 			$post['title'] = sprintf( esc_html_x( 'Question: %d', 'placeholder: question count' , 'learndash' ), $count + 1 );
 		}
 
@@ -214,8 +204,6 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 
 			$m->save( $question );
 		}
-
-		//WpProQuiz_View_View::admin_notices( esc_html__( 'questions copied', 'learndash' ), 'info' );
 
 		$this->showAction();
 	}
@@ -283,10 +271,12 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'learndash' ) );
 		}
 
-		$mapper = new WpProQuiz_Model_QuestionMapper();
-		$mapper->setOnlineOff( $id );
+		if ( ( isset( $_GET['question-delete-nonce'] ) ) && ( ! empty( $_GET['question-delete-nonce'] ) ) && ( wp_verify_nonce( $_GET['question-delete-nonce'], 'question-delete-nonce-' . absint( $id ) ) ) ) {
+			$mapper = new WpProQuiz_Model_QuestionMapper();
+			$mapper->setOnlineOff( $id );
 
-		$this->showAction();
+			$this->showAction();
+		}
 	}
 
 	/**
@@ -336,7 +326,8 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 			if ( empty( $post['title'] ) ) {
 				$question = $mapper->fetch( $id );
 
-				$post['title'] = sprintf( esc_html__( 'Question: %d', 'learndash' ), $question->getSort() + 1 );
+				// translators: placeholder: Quiz sequence.
+				$post['title'] = sprintf( esc_html_x( 'Question: %d', 'placeholder: Quiz sequence', 'learndash' ), $question->getSort() + 1 );
 			}
 
 			if ( $post['answerType'] === 'assessment_answer' ) {
@@ -358,7 +349,6 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 			$post['categoryId'] = $post['category'] > 0 ? $post['category'] : 0;
 
 			$mapper->save( new WpProQuiz_Model_Question( $post ), true );
-			//WpProQuiz_View_View::admin_notices( esc_html__( 'Question edited', 'learndash' ), 'info' );
 		}
 	}
 
@@ -549,13 +539,6 @@ class WpProQuiz_Controller_Question extends WpProQuiz_Controller_Controller {
 		$this->view           = new WpProQuiz_View_QuestionOverall();
 		$this->view->quiz     = $m->fetch( $this->_quizId );
 
-		//if ( isset( $_GET['post_id'] ) ) {
-		//	$quiz_post_id = absint( $_GET['post_id'] );
-		//	if ( $quiz_post_id !== absint( $this->view->quiz->getPostId() ) ) {
-		//		$this->view->quiz->setPostId( $quiz_post_id );
-		//	}
-		//}
-		//$this->view->question = $mm->fetchAll( $this->view->quiz );
 		$this->view->question = $mm->fetchAll( $this->_quizId );
 		$this->view->show();
 	}

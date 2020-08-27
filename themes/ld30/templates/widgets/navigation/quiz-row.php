@@ -1,7 +1,10 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 $classes = array(
-	'container' => 'ld-lesson-item' . ( 'completed' === $quiz['status'] ? ' learndash-complete' : ' learndash-incomplete' ),
+	'container' => 'ld-lesson-item' . ( get_the_ID() === absint( $quiz['post']->ID ) ? ' ld-is-current-lesson ' : '' ) . ( 'completed' === $quiz['status'] ? ' learndash-complete' : ' learndash-incomplete' ),
 	'wrapper'   => 'ld-lesson-item-preview' . ( get_the_ID() === absint( $quiz['post']->ID ) ? ' ld-is-current-item ' : '' ),
 	'anchor'    => 'ld-lesson-item-preview-heading ld-primary-color-hover',
 	'title'     => 'ld-lesson-title',
@@ -16,7 +19,7 @@ if ( isset( $context ) && 'lesson' === $context ) {
 
 <div class="<?php echo esc_attr( $classes['container'] ); ?>">
 	<div class="<?php echo esc_attr( $classes['wrapper'] ); ?>">
-		<a class="<?php echo esc_attr( $classes['anchor'] ); ?>" href="<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>">
+		<a class="<?php echo esc_attr( $classes['anchor'] ); ?>" href="<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>">
 
 			<?php learndash_status_icon( $quiz['status'], 'sfwd-quiz', null, true ); ?>
 

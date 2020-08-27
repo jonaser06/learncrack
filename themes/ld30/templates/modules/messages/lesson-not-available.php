@@ -51,6 +51,13 @@ if ( 'lesson' === $context ) {
 			'type'    => 'info',
 			'icon'    => 'calendar',
 			'button'  => $button,
+			/**
+			 * Filters the message markup for when the lesson will be available.
+			 *
+			 * @param string $message Markup for lesson available message.
+			 * @param object $lesson  Lesson Object.
+			 * @param int    $name    The timestamp when the lesson will become available.
+			 */
 			'message' => apply_filters( 'learndash_lesson_available_from_text', $message, get_post( $lesson_id ), $lesson_access_from_int ),
 		),
 		true

@@ -52,9 +52,11 @@ function wpProQuiz_fetchToplist() {
 			
 			if(quizIds.length == 0)
 				return;
+			var nonce = jQuery('table.wpProQuiz_toplistTable').data('nonce');
 			
 			jQuery.post(WpProQuizGlobal.ajaxurl, {
 				action: 'wp_pro_quiz_show_front_toplist',
+				nonce: nonce,
 				quizIds: quizIds
 			}, function(json) {
 				plugin.toplist.handleRequest(json);

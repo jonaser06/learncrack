@@ -31,14 +31,21 @@
  *
  * @package LearnDash\Topic
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 
 <div class="<?php echo esc_attr( learndash_the_wrapper_class() ); ?>">
 	<?php
 	/**
-	 * Action to add custom content before the topic
+	 * Fires before the topic
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-topic-before', get_the_ID(), $course_id, $user_id );
 
@@ -128,6 +135,7 @@
 	$can_complete = false;
 
 	if ( $all_quizzes_completed && $logged_in && ! empty( $course_id ) ) :
+		/** This filter is documented in themes/ld30/templates/lesson.php */
 		$can_complete = apply_filters( 'learndash-lesson-can-complete', true, get_the_ID(), $course_id, $user_id );
 	endif;
 
@@ -146,9 +154,12 @@
 	);
 
 	/**
-	 * Action to add custom content after the topic
+	 * Fires after the topic.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-topic-after', get_the_ID(), $course_id, $user_id );
 	?>

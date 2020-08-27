@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_Quiz extends WpProQuiz_Model_Model {
 	
 	const QUIZ_RUN_ONCE_TYPE_ALL = 1;
@@ -110,7 +114,7 @@ class WpProQuiz_Model_Quiz extends WpProQuiz_Model_Model {
 	public function setId( $_id = 0 ) {
 		$this->_id = (int) $_id;
 
-		if ( empty( $this->_quiz_post_id ) ) {
+		if ( ( empty( $this->_quiz_post_id ) ) && ( ! defined( 'LEARNDASH_PROQUIZ_IMPORT' ) ) ) {
 			$this->_quiz_post_id = learndash_get_quiz_id_by_pro_quiz_id( $this->_id );
 		}
 
@@ -241,6 +245,11 @@ class WpProQuiz_Model_Quiz extends WpProQuiz_Model_Model {
 			$this->_viewPofileStatistics = false;
 		}
 
+		/**
+		 * Filters default value of whether to view profile statistics for a quiz or not.
+		 *
+		 * @param boolean $view_profile_statistics Whether to view quiz profile statistics or not.
+		 */
 		return apply_filters( 'learndash_quiz_default_viewPofileStatistics', $this->_viewPofileStatistics );
 	}
 
@@ -722,6 +731,7 @@ class WpProQuiz_Model_Quiz extends WpProQuiz_Model_Model {
 	public function get_object_as_array() {
 
 		$object_vars = array( 
+			'_id'                               => $this->getId(),
 			'_quiz_post_id' 					=> 0,
 			'_name' 							=> $this->getName(),
 			//'_text' 							=> $this->getText(),
@@ -791,7 +801,11 @@ class WpProQuiz_Model_Quiz extends WpProQuiz_Model_Model {
 		
 		foreach( $array_vars as $key => $value ) {
 			switch( $key ) {
-				case '_name':
+				case '_id':
+					$this->setId( $value );
+					break;
+
+					case '_name':
 					$this->setName( $value );
 					break;
 					

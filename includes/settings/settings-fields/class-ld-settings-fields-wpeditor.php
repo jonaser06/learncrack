@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_WPEditor' ) ) ) {
 	/**
 	 * Class to create the settings field.
@@ -30,6 +34,8 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		 * @return void
 		 */
 		public function create_section_field( $field_args = array() ) {
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
 			if ( isset( $field_args['editor_args'] ) ) {
 				$wpeditor_args = $field_args['editor_args'];
@@ -41,6 +47,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$wpeditor_args = array_merge( $wpeditor_args, $field_args['attrs'] );
 			}
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 			wp_editor(
 				$this->get_field_attribute_value( $field_args, false ),
@@ -48,6 +55,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$wpeditor_args
 			);
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_after', $html, $field_args );
 
 			echo $html;

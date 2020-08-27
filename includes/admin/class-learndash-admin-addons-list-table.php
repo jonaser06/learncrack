@@ -6,6 +6,10 @@
  * @subpackage Add-on Updates
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -20,10 +24,13 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 	class Learndash_Admin_Addons_List_Table extends WP_Plugin_Install_List_Table {
 
 		var $filters       = array();
-		var $per_page      = 10;
+		var $per_page      = 50;
 		var $columns       = array();
 		var $addon_updater = null;
 		var $group_id      = 0;
+
+		public $order   = 'DESC';
+		public $orderby = 'last_updated';
 
 		var $tabs        = array();
 		var $current_tab = 'learndash';
@@ -71,6 +78,13 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 			} else if ( 'third-party' === $this->current_tab ) {
 				$this->prepare_items_third_party();
 			} else {
+				/**
+				 * Filters add-on items for a tab.
+				 *
+				 * The dynamic part of the hook refers to the name of the current tab.
+				 * 
+				 * @param array $tab_items An array of tab list items.
+				 */
 				$this->items = apply_filters( 'learndash_addon_tab_items_' . $this->current_tab, array() );
 			}
 		}
@@ -79,7 +93,7 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 		 * Prepare items LearnDash.
 		 */
 		public function prepare_items_learndash() {
-			$this->addon_updater = new LearnDash_Addon_Updater();
+			$this->addon_updater = LearnDash_Addon_Updater::get_instance();
 			$this->items = $this->addon_updater->get_addon_plugins();
 			if ( ! empty( $this->items ) ) {
 				foreach ( $this->items as $item_slug => $item ) {
@@ -94,7 +108,9 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 		 * Prepare Items Third Party.
 		 */
 		public function prepare_items_third_party() {
-			include( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+			if ( ! function_exists( 'plugin_api' ) ) {
+				include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+			}
 
 			$paged = $this->get_pagenum();
 
@@ -104,7 +120,7 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 
 			$args = array(
 				'page' => $paged,
-				'per_page' => $per_page,
+				'per_page' => $this->per_page,
 				'fields' => array(
 					'last_updated' => true,
 					'icons' => true,
@@ -168,6 +184,31 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 		}
 
 		/**
+		 * @param object $plugin_a
+		 * @param object $plugin_b
+		 * @return int
+		 */
+		private function order_callback( $plugin_a, $plugin_b ) {
+			$orderby = $this->orderby;
+			if ( ! isset( $plugin_a[ $orderby ], $plugin_b[ $orderby ] ) ) {
+				return 0;
+			}
+
+			$a = $plugin_a[ $orderby ];
+			$b = $plugin_b[ $orderby ];
+
+			if ( $a == $b ) {
+				return 0;
+			}
+
+			if ( 'DESC' === $this->order ) {
+				return ( $a < $b ) ? 1 : -1;
+			} else {
+				return ( $a < $b ) ? -1 : 1;
+			}
+		}
+
+		/**
 		 * Display Rows.
 		 */
 		public function display_rows() {
@@ -176,6 +217,11 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 			} else if ( 'third-party' == $this->current_tab ) {
 				parent::display_rows();
 			} else {
+				/**
+				 * Fires after add-on display row.
+				 *
+				 * The dynamic portion of the hook `$this->current_tab` refers to current tab slug.
+				 */
 				do_action( 'learndash_addon_display_rows_' . $this->current_tab );
 			}
 		}
@@ -300,7 +346,7 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 						<h3>
 							<a href="<?php echo esc_url( $details_link ); ?>" class="thickbox open-plugin-details-modal">
 							<?php echo $title; ?>
-							<img src="<?php echo esc_attr( $plugin_icon_url ); ?>" class="plugin-icon" alt="">
+							<img src="<?php echo esc_url( $plugin_icon_url ); ?>" class="plugin-icon" alt="">
 							</a>
 						</h3>
 					</div>
@@ -374,6 +420,11 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 		protected function get_views() {
 			$display_tabs = array();
 
+			/**
+			 * Filters list of add-on tabs.
+			 * 
+			 * @param array $tabs An array of tabs list.
+			 */
 			$this->tabs = apply_filters( 'learndash_addon_tabs', $this->tabs );
 
 			foreach ( (array) $this->tabs as $action => $tab_set ) {
@@ -391,7 +442,7 @@ if ( ( class_exists( 'WP_Plugin_Install_List_Table' ) ) && ( ! class_exists( 'Le
 		public function views() {
 			$views = $this->get_views();
 
-			/** This filter is documented in wp-admin/inclues/class-wp-list-table.php */
+			/** This filter is documented in https://developer.wordpress.org/reference/hooks/views_this-screen-id/ */
 			$views = apply_filters( "views_{$this->screen->id}", $views );
 
 			$this->screen->render_screen_reader_content( 'heading_views' );

@@ -7,11 +7,27 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Filters custom alert type.
+ *
+ * @param string $type Alert message type.
+ */
 $type = apply_filters(
 	'ld-alert-type',
 	( ( isset( $type ) ) && ( ! empty( $type ) ) ? $type : '' )
 );
 
+/**
+ * Filters custom alert icon CSS class.
+ *
+ * @param string $alert_class List of alert Icon CSS classes.
+ * @param string $type        Alert message type.
+ * @param string $icon        List of alert icon CSS classes.
+ */
 $icon = apply_filters(
 	'ld-alert-icon',
 	'ld-alert-icon ld-icon' . ( ( isset( $icon ) ) && ( ! empty( $icon ) ) ? ' ld-icon-' . $icon : '' ),
@@ -19,6 +35,13 @@ $icon = apply_filters(
 	( ( isset( $icon ) ) && ( ! empty( $icon ) ) ? $icon : '' )
 );
 
+/**
+ * Filters custom alert message CSS class.
+ *
+ * @param string $alert_class List of alert CSS classes.
+ * @param string $type        Alert message type.
+ * @param string $icon        List of alert icon CSS classes.
+ */
 $class = apply_filters(
 	'ld-alert-class',
 	'ld-alert ' . ( ! empty( $type ) ? 'ld-alert-' . $type : '' ),
@@ -26,6 +49,13 @@ $class = apply_filters(
 	( ! empty( $icon ) ? $icon : '' )
 );
 
+/**
+ * Filters LearnDash custom alert message text.
+ *
+ * @param string $message Alert message text.
+ * @param string $type    Alert message type.
+ * @param string $icon    List of alert icon CSS classes.
+ */
 $message = apply_filters(
 	'learndash_alert_message',
 	$message,
@@ -36,9 +66,14 @@ $message = apply_filters(
 if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 
 	/**
-	 * Add content between before an alert
+	 * Fires between before an alert.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param string $class   List of alert CSS classes.
+	 * @param string $icon    List of alert icon CSS classes.
+	 * @param string $message Alert message text.
+	 * @param string $type    Alert message type.
 	 */
 	do_action( 'learndash-alert-before', $class, $icon, $message, $type ); ?>
 
@@ -47,9 +82,14 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 
 			<?php
 			/**
-			 * Add content between before an alert icon
+			 * Fires before an alert icon.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param string $class   List of alert CSS classes.
+			 * @param string $icon    List of alert icon CSS classes.
+			 * @param string $message Alert message text.
+			 * @param string $type    Alert message type.
 			 */
 			do_action( 'learndash-alert-icon-before', $class, $icon, $message, $type );
 
@@ -60,9 +100,14 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 			endif;
 
 			/**
-			 * Add content after an alert icon
+			 * Fires after an alert icon.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param string $class   List of alert CSS classes.
+			 * @param string $icon    List of alert icon CSS classes.
+			 * @param string $message Alert message text.
+			 * @param string $type    Alert message type.
 			 */
 			do_action( 'learndash-alert-icon-after', $class, $icon, $message, $type );
 
@@ -75,9 +120,14 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 			<?php
 
 			/**
-			 * Add content after an alert message
+			 * Fires after an alert message.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param string $class   List of alert CSS classes.
+			 * @param string $icon    List of alert icon CSS classes.
+			 * @param string $message Alert message text.
+			 * @param string $type    Alert message type.
 			 */
 			do_action( 'learndash-alert-message-after', $class, $icon, $message, $type );
 			?>
@@ -85,12 +135,22 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 
 		<?php
 		/**
-		 * Add content between alert message and button
+		 * Fires between alert message and button
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string $class   List of alert CSS classes.
+		 * @param string $icon    List of alert icon CSS classes.
+		 * @param string $message Alert message text.
+		 * @param string $type    Alert message type.
 		 */
 		do_action( 'learndash-alert-between-message-button', $class, $icon, $message, $type );
 
+		/**
+		 * Filters alert button data.
+		 *
+		 * @param array $button An array of alert button data.
+		 */
 		$button = apply_filters(
 			'ld-alert-button',
 			( ( isset( $button ) ) && ( ! empty( $button ) ) ? $button : array() )
@@ -115,9 +175,14 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 		endif;
 
 		/**
-		 * Add content after an alert button
+		 * Fires after an alert button
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string $class   List of alert CSS classes.
+		 * @param string $icon    List of alert icon CSS classes.
+		 * @param string $message Alert message text.
+		 * @param string $type    Alert message type.
 		 */
 		do_action( 'learndash-alert-content-after', $class, $icon, $message, $type );
 		?>
@@ -125,9 +190,14 @@ if ( ( isset( $message ) ) && ( ! empty( $message ) ) ) :
 
 	<?php
 	/**
-	 * Add content after an alert
+	 * Fires after an alert.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param string $class   List of alert CSS classes.
+	 * @param string $icon    List of alert icon CSS classes.
+	 * @param string $message Alert message text.
+	 * @param string $type    Alert message type.
 	 */
 	do_action( 'learndash-alert-after', $class, $icon, $message, $type );
 

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_FormMapper extends WpProQuiz_Model_Mapper {
 	
 	public function deleteForm($formIds, $quizId) {

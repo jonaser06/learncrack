@@ -1,7 +1,11 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 global $learndash_shortcode_used;
 
+/** This filter is documented in includes/shortcodes/ld_course_list.php */
 $attr_defaults = apply_filters(
 	'ld_course_list_shortcode_attr_defaults',
 	array(
@@ -139,6 +143,7 @@ if ( 0 === $atts['num'] ) {
 	$atts['num'] = -1;
 }
 
+/** This filter is documented in includes/shortcodes/ld_course_list.php */
 $atts = apply_filters( 'ld_course_list_shortcode_attr_values', $atts, $attr );
 
 if ( is_user_logged_in() ) {
@@ -667,6 +672,7 @@ if ( is_null( $post__in ) ) {
 	}
 }
 
+/** This filter is documented in includes/shortcodes/ld_course_list.php */
 $filter = apply_filters( 'learndash_ld_course_list_query_args', $filter, $atts );
 
 if ( 'true' == $array ) {
@@ -750,6 +756,7 @@ if ( ( trim( $categoryselector ) == 'true' ) && ( LearnDash_Settings_Section::ge
 		if ( ! empty( $cats ) ) {
 
 			// And also let this query be filtered.
+			/** This filter is documented in includes/shortcodes/ld_course_list.php */
 			$get_categories_args = apply_filters(
 				'learndash_course_list_category_args',
 				array(
@@ -824,6 +831,7 @@ if ( ( trim( $atts[ $post_type_slug . '_categoryselector' ] ) == 'true' ) && ( e
 		if ( ! empty( $ld_cats ) ) {
 
 			// And also let this query be filtered.
+			/** This filter is documented in includes/shortcodes/ld_course_list.php */
 			$get_ld_categories_args = apply_filters(
 				'learndash_course_list_' . $post_type_slug . '_category_args',
 				array(
@@ -877,13 +885,7 @@ if ( 'true' == $include_outer_wrapper ) {
 
 		$categorydropdown .= "</select><input type='submit' style='display:none'></form></div>";
 
-		/**
-		 * Filter HTML output of category dropdown
-		 *
-		 * @since 2.1.0
-		 *
-		 * @param  string  $categorydropdown
-		 */
+		/** This filter is documented in includes/shortcodes/ld_course_list.php */
 		echo apply_filters( 'ld_categorydropdown', $categorydropdown, $atts, $filter );
 	}
 
@@ -910,13 +912,7 @@ if ( 'true' == $include_outer_wrapper ) {
 
 		$ld_categorydropdown .= "</select><input type='submit' style='display:none'></form></div>";
 
-		/**
-		 * Filter HTML output of category dropdown
-		 *
-		 * @since 2.1.0
-		 *
-		 * @param  string  $categorydropdown
-		 */
+		/** This filter is documented in includes/shortcodes/ld_course_list.php */
 		echo apply_filters( 'ld_' . $post_type_slug . '_categorydropdown', $ld_categorydropdown, $atts, $filter );
 	}
 }
@@ -1008,11 +1004,5 @@ $output = learndash_ob_get_clean( $level );
 
 $learndash_shortcode_used = true;
 
-/**
- * Filter HTML output of category dropdown
- *
- * @since 2.1.0
- *
- * @param  string $output
- */
+/** This filter is documented in includes/shortcodes/ld_course_list.php */
 return apply_filters( 'ld_course_list', $output, $atts, $filter );

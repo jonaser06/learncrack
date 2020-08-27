@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_AnswerTypes extends WpProQuiz_Model_Model {
 	protected $_answer = '';
 	protected $_html = false;

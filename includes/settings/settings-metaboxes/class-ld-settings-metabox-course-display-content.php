@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Course_Display_Content' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -126,6 +130,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				'order' 	=>	LearnDash_Settings_Section::get_section_setting_select_option_label( 'LearnDash_Settings_Section_Lessons_Display_Order', 'order' ),
 			);
 
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_cert_options_default = array(
 					'-1' => esc_html__( 'Search or select a certificate…', 'learndash' ),
@@ -336,6 +341,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				unset( $this->setting_option_fields['course_lesson_order'] );
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();
@@ -430,7 +436,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					$settings_values['course_lesson_orderby'] = '';
 					$settings_values['course_lesson_order']   = '';
 				}
-
+				
+				/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 				apply_filters( 'learndash_settings_save_values', $settings_values, $this->settings_metabox_key );
 			}
 

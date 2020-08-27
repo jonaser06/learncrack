@@ -6,6 +6,10 @@
  * @subpackage Groups Listing
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 	/**
 	 * Class to create the Admin Groups Users List.
@@ -35,24 +39,35 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 
 			$menu_user_cap = '';
 
-			if ( learndash_is_admin_user() ) {
+			if ( current_user_can( 'edit_groups' ) ) {
 				$user_group_ids = learndash_get_administrators_group_ids( get_current_user_id(), true );
 				if ( ! empty( $user_group_ids ) ) {
-					$menu_user_cap = LEARNDASH_ADMIN_CAPABILITY_CHECK;
+					$menu_user_cap = 'edit_groups';
 					$menu_parent   = 'edit.php?post_type=groups';
 				}
 			} elseif ( learndash_is_group_leader_user() ) {
-				$menu_user_cap = LEARNDASH_GROUP_LEADER_CAPABILITY_CHECK;
-				$menu_parent   = 'learndash-lms';
-				//$menu_parent = 'admin.php?page=group_admin_page';
+				$user_group_ids = learndash_get_administrators_group_ids( get_current_user_id(), true );
+				if ( ! empty( $user_group_ids ) ) {
+					$menu_user_cap = LEARNDASH_GROUP_LEADER_CAPABILITY_CHECK;
+					$menu_parent   = 'learndash-lms';
+					//$menu_parent = 'admin.php?page=group_admin_page';
+				}
 			}
 
 			if ( ! empty( $menu_user_cap ) ) {
 
 				$pagehook = add_submenu_page(
 					$menu_parent,
-					esc_html__( 'Group Administration', 'learndash' ),
-					esc_html__( 'Group Administration', 'learndash' ),
+					sprintf(
+						// translators: Group.
+						esc_html_x( '%s Administration', 'placeholder: Group', 'learndash' ),
+						LearnDash_Custom_Label::get_label( 'group' )
+					),
+					sprintf(
+						// translators: Group.
+						esc_html_x( '%s Administration', 'placeholder: Group', 'learndash' ),
+						LearnDash_Custom_Label::get_label( 'group' )
+					),
 					$menu_user_cap,
 					'group_admin_page',
 					array( $this, 'show_page' )
@@ -186,9 +201,12 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 					return;
 				}
 			}
-			//$this->title = esc_html__( 'Group Administration', 'learndash' );
 
-			$this->list_table->columns['group_name']    = esc_html__( 'Group Name', 'learndash' );
+			$this->list_table->columns['group_name']    = sprintf(
+				// translators: placeholder: Groups.
+				esc_html_x( '%s', 'placeholder: Groups', 'learndash' ),
+				LearnDash_Custom_Label::get_label( 'groups' )
+			);
 			$this->list_table->columns['group_actions'] = esc_html__( 'Actions', 'learndash' );
 		}
 
@@ -202,7 +220,13 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 				<?php
 					$current_user = wp_get_current_user();
 				if ( ( ! learndash_is_group_leader_user( $current_user ) ) && ( ! learndash_is_admin_user( $current_user ) ) ) {
-					die( esc_html__( 'Please login as a Group Administrator', 'learndash' ) );
+					die(
+						sprintf(
+							// translators: placeholder: Group.
+							esc_html_x( 'Please login as a %s Administrator', 'placeholder: Group', 'learndash' ),
+							LearnDash_Custom_Label::get_label( 'group' )
+						) 
+					);
 				}
 				?>
 				<div class="wrap-learndash-view-content">
@@ -264,9 +288,13 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 										<?php
 										$this->list_table->search_box( esc_html__( 'Search Users', 'learndash' ), 'users' );
 									} else {
-										$this->list_table->search_box( esc_html__( 'Search Groups', 'learndash' ), 'groups' );
+										$this->list_table->search_box( sprintf(
+											// translators: placeholder: Groups.
+											esc_html_x( 'Search %s', 'placeholder: Groups', 'learndash' ),
+											LearnDash_Custom_Label::get_label( 'groups' )
+										), 'groups' );
 									}
-									wp_nonce_field( 'ld-group-list-view-nonce', 'ld-group-list-view-nonce' );
+									wp_nonce_field( 'ld-group-list-view-nonce-' . get_current_user_id(), 'ld-group-list-view-nonce' );
 									$this->list_table->display();
 							} else {
 								$group_user_ids = learndash_get_groups_user_ids( $this->group_id );
@@ -284,10 +312,13 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 										);
 
 										/**
-											 * Allow filtering of group admininstration output
-											 *
-											 * @since 2.5.7
-											 */
+										 * Filters group admininstration course info attributes.
+										 *
+										 * @since 2.5.7
+										 *
+										 * @param array         $atts An array of group admin course info attributes.
+										 * @param WP_User|false $user User Object.
+										 */
 										$atts = apply_filters( 'learndash_group_administration_course_info_atts', $atts, get_user_by( 'id', $this->user_id ) );
 
 										echo learndash_course_info_shortcode( $atts );
@@ -321,19 +352,17 @@ if ( ! class_exists( 'Learndash_Admin_Groups_Users_List' ) ) {
 function learndash_data_group_reports_ajax() {
 	$reply_data = array( 'status' => false );
 
-	if ( ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) {
-		if ( isset( $_POST['data'] ) ) {
-			$post_data = $_POST['data'];
-		} else {
-			$post_data = array();
+	if ( ( is_user_logged_in() ) && ( ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) ) {
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'ld-group-list-view-nonce-' . get_current_user_id() ) ) ) {
+			if ( ( isset( $_POST['data'] ) ) && ( ! empty( $_POST['data'] ) ) ) {
+				$ld_admin_settings_data_reports = new Learndash_Admin_Settings_Data_Reports();
+				$reply_data['data']             = $ld_admin_settings_data_reports->do_data_reports( $_POST['data'], $reply_data );
+
+				if ( ! empty( $reply_data ) ) {
+					echo wp_json_encode( $reply_data );
+				}
+			}
 		}
-
-		$ld_admin_settings_data_reports = new Learndash_Admin_Settings_Data_Reports();
-		$reply_data['data']             = $ld_admin_settings_data_reports->do_data_reports( $post_data, $reply_data );
-	}
-
-	if ( ! empty( $reply_data ) ) {
-		echo wp_json_encode( $reply_data );
 	}
 
 	wp_die(); // this is required to terminate immediately and return a proper response

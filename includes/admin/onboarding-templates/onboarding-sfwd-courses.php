@@ -7,6 +7,9 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <section class="ld-onboarding-screen">
 	<div class="ld-onboarding-main">

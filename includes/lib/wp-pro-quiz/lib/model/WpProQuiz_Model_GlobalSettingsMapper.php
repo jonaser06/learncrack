@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_GlobalSettingsMapper extends WpProQuiz_Model_Mapper {
 	
 	public function fetchAll() {
@@ -64,11 +68,13 @@ class WpProQuiz_Model_GlobalSettingsMapper extends WpProQuiz_Model_Mapper {
 		if($e === null) {
 			$e['to'] = '';
 			$e['from'] = '';
-			$e['subject'] = sprintf( esc_html_x('LearnDash %1$s: One user completed a %2$s', 'LearnDash Quiz: One user completed a quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) );
+			// translators: placeholder: Quiz, quiz.
+			$e['subject'] = sprintf( esc_html_x('LearnDash %1$s: One user completed a %2$s', 'placeholder: Quiz, quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) );
 			$e['html'] = false;
-			$e['message'] = sprintf( esc_html_x('LearnDash %s
+			// translators: placeholder: Quiz, quiz.
+			$e['message'] = sprintf( esc_html_x('LearnDash %1$s
 
-The user "$username" has completed "$quizname" the %s.
+The user "$username" has completed "$quizname" the %2$s.
 
 Points: $points
 Result: $result
@@ -96,11 +102,13 @@ Result: $result
 		
 		if($e === null) {
 			$e['from'] = '';
-			$e['subject'] = sprintf( esc_html_x('LearnDash %1$s: One user completed a %2$s', 'LearnDash Quiz: One user completed a quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) );
+			// translators: placeholder: Quiz, quiz.
+			$e['subject'] = sprintf( esc_html_x('LearnDash %1$s: One user completed a %2$s', 'placeholder: Quiz, quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) );
 			$e['html'] = false;
-			$e['message'] = sprintf( esc_html_x('LearnDash %s
+			// translators: placeholder: Quiz, quiz.
+			$e['message'] = sprintf( esc_html_x('LearnDash %1$s
 			
-You have completed the %s "$quizname".
+You have completed the %2$s "$quizname".
 
 Points: $points
 Result: $result

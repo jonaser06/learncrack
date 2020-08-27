@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_QuizCompleted {
 	
 	private $data = array();
@@ -36,8 +40,16 @@ class WpProQuiz_Controller_QuizCompleted {
 		
 		if(!$this->isPreLockQuiz($quiz)) {
 			$statistics->save();
-				
-			do_action('wp_pro_quiz_completed_quiz');
+
+			// @todo Add proper first parameter for the hook according to includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php
+			/** This action is documented in includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php */
+			do_action('wp_pro_quiz_completed_quiz', 0 );
+
+			/**
+			 * Fires after the pro quiz is completed with certain percentage.
+			 *
+			 * The dynamic portion of the hook `$resultInPercent` refers to quiz result in percentage.
+			 */
 			do_action('wp_pro_quiz_completed_quiz_'.$resultInPercent.'_percent');
 				
 			return;
@@ -62,8 +74,12 @@ class WpProQuiz_Controller_QuizCompleted {
 		
 		if(!$lockIp && !$lockCookie) {
 			$statistics->save();
-		
-			do_action('wp_pro_quiz_completed_quiz');
+			
+			// @todo Add proper first parameter for the hook according to includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php
+			/** This action is documented in includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php */
+			do_action('wp_pro_quiz_completed_quiz', 0 );
+
+			/** This action is documented in includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_QuizCompleted.php */
 			do_action('wp_pro_quiz_completed_quiz_'.$resultInPercent.'_percent');
 		
 			if(get_current_user_id() == 0 && $quiz->isQuizRunOnceCookie()) {
@@ -172,7 +188,12 @@ class WpProQuiz_Controller_QuizCompleted {
 							"msg" => $msg,
 							"headers" => $headers
 						);
-
+			/**
+			 * Filters quiz completed email parameters.
+			 *
+			 * @param array                 $email_parameters An array of email parameters.
+			 * @param WpProQuiz_Model_Quiz  $quiz             Quiz object.
+			 */
 			$email_params = apply_filters("learndash_quiz_completed_email", $email_params, $quiz);
 
 			wp_mail($email_params["email"], $email_params["subject"], $email_params["msg"], $email_params["headers"]);
@@ -226,6 +247,12 @@ class WpProQuiz_Controller_QuizCompleted {
 							"headers" => $headers
 						);
 
+			/**
+			 * Filters quiz completed email parameters for admin.
+			 *
+			 * @param array                 $email_parameters An array of email parameters.
+			 * @param WpProQuiz_Model_Quiz  $quiz             Quiz object.
+			 */
 			$email_params = apply_filters("learndash_quiz_completed_email_admin", $email_params, $quiz);
 
 			wp_mail($email_params["email"], $email_params["subject"], $email_params["msg"], $email_params["headers"]);

@@ -45,7 +45,7 @@ if ( ( !class_exists( 'LD_REST_Groups_Controller_V1' ) ) && ( class_exists( 'LD_
 						'permission_callback' => array( $this, 'create_item_permissions_check' ),
 						'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				)
 			);
 
@@ -84,7 +84,7 @@ if ( ( !class_exists( 'LD_REST_Groups_Controller_V1' ) ) && ( class_exists( 'LD_
 							),
 						),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 
@@ -106,6 +106,19 @@ if ( ( !class_exists( 'LD_REST_Groups_Controller_V1' ) ) && ( class_exists( 'LD_
 			if ( ( learndash_is_admin_user( ) ) || ( learndash_is_group_leader_user() ) ) {
 				return true;
 			}
+		}
+
+		/**
+		 * Gets groups schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = $this->get_public_item_schema();
+
+			$schema['title'] = 'group';
+
+			return $schema;
 		}
 
 		function get_items( $request ) {

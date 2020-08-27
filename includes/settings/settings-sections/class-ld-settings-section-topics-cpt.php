@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Topics_CPT' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -61,10 +65,12 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				}
 
 				$this->setting_option_values = array(
-					'include_in_search' => 'yes',
-					'has_archive'       => '',
-					'has_feed'          => '',
-					'supports'          => array( 'thumbnail', 'revisions' ),
+					'include_in_search'    => 'yes',
+					'search_login_only'    => '',
+					'search_enrolled_only' => '',
+					'has_archive'          => '',
+					'has_feed'             => '',
+					'supports'             => array( 'thumbnail', 'revisions' ),
 				);
 			}
 
@@ -76,8 +82,16 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				}
 			}
 
+			if ( ! isset( $this->setting_option_values['search_login_only'] ) ) {
+				$this->setting_option_values['search_login_only'] = '';
+			}
+
+			if ( ! isset( $this->setting_option_values['search_enrolled_only'] ) ) {
+				$this->setting_option_values['search_enrolled_only'] = '';
+			}
+
 			if ( ! isset( $this->setting_option_values['has_archive'] ) ) {
-				$this->setting_option_values['has_archive'] = 'yes';
+				$this->setting_option_values['has_archive'] = '';
 			}
 
 			if ( ! isset( $this->setting_option_values['has_feed'] ) ) {
@@ -97,25 +111,58 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 			$cpt_rss_url     = add_query_arg( 'post_type', 'sfwd-topic', get_post_type_archive_feed_link( 'post' ) );
 
 			$this->setting_option_fields = array(
-				'include_in_search' => array(
-					'name'      => 'include_in_search',
-					'type'      => 'checkbox-switch',
-					'label'     => sprintf(
+				'include_in_search'    => array(
+					'name'                => 'include_in_search',
+					'type'                => 'checkbox-switch',
+					'label'               => sprintf(
 						// translators: placeholder: Topic.
 						esc_html_x( '%s Search', 'placeholder: Topic', 'learndash' ),
 						learndash_get_custom_label( 'topic' )
 					),
-					'help_text' => sprintf(
+					'help_text'           => sprintf(
 						// translators: placeholder: topic.
 						esc_html_x( 'Includes the %s post type in front end search results', 'placeholder: topic', 'learndash' ),
 						learndash_get_custom_label_lower( 'topic' )
 					),
-					'value'     => $this->setting_option_values['include_in_search'],
-					'options'   => array(
+					'value'               => $this->setting_option_values['include_in_search'],
+					'options'             => array(
 						'yes' => '',
 					),
+					'child_section_state' => ( 'yes' === $this->setting_option_values['include_in_search'] ) ? 'open' : 'closed',
 				),
-				'has_archive'       => array(
+				'search_login_only'    => array(
+					'name'           => 'search_login_only',
+					'type'           => 'checkbox-switch',
+					'label'          => esc_html__( 'Logged-in User only', 'learndash' ),
+					'help_text'      => sprintf(
+						// translators: placeholder: Topics.
+						esc_html_x( 'Include %s only if user is logged in.', 'placeholder: Topics', 'learndash' ),
+						learndash_get_custom_label( 'topics' )
+					),
+					'value'          => $this->setting_option_values['search_login_only'],
+					'options'        => array(
+						''    => '',
+						'yes' => '',
+					),
+					'parent_setting' => 'include_in_search',
+				),
+				'search_enrolled_only' => array(
+					'name'           => 'search_enrolled_only',
+					'type'           => 'checkbox-switch',
+					'label'          => esc_html__( 'Enrolled only', 'learndash' ),
+					'help_text'      => sprintf(
+						// translators: placeholder: Topics.
+						esc_html_x( 'Include %s only if user is enrolled.', 'placeholder: Topics', 'learndash' ),
+						learndash_get_custom_label( 'topics' )
+					),
+					'value'          => $this->setting_option_values['search_enrolled_only'],
+					'options'        => array(
+						''    => '',
+						'yes' => '',
+					),
+					'parent_setting' => 'include_in_search',
+				),
+				'has_archive'          => array(
 					'name'                => 'has_archive',
 					'type'                => 'checkbox-switch',
 					'label'               => esc_html__( 'Archive Page', 'learndash' ),
@@ -136,7 +183,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					),
 					'child_section_state' => ( 'yes' === $this->setting_option_values['has_archive'] ) ? 'open' : 'closed',
 				),
-				'has_feed'          => array(
+				'has_feed'             => array(
 					'name'           => 'has_feed',
 					'type'           => 'checkbox-switch',
 					'label'          => esc_html__( 'RSS/Atom Feed', 'learndash' ),
@@ -156,7 +203,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					),
 					'parent_setting' => 'has_archive',
 				),
-				'supports'          => array(
+				'supports'             => array(
 					'name'      => 'supports',
 					'type'      => 'checkbox',
 					'label'     => esc_html__( 'Editor Supported Settings', 'learndash' ),
@@ -171,6 +218,12 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			if ( ( ! defined( 'LEARNDASH_FILTER_SEARCH' ) ) || ( LEARNDASH_FILTER_SEARCH !== true ) ) {
+				unset( $this->setting_option_fields['search_login_only'] );
+				unset( $this->setting_option_fields['search_enrolled_only'] );
+			}
+
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();
@@ -180,8 +233,8 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 		 * Intercept the WP options save logic and check that we have a valid nonce.
 		 *
 		 * @since 3.0
-		 * @param array $value Array of section fields values.
-		 * @param array $old_value Array of old values.
+		 * @param array  $value Array of section fields values.
+		 * @param array  $old_value Array of old values.
 		 * @param string $section_key Section option key should match $this->setting_option_key.
 		 */
 		public function section_pre_update_option( $new_values = '', $old_values = '', $setting_option_key = '' ) {
@@ -208,12 +261,6 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					if ( ( ! isset( $old_values['has_archive'] ) ) || ( $new_values['has_archive'] !== $old_values['has_archive'] ) ) {
 						learndash_setup_rewrite_flush();
 					}
-
-					//if ( in_array( 'comments', $new_values['supports'] ) ) {
-					//	learndash_update_posts_comment_status( 'sfwd-topic', 'open' );
-					//} else {
-					//	learndash_update_posts_comment_status( 'sfwd-topic', 'closed' );
-					//}
 				}
 			}
 

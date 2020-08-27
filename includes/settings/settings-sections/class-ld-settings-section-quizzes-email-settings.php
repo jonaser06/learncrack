@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Quizzes_Email' ) ) ) {
 	/**
 	 * Class to create the Quiz Email Section.
@@ -188,7 +192,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'type'      => 'text',
 					'label'     => esc_html__( 'From Name', 'learndash' ),
 					'help_text' => esc_html__( 'This is the name of the sender. If not provided will default to the system email name.', 'learndash' ),
-					'value'     => isset( $this->setting_option_values['admin_mail_from_name'] ) ? $this->setting_option_values['admin_mail_from_name'] : '',
+					'value'     => isset( $this->setting_option_values['user_mail_from_name'] ) ? $this->setting_option_values['user_mail_from_name'] : '',
 				),
 				'user_mail_from_email'  => array(
 					'name'      => 'user_mail_from_email',
@@ -241,6 +245,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();

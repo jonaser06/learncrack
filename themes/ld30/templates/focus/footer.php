@@ -1,8 +1,15 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
+<?php
 					/**
-					 * Action to add custom content after the assignments upload message
+					 * Fires after the assignments upload message.
 					 *
-					 * @since 3.0
+					 * @since 3.0.0
+					 *
+					 * @param int $course_id Course ID.
 					 */
 					do_action( 'learndash-focus-template-end', $course_id ); ?>
 				</div> <!--/.ld-focus-->

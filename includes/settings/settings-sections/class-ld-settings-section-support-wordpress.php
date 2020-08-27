@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Support_WordPress' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -126,6 +130,11 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'value'      => wp_using_ext_object_cache() ? esc_html__( 'Yes', 'learndash' ) : esc_html__( 'No', 'learndash' ),
 				);
 
+				/**
+				 * Filters list of WordPress defined constant variables for admin support section.
+				 *
+				 * @param array $wp_defines An array of WordPress defined constants.
+				 */
 				foreach ( apply_filters( 'learndash_support_wp_defines', array( 'DISABLE_WP_CRON', 'WP_DEBUG', 'WP_DEBUG_DISPLAY', 'SCRIPT_DEBUG', 'WP_DEBUG_DISPLAY', 'WP_DEBUG_LOG', 'WP_PLUGIN_DIR', 'WP_AUTO_UPDATE_CORE', 'WP_MAX_MEMORY_LIMIT', 'WP_MEMORY_LIMIT', 'DB_CHARSET', 'DB_COLLATE' ) ) as $defined_item ) {
 
 					$defined_value      = ( defined( $defined_item ) ) ? constant( $defined_item ) : '';
@@ -156,6 +165,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					);
 				}
 
+				/** This filter is documented in includes/settings/settings-sections/class-ld-settings-section-support-database-tables.php */
 				$support_sections[ $this->setting_option_key ] = apply_filters( 'learndash_support_section', $this->settings_set, $this->setting_option_key );
 			}
 

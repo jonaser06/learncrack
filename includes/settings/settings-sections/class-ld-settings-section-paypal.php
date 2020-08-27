@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_PayPal' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -107,7 +111,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'help_text'         => sprintf(
 						// translators: placholder: Link to PayPal.
 						esc_html_x( 'Enter the currency code for transactions. See PayPal %s Documentation', 'placeholder: URL to PayPal Currency Codes', 'learndash' ),
-						'<a href="https://developer.paypal.com/docs/classic/api/currency_codes/" target="_blank">' . __( 'Currency Codes', 'learndash' ) . '</a>'
+						'<a href="https://developer.paypal.com/docs/api/reference/currency-codes/" target="_blank">' . esc_html__( 'Currency Codes', 'learndash' ) . '</a>'
 					),
 					'value'             => ( ( isset( $this->setting_option_values['paypal_currency'] ) ) && ( ! empty( $this->setting_option_values['paypal_currency'] ) ) ) ? $this->setting_option_values['paypal_currency'] : 'USD',
 					'class'             => 'regular-text',
@@ -120,7 +124,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'help_text'         => sprintf(
 						// translators: placeholder: Link to PayPal Country Codes.
 						esc_html_x( 'Enter your country code here. See PayPal %s Documentation', 'placeholder: URL to PayPal Country Codes.', 'learndash' ),
-						'<a href="https://developer.paypal.com/docs/classic/api/country_codes/" target="_blank">' . __( 'Country Codes', 'learndash' ) . '</a>'
+						'<a href="https://developer.paypal.com/docs/api/reference/country-codes/" target="_blank">' . esc_html__( 'Country Codes', 'learndash' ) . '</a>'
 					),
 					'value'             => ( ( isset( $this->setting_option_values['paypal_country'] ) ) && ( ! empty( $this->setting_option_values['paypal_country'] ) ) ) ? $this->setting_option_values['paypal_country'] : 'US',
 					'class'             => 'regular-text',
@@ -162,6 +166,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();

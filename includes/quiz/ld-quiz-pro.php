@@ -7,6 +7,9 @@
  * @package LearnDash\Quiz
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 /**
@@ -14,7 +17,6 @@
  */
 //require_once dirname( dirname( __FILE__ ) ) . '/vendor/wp-pro-quiz/wp-pro-quiz.php';
 require_once LEARNDASH_LMS_LIBRARY_DIR . '/wp-pro-quiz/wp-pro-quiz.php';
-
 
 
 /**
@@ -207,7 +209,22 @@ class LD_QuizPro {
 
 							$points  = ( $correct) ? $questionData['points'] : 0;
 
+							/**
+							 * Filters answer points for free question type.
+							 *
+							 * @param int   $points        Points for the question.
+							 * @param array $question_data An array of question data.
+							 * @param array $user_response An array of user response data.
+							 */
 							$points = apply_filters( 'learndash_ques_free_answer_pts', $points, $questionData, $userResponse );
+
+							/**
+							 * Filters whether the answer is correct or not for a free question type.
+							 *
+							 * @param boolean $correct       Whether the answer is correct or not.
+							 * @param array   $question_data An array of question data.
+							 * @param array   $user_response An array of user response data.
+							 */
 							$correct = apply_filters( 'learndash_ques_free_answer_correct', $correct, $questionData, $userResponse );
 								
 							$extra['r'] = $userResponse;
@@ -265,6 +282,15 @@ class LD_QuizPro {
 									}
 
 									if ( has_filter( 'learndash_ques_multiple_answer_pts_each' ) ) {
+										/**
+										 * Filters the points of each answer for multiple answer type question.
+										 *
+										 * @param int        $point          Points for the question.
+										 * @param int|string $answer_index   Index of the answer.
+										 * @param array      $question_data  An array of question data.
+										 * @param mixed      $correct_answer Correct answer for the question.
+										 * @param array      $user_response  An array of user response data.
+										 */
 										$points = apply_filters( 'learndash_ques_multiple_answer_pts_each', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
 									} else {
 										/**
@@ -291,6 +317,15 @@ class LD_QuizPro {
 										}
 									}
 									
+									/**
+									 * Filters whether to correct the answer for a multiple answer type question or not.
+									 *
+									 * @param boolean    $correct_item   Whether to correct the answer or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$correct_this_item = apply_filters( 'learndash_ques_multiple_answer_correct_each', $correct_this_item, $questionData, $answerIndex, $correctAnswer, $userResponse );
 									if ( ( $correct_this_item != true ) && ( $correct == true ) )
 										$correct = false;
@@ -326,8 +361,31 @@ class LD_QuizPro {
 										break;
 									}
 
-									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter. 
+									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter.
+									/**
+									 * Filters points awarded for a multiple answer type question.
+									 *
+									 * LearnDash multiple answer question, allow points to be allocated for not marking an incorrect answer.
+									 * LearnDash Core loops over all the answers in a multiple answer question. If the user does not mark an incorrect answer,
+									 * allow the possibility of giving them points.
+									 *
+									 * @param int        $points         Points awarded to quiz
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$points = apply_filters( 'learndash_ques_multiple_answer_pts_whole', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
+
+									/**
+									 * Filters whether the answer to the multiple type question is correct or not.
+									 *
+									 * @param boolean    $correct        Whether the answer is correct or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$correct = apply_filters( 'learndash_ques_multiple_answer_correct_whole', $correct, $questionData, $answerIndex, $correctAnswer, $userResponse );
 
 								}
@@ -362,7 +420,28 @@ class LD_QuizPro {
 									}
 							
 									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter. 
+									/**
+									 * Filters points awarded for a single answer type question.
+									 *
+									 * LearnDash single answer question, allow points to be allocated for not marking an incorrect answer.
+									 * Allow all possibility of given answer to be correct answer.
+									 *
+									 * @param integer    $points         Points awarded to quiz
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$points = apply_filters( 'learndash_ques_single_answer_pts', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
+									/**
+									 * Filters whether the answer to the single type question is correct or not.
+									 *
+									 * @param boolean    $correct        Whether the answer is correct or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$correct = apply_filters( 'learndash_ques_single_answer_correct', $correct, $questionData, $answerIndex, $correctAnswer, $userResponse );
 							
 								}
@@ -420,6 +499,7 @@ class LD_QuizPro {
 									$answerData[$answerIndex] = false;
 							
 								$userResponse[ $answerIndex ] =  stripslashes( trim( $userResponse[ $answerIndex ] ) );
+								/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 								if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', true ) ) {
 									if ( function_exists( 'mb_strtolower' ) ) {
 										$user_answer_formatted = mb_strtolower( $userResponse[ $answerIndex ] );
@@ -431,6 +511,15 @@ class LD_QuizPro {
 								}
 							
 								$answerData[$answerIndex] = in_array( $user_answer_formatted, $correctArray );
+								/**
+								 * Filters whether to check the answer of cloze type question.
+								 *
+								 * @param boolean                  $check_answer    Whether to check the answer.
+								 * @param string                   $queston_type    Type of the question.
+								 * @param string                   $answer          The answer given by user for the question.
+								 * @param array                    $correct_answers An array of correct answers for the question.
+								 * @param WpProQuiz_Model_Question $question_model  Question model object.
+								 */
 								$answerData[$answerIndex] =	apply_filters( 'learndash_quiz_check_answer', $answerData[$answerIndex], $questionData['type'], $userResponse[ $answerIndex ], $correctArray, $answerIndex, $questionModel );
 								$statisticsData->{$answerIndex} = $answerData[$answerIndex];
 								
@@ -517,9 +606,11 @@ class LD_QuizPro {
 							if ( $value->getId() == $question_id ) {
 								if ( $correct || $value->isCorrectSameText() ) {
 									//$extra['AnswerMessage'] = do_shortcode( apply_filters( 'comment_text', $value->getCorrectMsg() ) );
+									/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 									$extra['AnswerMessage'] = do_shortcode( apply_filters( 'the_content', $value->getCorrectMsg() ) );
 								} else {
 									//$extra['AnswerMessage'] = do_shortcode( apply_filters( 'comment_text', $value->getIncorrectMsg() ) );
+									/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 									$extra['AnswerMessage'] = do_shortcode( apply_filters( 'the_content', $value->getIncorrectMsg() ) );
 								}
 
@@ -542,6 +633,13 @@ class LD_QuizPro {
 			}
 		}
 
+		/**
+		 * Fires after a quiz question is answered.
+		 *
+		 * @param array                $results         An array of quiz results data.
+		 * @param WpProQuiz_Model_Quiz $quiz            WpProQuiz_Model_Quiz object.
+		 * @param array                $question_models An array of question model objects.
+		 */
 		do_action( 'ldadvquiz_answered', $results, $quiz, $questionModels);
 		
 		$total_points = 0;
@@ -624,13 +722,13 @@ class LD_QuizPro {
 		if ( ! empty( $_GET['page'] ) && $_GET['page'] == 'ldAdvQuiz' && empty( $_GET['module'] ) && ! empty( $_GET['action'] ) && $_GET['action'] == 'addEdit' ) {
 
 			if ( ! empty( $_GET['post_id'] ) ) {
-				header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . $_GET['post_id'] ) );
+				header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . absint( $_GET['post_id'] ) ) );
 				exit;
 			} else if ( ! empty( $_GET['quizId'] ) ) {
-				$post_id = learndash_get_quiz_id_by_pro_quiz_id( $_GET['quizId'] );
+				$post_id = learndash_get_quiz_id_by_pro_quiz_id( absint( $_GET['quizId'] ) );
 
 				if ( ! empty( $post_id ) ) {
-					header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . $post_id ) );
+					header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . absint( $post_id ) ) );
 				} else {
 					header( 'Location: ' . admin_url( 'edit.php?post_type=sfwd-quiz' ) );
 				}
@@ -686,9 +784,9 @@ class LD_QuizPro {
 		}
 
 		/**
-		 * Filter the description of the quiz
+		 * Filters the description of the quiz.
 		 *
-		 * @param  string $quiz->post_content
+		 * @param string $quiz_description The quiz description.
 		 */
 		$content = apply_filters( 'ldadvquiz_the_content', $quiz->post_content );
 
@@ -1019,23 +1117,14 @@ class LD_QuizPro {
 		$quizdata['questions'] = $questions;
 
 		/**
-		 * Does the action 'learndash_quiz_submitted'
+		 * Fires after the quiz is submitted
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
 		 *
-		 * @param  array  	$quizdata
-		 * @param  object  $current_user
+		 * @param array   $quiz_data    An array of quiz data.
+		 * @param WP_User $current_user Current user object.
 		 */
 		do_action( 'learndash_quiz_submitted', $quizdata, get_user_by( 'id', $user_id ) ); 
-
-		/**
-		 * Does the action 'learndash_quiz_completed'
-		 *
-		 * @since 2.1.0
-		 *
-		 * @param  array  	$quizdata
-		 * @param  object  $current_user
-		 */
 		
 		/**
 		 * Changed in 2.6.0. If the quiz has essay type questions that are not
@@ -1057,8 +1146,10 @@ class LD_QuizPro {
 				learndash_process_mark_complete( $user_id, $quiz_post_id, false, $course_id );
 			}
 
+			/** This action is documented in includes/ld-users.php */
 			do_action( 'learndash_quiz_completed', $quizdata, get_user_by( 'id', $user_id ) ); 
 		} else if ( defined( 'LEARNDASH_QUIZ_ESSAY_SUBMIT_COMPLETED' ) && LEARNDASH_QUIZ_ESSAY_SUBMIT_COMPLETED === true ) {
+			/** This action is documented in includes/ld-users.php */
 			do_action( 'learndash_quiz_completed', $quizdata, get_user_by( 'id', $user_id ) );
 		}
 
@@ -1072,8 +1163,15 @@ class LD_QuizPro {
 			//'showAnswerMessageBox'      => $quiz_pro->isHideAnswerMessageBox() ? 0 : 1,
 			'showViewQuestionButton'    => $quiz_pro->isBtnViewQuestionHidden() ? 0 : 1,
 		);
+		/** This filter is documented in includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_FrontQuiz.php */
 		$results[ $quiz_pro_id ]['showContinueButton'] = apply_filters( 'show_quiz_continue_buttom_on_fail', false, $quizdata['quiz'] ) ? 1 : 0;
-
+		
+		/**
+		 * Filters settings of the completed quiz results.
+		 *
+		 * @param array $quiz_result_settings An array of quiz result settings data.
+		 * @param mixed $quiz_data            An array of quiz data.
+		 */
 		$results[ $quiz_pro_id ]['quiz_result_settings'] = apply_filters( 'learndash_quiz_completed_result_settings', $results[ $quiz_pro_id ]['quiz_result_settings'], $quizdata );
 
 		//$results[ $quiz_pro_id ]['quiz_result_settings']['showViewQuestionButton'] = 0;
@@ -1278,7 +1376,7 @@ class LD_QuizPro {
 			$cd  = learndash_certificate_details( $quiz_post_id );
 			if ( ( !empty( $cd ) ) && ( isset( $cd['certificateLink'] ) ) && ( !empty( $cd['certificateLink'] ) ) ) {
 				$user_id = get_current_user_id();
-				
+				/** This filter is documented in includes/ld-certificates.php */
 				$ret = "<a class='btn-blue' href='" . $cd['certificateLink'] . "' target='_blank'>" . apply_filters('ld_certificate_link_label', 
 				SFWD_LMS::get_template( 
 					'learndash_quiz_messages', 
@@ -1324,11 +1422,7 @@ class LD_QuizPro {
 				$post_id = intval( $_GET['post'] );
 				$quizId = intval( learndash_get_setting( $post_id, 'quiz_pro', true ) );
 
-				/**
-				 * Filter whether advance quiz is disabled or not
-				 *
-				 * @param  bool
-				 */
+				/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
 				if ( apply_filters( 'learndash_disable_advance_quiz', false, $post_id ) ) {
 					return '';
 				}
@@ -1389,11 +1483,7 @@ class LD_QuizPro {
 
 		$post = get_post( $post_id );
 
-		/**
-		 * Filter whether advance quiz is disabled or not
-		 *
-		 * @param  bool
-		 */
+		/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
 		if ( 'sfwd-quiz' != $post->post_type || empty( $_POST['form'] ) || ! empty( $_POST['disable_advance_quiz_save'] ) || apply_filters( 'learndash_disable_advance_quiz', false, $post ) ) {
 			return;
 		}
@@ -1570,16 +1660,19 @@ class LD_QuizPro {
 new LD_QuizPro();
 
 /**
- * LearnDash return all global Quizzes.
+ * Gets the list of quizzes not associated with any course.
  *
  * This function will query and return all global.
  * A GLOBAL Quizzes is:
  * 1. Quizzes not associated with a Course.
  *
- * @since 2.6
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @param boolean $bypass_transient Force By Pass of transient caching.
- * @return array Quiz ids.
+ * @since 2.6.0
+ *
+ * @param boolean $bypass_transient Optional. Whether to bypass the transient cache. Default false.
+ *
+ * @return array An array of quiz IDs.
  */
 function learndash_get_non_course_qizzes( $bypass_transient = false ) {
 	global $wpdb;
@@ -1611,17 +1704,20 @@ function learndash_get_non_course_qizzes( $bypass_transient = false ) {
 }
 
 /**
- * LearnDash return all open Quizzes.
+ * Gets all the open quizzes.
  *
  * This function will query and return all open Quizzes.
  * An OPEN Quiz is:
  * 1. Not associated with a Course.
- * 2. The Quiz settiing "Only registered users are allowed to start the quiz" is NOT set.
+ * 2. The Quiz setting "Only registered users are allowed to start the quiz" is NOT set.
+ * 
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @since 2.6
+ * @since 2.6.0
  *
- * @param boolean $bypass_transient Force By Pass of transient caching.
- * @return array Quiz ids.
+ * @param boolean $bypass_transient Optional. Whether to bypass the transient cache. Default false.
+ *
+ * @return array An array of Quiz IDs.
  */
 function learndash_get_open_quizzes( $bypass_transient = false ) {
 	global $wpdb;

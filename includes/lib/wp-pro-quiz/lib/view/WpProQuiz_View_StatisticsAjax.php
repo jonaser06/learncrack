@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 	
 	public function getHistoryTable() {
@@ -11,9 +15,12 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 		ob_end_clean();
 		
 		/**
-		 * Filter to allow extending history table content
+		 * Filters the quiz statistics history table HTML output.
+		 *
 		 * @since 2.4.2
-		*/
+		 * 
+		 * @param string $history_content The History table HTML output.
+		 */
 		return apply_filters('ld_getHistoryTable', $content, array($this) );
 	}
 	
@@ -86,7 +93,9 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 			return;
 		}
 		?>
-		<h2><?php printf( esc_html_x('User statistics: %s', 'placeholder: user name', 'learndash' ), $this->userName ); ?></h2>
+		<h2><?php 
+		// translators: placeholder: user name.
+		printf( esc_html_x('User statistics: %s', 'placeholder: user name', 'learndash' ), $this->userName ); ?></h2>
 		<?php if($this->avg) { ?>
 		<h2>
 			<?php echo date_i18n( 
@@ -144,6 +153,14 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 				foreach($cat['questions'] as $q) {
 				
 					$q['questionShowMsgs'] = ! $quiz->isHideAnswerMessageBox();
+
+					/**
+					 * Filters quiz question statistics data.
+					 *
+					 * @param array                $question_data  An array of question statistics data.
+					 * @param WpProQuiz_Model_Quiz $quiz           Quiz model object.
+					 * @param array                $http_post_data An array of global http post data.
+					 */
 					$q = apply_filters( 'learndash_question_statistics_data', $q, $quiz, $_POST );
 					if ( ( empty( $q ) ) || ( ! is_array( $q ) ) ) {
 						continue;
@@ -168,6 +185,13 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 							 * @since 2.4
 							*/
 
+							/**
+							 * Filters quiz statistics question name.
+							 *
+							 * @param string $question_name  The question name content.
+							 * @param array  $question_data  An array of question statistics data.
+							 * @param array  $http_post_data An array of global http post data.
+							 */
 							$q['questionName'] = apply_filters('learndash_quiz_statistics_questionName', $q['questionName'], $q, $_POST );
 							if ( !empty( $q['questionName'] ) ) {
 								$q['questionName'] = do_shortcode ( $q['questionName'] );
@@ -179,6 +203,7 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 							
 						} else {
 							//echo strip_shortcodes(strip_tags($q['questionName']));
+							/** This filter is documented in includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php */
 							$q['questionName'] = apply_filters('learndash_quiz_statistics_questionName', $q['questionName'], $q, $_POST );
 							if ( !empty( $q['questionName'] ) ) {
 								$q['questionName'] = do_shortcode ( $q['questionName'] );
@@ -220,12 +245,26 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 							<?php
 							$this->showUserAnswer($q['questionAnswerData'], $q['statistcAnswerData'], $q['answerType'], $q['questionId'], $quiz ); 
 
+							/**
+							 * Filters whether to show quiz statistics feedback messages.
+							 *
+							 * @param boolean $show_messages  Whether to show feedback messages.
+							 * @param array   $question_data  An array of question statistics data.
+							 * @param array   $http_post_data An array of global http post data.
+							 */
 							$show_messages = apply_filters( 'learndash_quiz_statistics_show_feedback_messages', $q['questionShowMsgs'], $q, $quiz, $_POST );
 							if ( $show_messages ) {
 								$answerText = '';
 								if ( $q['correct'] == true ) {
 									if ( !isset( $q['questionCorrectMsg'] ) ) $q['questionCorrectMsg'] = '';
 									//echo $q['questionCorrectMsg'];
+									/**
+									 * Filters quiz statistics question correct message.
+									 *
+									 * @param string $correct_message Question correct message.
+									 * @param array  $question_data   An array of question statistics data.
+									 * @param array  $http_post       An array of global http post data.
+									 */
 									$q['questionCorrectMsg'] = apply_filters('learndash_quiz_statistics_questionCorrectMsg', $q['questionCorrectMsg'], $q, $_POST );
 									if ( !empty( $q['questionCorrectMsg'] ) ) {
 										$q['questionCorrectMsg'] = do_shortcode ( $q['questionCorrectMsg'] );
@@ -237,6 +276,14 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 								} else if ( $q['incorrect'] == true ) {
 									if ( !isset( $q['questionIncorrectMsg'] ) ) $q['questionIncorrectMsg'] = '';
 									//echo $q['questionIncorrectMsg'];
+
+									/**
+									 * Filters quiz statistics question incorrect message.
+									 *
+									 * @param string $incorrect_message Question incorrect message.
+									 * @param array  $question_data   An array of question statistics data.
+									 * @param array  $http_post       An array of global http post data.
+									 */
 									$q['questionIncorrectMsg'] = apply_filters('learndash_quiz_statistics_questionIncorrectMsg', $q['questionIncorrectMsg'], $q, $_POST );
 									if ( !empty( $q['questionIncorrectMsg'] ) ) {
 										$q['questionIncorrectMsg'] = do_shortcode ( $q['questionIncorrectMsg'] );
@@ -478,10 +525,13 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 					 
 			 	} else if($anserType == 'assessment_answer') {
 			 		$assessmentData = $this->fetchAssessment($qAnswerData[$i]->getAnswer(), $sAnswerData);
-	
+					
+					/** This filter is documented in https://developer.wordpress.org/reference/hooks/comment_text/ */
 					$assessment = do_shortcode(apply_filters('comment_text', $assessmentData['replace'], null, null));
 						
 					$assessment = preg_replace_callback('#@@wpProQuizAssessment@@#im', array($this, 'assessmentCallback'), $assessment);
+
+					/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 					$assessment = apply_filters( 'learndash_quiz_question_answer_postprocess', $assessment, 'assessment' );
 					$assessment = do_shortcode( $assessment );
 					echo $assessment;
@@ -568,6 +618,8 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 	}
 	
 	private function fetchAssessment($answerText, $answerData) {
+
+		/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 		$answerText = apply_filters( 'learndash_quiz_question_answer_preprocess', $answerText, 'assessment' );
 		preg_match_all('#\{(.*?)\}#im', $answerText, $matches);
 	
@@ -603,6 +655,8 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 	private $_clozeTemp = array();
 	
 	private function fetchCloze($answer_text, $answerData) {
+
+		/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 		$answer_text = apply_filters( 'learndash_quiz_question_answer_preprocess', $answer_text, 'cloze' );
 		preg_match_all('#\{(.*?)(?:\|(\d+))?(?:[\s]+)?\}#im', $answer_text, $matches, PREG_SET_ORDER);
 	
@@ -610,6 +664,7 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 		$index = 0;
 		$answerData_check = $answerData;
 
+		/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 		if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', true ) ) {
 			if ( function_exists( 'mb_strtolower' ) ) {
 				$answerData_check = array_map('mb_strtolower', $answerData_check );
@@ -628,6 +683,7 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 				foreach($multiTextMatches[1] as $multiText) {
 					$multiText_clean = trim( html_entity_decode( $multiText, ENT_QUOTES ) );
 					
+					/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 					if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', true ) ) {
 						if ( function_exists( 'mb_strtolower' ) )
 							$x = mb_strtolower(trim(html_entity_decode($multiText, ENT_QUOTES)));
@@ -643,6 +699,8 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 				}
 			} else {
 				$text_clean = trim( html_entity_decode( $text, ENT_QUOTES ) );
+
+				/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 				if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', true ) ) {
 					if ( function_exists( 'mb_strtolower' ) )
 						$x = mb_strtolower(trim(html_entity_decode($text_clean, ENT_QUOTES)));
@@ -676,7 +734,8 @@ class WpProQuiz_View_StatisticsAjax extends WpProQuiz_View_View {
 		}
 	
 		$data['replace'] = preg_replace('#\{(.*?)(?:\|(\d+))?(?:[\s]+)?\}#im', '@@wpProQuizCloze@@', $answer_text);
-	
+		
+		/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 		$data['replace'] = apply_filters( 'learndash_quiz_question_answer_postprocess', $data['replace'], 'cloze' );
 
 		return $data;

@@ -13,6 +13,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Course registered
  */
@@ -33,7 +37,7 @@ $shortcode_atts_json = htmlspecialchars( wp_json_encode( $shortcode_atts ) );
 				<span class="ld-section-heading">
 				<?php
 				echo sprintf(
-					// translators: placeholder: courses
+					// translators: placeholder: courses.
 					esc_html_x( 'You are registered for the following %s', 'placeholder: courses', 'learndash' ),
 					esc_html( learndash_get_custom_label_lower( 'courses' ) )
 				);

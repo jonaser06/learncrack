@@ -1,15 +1,23 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 	
 	public function show() {
 ?>		
 <div class="wrap wpProQuiz_globalSettings">
-	<h2 style="margin-bottom: 10px;"><?php echo sprintf( esc_html_x('%s Options', 'Quiz Options', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></h2>
+	<h2 style="margin-bottom: 10px;"><?php 
+	// translators: placeholder: Quiz.
+	echo sprintf( esc_html_x('%s Options', ': Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></h2>
 	
 	<a class="button-secondary" style="display:none" href="admin.php?page=ldAdvQuiz"><?php esc_html_e('back to overview', 'learndash'); ?></a>
 	
 	<div class="wpProQuiz_tab_wrapper" style="padding: 10px 0px;">
-		<a class="button-primary" href="#" data-tab="#globalContent"><?php echo sprintf( esc_html_x('%s Options', 'Quiz Options', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></a>
+		<a class="button-primary" href="#" data-tab="#globalContent"><?php
+		// translators: placeholder: Quiz.
+		echo sprintf( esc_html_x('%s Options', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></a>
 		<a class="button-secondary" href="#" data-tab="#emailSettingsTab"><?php esc_html_e('E-Mail settings', 'learndash'); ?></a>
 		<a class="button-secondary" href="#" data-tab="#problemContent"><?php esc_html_e('Settings in case of problems', 'learndash'); ?></a>
 	</div>
@@ -149,15 +157,21 @@ class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 						<?php if (count($this->templateQuiz)) { ?>
 						<tr>
 							<th scope="row">
-								<?php echo sprintf( esc_html_x('%s template management', 'Quiz template management', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?>
+								<?php 
+								// translators: placeholder: Quiz.
+								echo sprintf( esc_html_x('%s template management', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?>
 							</th>
 							<td>
 								<fieldset>
 									<legend class="screen-reader-text">
-										<span><?php echo sprintf( esc_html_x('%s template management', 'Quiz template management', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></span>
+										<span><?php
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('%s template management', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></span>
 									</legend>
 									<select name="templateQuiz">
-										<option value=""><?php echo sprintf( esc_html_x('Select %s template', 'Select Quiz template', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></option>
+										<option value=""><?php 
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('Select %s template', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></option>
 										<?php foreach($this->templateQuiz as $templateQuiz) { 
 											echo '<option value="'.$templateQuiz->getTemplateId().'">'.esc_html($templateQuiz->getName()).'</option>';
 											
@@ -167,12 +181,19 @@ class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 										<input type="text" value="" name="templateQuizEditText" class="regular-text" />
 									</div>
 									<div style="padding-top: 5px;">
-										<input type="button" title="<?php echo sprintf( esc_html_x('Delete selected %s template', 'Delete selected Quiz template', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )) ?>" value="<?php esc_html_e('Delete', 'learndash'); ?>" name="templateQuizDelete" class="button-secondary">
-										<input type="button" title="<?php echo sprintf( esc_html_x('Save changed to selected %s template', 'Save changed to selected Quiz template', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?>" value="<?php esc_html_e('Save Changes', 'learndash'); ?>" name="templateQuizEdit" class="button-secondary">
+										<input type="button" title="<?php
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('Delete selected %s template', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )) ?>" value="<?php esc_html_e('Delete', 'learndash'); ?>" name="templateQuizDelete" class="button-secondary">
+										<input type="button" title="<?php 
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('Save changed to selected %s template', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?>" value="<?php esc_html_e('Save Changes', 'learndash'); ?>" name="templateQuizEdit" class="button-secondary">
 										<div class="templateQuizSpinner spinner"></div>
-										<span class="templateQuizEditUpdate" style="display:none"><?php echo sprintf( esc_html_x('%s template Saved', 'Quiz template Saved', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?></span>
-										<span class="templateQuizDeleteUpdate" style="display:none"><?php echo sprintf( esc_html_x('%s template Deleted', 'Quiz template Deleted', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?></span>
-										
+										<span class="templateQuizEditUpdate" style="display:none"><?php
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('%s template Saved', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?></span>
+										<span class="templateQuizDeleteUpdate" style="display:none"><?php
+										// translators: placeholder: Quiz.
+										echo sprintf( esc_html_x('%s template Deleted', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ) ?></span>
 									</div>
 								</fieldset>
 							</td>
@@ -263,7 +284,9 @@ class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 									<input type="text" name="email[from]" value="<?php echo (isset($this->email['from'])) ? $this->email['from'] : ''; ?>" class="regular-text">
 								</label>
  								<p class="description">
-									<?php echo sprintf( wp_kses_post( __('This is the email address of the sender. If not provided the admin email <strong>(%s)</strong> will be used.', 'learndash') ), get_option('admin_email') ); ?>
+									<?php 
+									// translators: placeholder: Admin Email.
+									echo sprintf( wp_kses_post( _x('This is the email address of the sender. If not provided the admin email <strong>(%s)</strong> will be used.', 'placeholder: Admin Email', 'learndash') ), get_option('admin_email') ); ?>
  								</p>
 							</td>
 						</tr>
@@ -353,7 +376,9 @@ class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 									<input type="text" name="userEmail[from]" value="<?php echo (isset($this->userEmail['from'])) ? $this->userEmail['from'] : ''; ?>" class="regular-text">
 								</label>
  								<p class="description">
-									<?php echo sprintf( wp_kses_post( __('This is the email address of the sender. If not provided the admin email <strong>(%s)</strong> will be used.', 'learndash') ), get_option('admin_email') ); ?>
+									<?php 
+									// translators: placeholder: admin email.
+									echo sprintf( wp_kses_post( __('This is the email address of the sender. If not provided the admin email <strong>(%s)</strong> will be used.', 'placeholder: admin email', 'learndash') ), get_option('admin_email') ); ?>
  								</p>
 							</td>
 						</tr>
@@ -439,7 +464,9 @@ class WpProQuiz_View_GobalSettings extends WpProQuiz_View_View {
 								</legend>
 								<label>
 									<input type="checkbox" value="1" name="addRawShortcode" <?php echo $this->settings->isAddRawShortcode() ? 'checked="checked"' : '' ?> >
-									<?php esc_html_e('Activate', 'learndash'); ?> <span class="description">( <?php printf(__('It is recommended %s this option on your system.', 'learndash'), '<span style=" font-weight: bold;">'.$rawSystem.'</span>'); ?> )</span>
+									<?php esc_html_e('Activate', 'learndash'); ?> <span class="description">( <?php
+									// translators: placeholder: span HTML element.
+									printf(_x('It is recommended %s this option on your system.', 'plaeholder: span HTML element', 'learndash'), '<span style=" font-weight: bold;">'.$rawSystem.'</span>'); ?> )</span>
 								</label>
 								<p class="description">
 									<?php esc_html_e('If this option is activated, a [raw] shortcode is automatically set around LDAdvQuiz shortcode ( [LDAdvQuiz X] ) into [raw] [LDAdvQuiz X] [/raw]', 'learndash'); ?>

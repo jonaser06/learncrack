@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 class WpProQuiz_Controller_GlobalSettings extends WpProQuiz_Controller_Controller {
 	
 	public function route() {
@@ -50,6 +53,7 @@ class WpProQuiz_Controller_GlobalSettings extends WpProQuiz_Controller_Controlle
 		}
 		
 		$view->settings = $mapper->fetchAll();
+		/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 		$view->isRaw = !preg_match('[raw]', apply_filters('the_content', '[raw]a[/raw]'));
 		$view->category = $categoryMapper->fetchAll();
 		$view->email = $mapper->getEmailSettings();

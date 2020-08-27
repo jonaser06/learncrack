@@ -30,17 +30,20 @@ if ( ( isset( $course_settings['course_disable_lesson_progression'] ) ) && ( $co
 } else {
 
 	if ( $course_step_post->post_type == 'sfwd-topic' ) {
-		$current_complete = learndash_is_topic_complete( $user_id, $course_step_post->ID );
+		$current_complete = learndash_is_topic_complete( $user_id, $course_step_post->ID, $course_id );
 	} else if ( $course_step_post->post_type == 'sfwd-lessons' ) {
-		$current_complete = learndash_is_lesson_complete( $user_id, $course_step_post->ID );
+		$current_complete = learndash_is_lesson_complete( $user_id, $course_step_post->ID, $course_id );
 	}
 
-	if ( ( $current_complete !== true) && ( learndash_is_admin_user( $user_id ) ) ) {
-		$bypass_course_limits_admin_users = LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_General_Admin_User', 'bypass_course_limits_admin_users' );
-		if ( $bypass_course_limits_admin_users == 'yes' ) $current_complete = true;
+	if ( $current_complete !== true ) {
+		$bypass_course_limits_admin_users = learndash_can_user_bypass( $user_id, 'learndash_course_progression', $course_step_post->ID );
+		if ( true === $bypass_course_limits_admin_users ) {
+			$current_complete = true;
+		}
 	}
 }
 
+/** This filter is documented in themes/ld30/templates/modules/course-steps.php */
 if ( apply_filters( 'learndash_show_next_link', $current_complete, $user_id, $course_step_post->ID ) ) {
 	 $learndash_next_nav = learndash_next_post_link();
 }

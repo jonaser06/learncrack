@@ -47,11 +47,11 @@
 		<div class="profile_avatar">
 			<?php echo get_avatar( $current_user->user_email, 96 ); ?>
 			<?php
-			
+			/** This filter is documented in themes/ld30/templates/shortcodes/profile.php */
 			if ( ( current_user_can( 'read' ) ) && ( isset( $shortcode_atts['profile_link'] ) ) && ( true === $shortcode_atts['profile_link'] ) && ( apply_filters( 'learndash_show_profile_link', $shortcode_atts['profile_link'] ) ) ) {
 				?>
 				<div class="profile_edit_profile" align="center">
-					<a href='<?php echo get_edit_user_link(); ?>'><?php esc_html_e( 'Edit profile', 'learndash' ); ?></a>
+					<a href='<?php echo esc_url( get_edit_user_link() ); ?>'><?php esc_html_e( 'Edit profile', 'learndash' ); ?></a>
 				</div>
 				<?php
 			}
@@ -73,7 +73,9 @@
 	<?php } ?>
 
 	<div class="learndash_profile_heading no_radius clear_both">
-		<span class="ld_profile_course"><?php printf( esc_html_x( 'Registered %s', 'Registered Courses Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'courses' ) ); ?></span>
+		<span class="ld_profile_course"><?php
+		// translators: placeholder: Courses.
+		printf( esc_html_x( 'Registered %s', 'placeholder: Courses', 'learndash' ), LearnDash_Custom_Label::get_label( 'courses' ) ); ?></span>
 		<span class="ld_profile_status"><?php esc_html_e( 'Status', 'learndash' ); ?></span>
 		<span class="ld_profile_certificate"><?php esc_html_e( 'Certificate', 'learndash' ); ?></span>
 	</div>
@@ -106,20 +108,22 @@
                      */
                     ?>
 					<h4>
-						<div class="learndash-course-link"><a href="<?php echo esc_attr( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
+						<div class="learndash-course-link"><a href="<?php echo esc_url( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
 
-						<div class="learndash-course-status"><a class="<?php echo esc_attr( $status ); ?>" href="<?php echo esc_attr( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
+						<div class="learndash-course-status"><a class="<?php echo esc_attr( $status ); ?>" href="<?php echo esc_url( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
 						<div class="learndash-course-certificate"><?php
 							$certificateLink = learndash_get_course_certificate_link( $course->ID, $user_id );
 							if ( !empty( $certificateLink ) ) {
-								?><a target="_blank" href="<?php echo esc_attr( $certificateLink ); ?>"><div class="certificate_icon_large"></div></a><?php
+								?><a target="_blank" href="<?php echo esc_url( $certificateLink ); ?>"><div class="certificate_icon_large"></div></a><?php
 							} else {
 								?><a style="padding: 10px 2%;" href="#">-</a><?php
 							}
 						?></div>
 						<div class="flip" style="clear: both; display:none;">
 
-							<div class="learndash_profile_heading course_overview_heading"><?php printf( esc_html_x( '%s Progress Overview', 'Course Progress Overview Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></div>
+							<div class="learndash_profile_heading course_overview_heading"><?php 
+							// translators: placeholder: Course.
+							printf( esc_html_x( '%s Progress Overview', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></div>
 
 							<div>
 								<dd class="course_progress" title='<?php echo sprintf( esc_html_x( '%1$d out of %2$d steps completed', 'placeholder: completed steps, total steps', 'learndash' ), $progress['completed'], $progress['total'] ); ?>'>
@@ -127,11 +131,16 @@
 								</dd>
 
 								<div class="right">
-									<?php echo sprintf( esc_html_x( '%s%% Complete', 'placeholder: percent complete', 'learndash' ), $progress['percentage'] ); ?>
+									<?php 
+									// translators: placeholder: percent complete
+									echo sprintf( esc_html_x( '%s%% Complete', 'placeholder: percent complete', 'learndash' ), $progress['percentage'] ); ?>
 								</div>
 							</div>
 
-							<?php if ( ( ! empty( $quiz_attempts[ $course_id ] ) ) && ( isset( $shortcode_atts['show_quizzes'] ) ) && ( true === $shortcode_atts['show_quizzes'] ) && ( apply_filters( 'learndash_show_profile_quizzes', $shortcode_atts['show_quizzes'] ) ) ) { ?>
+							<?php
+							/** This filter is documented in themes/ld30/templates/shortcodes/profile/course-row.php */
+							if ( ( ! empty( $quiz_attempts[ $course_id ] ) ) && ( isset( $shortcode_atts['show_quizzes'] ) ) && ( true === $shortcode_atts['show_quizzes'] ) && ( apply_filters( 'learndash_show_profile_quizzes', $shortcode_atts['show_quizzes'] ) ) ) {
+								?>
 
 								<div class="learndash_profile_quizzes clear_both">
 
@@ -163,12 +172,12 @@
 
 												<div class="quiz_title">
 													<span class='<?php echo esc_attr( $status ); ?>_icon'></span>
-													<a href='<?php echo esc_attr( $quiz_link ); ?>'><?php echo esc_attr( $quiz_title ); ?></a>
+													<a href='<?php echo esc_url( $quiz_link ); ?>'><?php echo esc_attr( $quiz_title ); ?></a>
 												</div>
 
 												<div class="certificate">
 													<?php if ( ! empty( $certificateLink ) ) : ?>
-														<a href='<?php echo esc_attr( $certificateLink ); ?>&time=<?php echo esc_attr( $quiz_attempt['time'] ) ?>' target="_blank">
+														<a href='<?php echo esc_url( $certificateLink ); ?>&time=<?php echo esc_attr( $quiz_attempt['time'] ) ?>' target="_blank">
 														<div class="certificate_icon"></div></a>
 													<?php else : ?>
 														<?php echo '-';	?>
@@ -191,10 +200,7 @@
 														}
 
 														if ( ( isset( $quiz_attempt['statistic_ref_id'] ) ) && ( !empty( $quiz_attempt['statistic_ref_id'] ) ) ) {
-															/**
-															 *	 @since 2.3
-															 * See snippet on use of this filter https://bitbucket.org/snippets/learndash/5o78q
-															 */
+															/** This filter is documented in themes/ld30/templates/quiz/partials/attempt.php */
 															if ( apply_filters( 'show_user_profile_quiz_statistics', 
 																		get_post_meta( $quiz_attempt['post']->ID, '_viewProfileStatistics', true ), $user_id, $quiz_attempt, basename( __FILE__ ) ) ) {
 														
@@ -232,6 +238,7 @@ echo SFWD_LMS::get_template(
 );
 ?>
 <?php
+/** This filter is documented in themes/ld30/templates/course.php */
 if ( apply_filters('learndash_course_steps_expand_all', $shortcode_atts['expand_all'], 0, 'profile_shortcode' ) ) { ?>
 	<script>
 		jQuery(document).ready(function() {

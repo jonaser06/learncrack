@@ -53,7 +53,7 @@
 
 	<?php if ( ! empty( $quiz_title ) ) : ?>
 		<p id="ld-quiz-<?php echo $v['time']; ?>">
-			<strong><a href="<?php echo learndash_get_step_permalink( $quiz->ID, $quiz_course_id ) ?>"><?php echo $quiz_title ?></a></strong> 
+			<strong><a href="<?php echo esc_url( learndash_get_step_permalink( $quiz->ID, $quiz_course_id ) ); ?>"><?php echo $quiz_title ?></a></strong> 
 			<?php
 				if ( ( isset( $v['course'] ) ) && ( intval( $v['course'] ) != learndash_get_course_id( $quiz, true ) ) ) {
 					$quiz_course_title = get_the_title( $v['course'] );
@@ -77,7 +77,7 @@
 					) {
 						$certificateLink = add_query_arg( array('time' => $v['time'] ), $certificateLink );
 						?>
-						 - <a href='<?php echo $certificateLink ?>' target='_blank'><?php echo __( 'Certificate', 'learndash' ); ?></a>
+						 - <a href='<?php echo esc_url( $certificateLink ) ?>' target='_blank'><?php echo __( 'Certificate', 'learndash' ); ?></a>
 						<?php
 					} 
 					?>					
@@ -90,10 +90,7 @@
 				}
 				
 				if ( ( isset( $v['statistic_ref_id'] ) ) && ( !empty( $v['statistic_ref_id'] ) ) ) {
-					/**
-					 *	 @since 2.3
-					 * See snippet on use of this filter https://bitbucket.org/snippets/learndash/5o78q
-					 */
+					/** This filter is documented in themes/ld30/templates/quiz/partials/attempt.php */
 					if ( apply_filters( 'show_user_profile_quiz_statistics', 
 						get_post_meta( $v['quiz'], '_viewProfileStatistics', true ), $user_id, $v, basename( __FILE__ ) ) ) {
 							?><a class="user_statistic" data-statistic_nonce="<?php echo wp_create_nonce( 'statistic_nonce_'. $v['statistic_ref_id'] .'_'. get_current_user_id() . '_'. $user_id ); ?>" data-user_id="<?php echo $user_id ?>" data-quiz_id="<?php echo $v['pro_quizid'] ?>" data-ref_id="<?php echo intval( $v['statistic_ref_id'] ) ?>" href="#"><?php _e('Statistics', 'learndash'); ?></a><?php
@@ -105,8 +102,10 @@
 			if (isset($v['m_edit_by'])) {
 				$manual_edit_user = get_user_by('id', $v['m_edit_by']);
 				if ($manual_edit_user instanceof WP_User) {
-					$manual_edit_str = sprintf( __('Manual Edit by: %s on %s', 'learndash'), 
+					// translators: placeholders: User, Date.
+					$manual_edit_str = sprintf( _x('Manual Edit by: %1$s on %2$s', 'placeholders: User, Date', 'learndash'), 
 						$manual_edit_user->display_name, 
+						/** This filter is documented in includes/ld-misc-functions.php */
 						date_i18n(apply_filters('learndash_date_time_formats', get_option('date_format') .' '. get_option('time_format')), $v['m_edit_time'] + get_option('gmt_offset') * 3600) );
 					
 					?> <abbr title="<?php echo $manual_edit_str ?>"><?php _e('(m)', 'learndash'); ?></abbr><?php
@@ -116,9 +115,11 @@
 			<?php
 			if ( current_user_can( 'wpProQuiz_edit_quiz' ) ) {
 				?>
-				<a href="<?php echo add_query_arg( 'course_id', $quiz_course_id, get_edit_post_link( $quiz->ID )) ?>"><?php echo _x('(edit)', 'profile edit quiz link label', 'learndash') ?></a>
+				<a href="<?php echo esc_url( add_query_arg( 'course_id', $quiz_course_id, get_edit_post_link( $quiz->ID ) ) ); ?>"><?php echo _x('(edit)', 'profile edit quiz link label', 'learndash') ?></a>
 				<?php if ( learndash_show_user_course_complete( $user_id ) ) { ?>
-				<a class="remove-quiz" data-quiz-user-id="<?php echo $user_id ?>" data-quiz-nonce="<?php echo wp_create_nonce( 'remove_quiz_'. $user_id .'_'. $v['quiz'] .'_'. $v['time'] ) ?>" href="#" title="<?php echo sprintf( _x('remove this %s item', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ) ?>"><?php echo _x('(remove)', 'profile remove quiz link label', 'learndash') ?></a>
+				<a class="remove-quiz" data-quiz-user-id="<?php echo $user_id ?>" data-quiz-nonce="<?php echo wp_create_nonce( 'remove_quiz_'. $user_id .'_'. $v['quiz'] .'_'. $v['time'] ) ?>" href="#" title="<?php 
+					// translators: placeholder: quiz.
+					echo sprintf( _x('remove this %s item', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ) ?>"><?php echo _x('(remove)', 'profile remove quiz link label', 'learndash') ?></a>
 				<?php
 				}
 			}
@@ -172,18 +173,25 @@
 				<?php echo __( ' . Points: ', 'learndash' ); ?> <?php echo $v['points']; ?>/<?php echo $v['total_points']; ?>
 			<?php endif; ?>
 
-			<?php echo __( ' on ', 'learndash' ); ?> <?php echo date_i18n(apply_filters('learndash_date_time_formats', get_option('date_format') .' '. get_option('time_format')), $v['time'] + get_option('gmt_offset') * 3600) //date_i18n( DATE_RSS, $v['time'] ); ?>
-			
+			<?php
+			/** This filter is documented in includes/ld-misc-functions.php */
+			echo __( ' on ', 'learndash' ); ?> <?php echo date_i18n(apply_filters('learndash_date_time_formats', get_option('date_format') .' '. get_option('time_format')), $v['time'] + get_option('gmt_offset') * 3600) //date_i18n( DATE_RSS, $v['time'] );
+			?>
 			<?php
 			/**
-			 * 'course_info_shortcode_after_item' filter
+			 * Filters content to be echoed after course info shortcode item.
 			 *
 			 * @todo filter doesn't make sense, change to action?
-			 * 
+			 *
 			 * @since 2.1.0
+			 *
+			 * @param string  $content            The content to be echoed after course info item.
+			 * @param WP_Post $quiz               The `WP_Post` quiz object.
+			 * @param array   $quiz_progress_data An array of quiz data.
+			 * @param int     $user_id            User ID.
 			 */
+			echo apply_filters( 'course_info_shortcode_after_item', '', $quiz, $v, $user_id );
 			?>
-			<?php echo apply_filters( 'course_info_shortcode_after_item', '', $quiz, $v, $user_id ); ?>
 		</p>
 	<?php endif; ?>	
 <?php endforeach; ?>

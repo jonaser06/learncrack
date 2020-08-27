@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 	
 	public function route() {
@@ -108,7 +112,23 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 			add_action('pre_user_query', 'ure_exclude_administrators');
 				
 		} else {
-			$users = get_users(array('fields' => array('ID','user_login','display_name')));
+			$get_users_args = array(
+				'fields' => array( 'ID','user_login','display_name' )
+			);
+
+			if ( ! learndash_is_admin_user( get_current_user_id() ) ) {
+				if ( learndash_is_group_leader_user( get_current_user_id() ) ) {
+	
+					$include_user_ids = learndash_get_groups_leaders_users_for_course_step( $quiz->getPostId() );
+				} else {
+					$include_user_ids = array( get_current_user_id() );
+				}
+			}
+			if ( ( isset( $include_user_ids ) ) && ( ! empty( $include_user_ids ) ) ) {
+				$get_users_args['include'] = $include_user_ids;
+			}
+
+			$users = get_users( $get_users_args );
 		}
 		
 		$view->quiz = $quiz;
@@ -609,16 +629,26 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 		$statisticRefMapper = new WpProQuiz_Model_StatisticRefMapper();
 		$quizMapper = new WpProQuiz_Model_QuizMapper();
 		
-		$quizId = $data['quizId'];
-		
-		$page = (isset($data['page']) && $data['page'] > 0) ? $data['page'] : 1;
-		$limit = $data['pageLimit'];
-		$start = $limit * ($page - 1);
+		$quizId     = absint( $data['quizId'] );
+		$quiz       = absint( $data['quiz'] );
+		$page       = (isset($data['page']) && $data['page'] > 0) ? $data['page'] : 1;
+		$limit      = $data['pageLimit'];
+		$start      = $limit * ($page - 1);
 		
 		$startTime = (int)$data['dateFrom'];
 		$endTime = (int)$data['dateTo'] ? $data['dateTo'] + 86400 : 0;
 		
-		$statisticModel = $statisticRefMapper->fetchHistory($quizId, $start, $limit, $data['users'], $startTime, $endTime);
+		$statisticModel = $statisticRefMapper->fetchHistoryWithArgs(
+			array(
+				'quizId'    => $quizId, 
+				'quiz'      => $quiz, 
+				'start'     => $start,
+				'limit'     => $limit,
+				'users'     => $data['users'],
+				'startTime' => $startTime,
+				'endTime'   => $endTime
+			)
+		);
 		
 		foreach($statisticModel as $model) {
 			/*@var $model WpProQuiz_Model_StatisticHistory */
@@ -632,11 +662,18 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 			$result = round(100 * $model->getPoints() / $model->getGPoints(), 2).'%';
 			
 			$model->setResult($result);
-			$model->setFormatTime(WpProQuiz_Helper_Until::convertTime(
-				$model->getCreateTime(),
-				LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Quizzes_Management_Display', 'statistics_time_format' )
-				//get_option('wpProQuiz_statisticTimeFormat', 'Y/m/d g:i A')
-			));
+
+			$date_format = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Quizzes_Management_Display', 'statistics_time_format' );
+			$date_format = trim( $date_format );
+			if ( empty( $date_format ) ) {
+				$date_format = 'Y/m/d g:i A';
+			}
+			$model->setFormatTime(
+				WpProQuiz_Helper_Until::convertTime(
+					$model->getCreateTime(),
+					$date_format
+				)
+			);
 			
 			$model->setFormatCorrect($model->getCorrectCount().' ('.round(100 * $model->getCorrectCount() / $sum, 2).'%)');
 			$model->setFormatIncorrect($model->getIncorrectCount().' ('.round(100 * $model->getIncorrectCount() / $sum, 2).'%)');
@@ -662,7 +699,7 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 	public static function ajaxLoadStatisticUser($data, $func) {
 
 		// The userId is not passed into this data payload. so for now we set to zero. We will load it via the $statisticRefMapper shortly after
-		$userId = 0; // intval($data['userId']);
+		//$userId = 0; // intval($data['userId']);
 
 		if ( ( isset( $data['statistic_nonce'] ) ) && ( !empty( $data['statistic_nonce'] ) ) ) {
 			if ( ( isset( $data['userId'] ) ) && ( !empty( $data['userId'] ) ) ) 
@@ -676,10 +713,26 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 			return json_encode(array());
 		}
 		
-		$quizId = $data['quizId'];
-				
-		$refId = $data['refId'];
-		$avg = (bool)$data['avg'];
+		$quizId = 0;
+		if ( isset( $data['quizId'] ) ) {
+			$quizId = absint( $data['quizId'] );
+		}
+
+		$userId = 0;
+		if ( isset( $data['userId'] ) ) {
+			$userId = absint( $data['userId'] );
+		}
+
+		$refId = 0;
+		if ( isset( $data['refId'] ) ) {
+			$refId = absint( $data['refId'] );
+		}
+
+		$avg = 0;
+		if ( isset( $data['avg'] ) ) {
+			$avg = (bool)$data['avg'];
+		}
+		
 		$refIdUserId = $avg ? $userId : $refId;
 		
 		$statisticRefMapper = new WpProQuiz_Model_StatisticRefMapper();
@@ -792,9 +845,15 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 				}
 			} 
 			
-			/** 
-			 * Allow filter of the new 'Result' column output. This is pretty free-form and was not used prior to v2.4
-			 * @since v2.4
+			/**
+			 * Filters quiz result column output.
+			 *
+			 * Allow filter of the new 'Result' column output. This is pretty free-form and was not used before 2.4.0.
+			 *
+			 * @since 2.4.0
+			 *
+			 * @param string $question_result Quiz result column output.
+			 * @param array  $question_item   An array of quiz question data.
 			 */
 			$question_item['result'] = apply_filters( 'learndash-quiz-statistics-result', $question_item['result'], $question_item );
 			
@@ -851,34 +910,34 @@ class WpProQuiz_Controller_Statistics extends WpProQuiz_Controller_Controller {
 	}
 	
 	public static function ajaxLoadStatsticOverviewNew($data, $func) {
-		if(!current_user_can('wpProQuiz_show_statistics')) {
-			return json_encode(array());
+		if( ! current_user_can( 'wpProQuiz_show_statistics' ) ) {
+			return json_encode( array() );
 		}
 		
 		$statisticRefMapper = new WpProQuiz_Model_StatisticRefMapper();
-		$quizMapper = new WpProQuiz_Model_QuizMapper();
+		$quizMapper    = new WpProQuiz_Model_QuizMapper();
+
+		$data['page']      = (isset( $data['page']) && $data['page'] > 0) ? $data['page'] : 1;
+		$data['pageLimit'] = (isset( $data['pageLimit']) && $data['pageLimit'] > 0) ? $data['pageLimit'] : 50;
+		$data['start']     = absint( $data['pageLimit'] ) * ( $data['page'] - 1);
 		
-		$quizId = $data['quizId'];
-		
-		$page = (isset($data['page']) && $data['page'] > 0) ? $data['page'] : 1;
-		$limit = $data['pageLimit'];
-		$start = $limit * ($page - 1);
-		
-		$statisticModel = $statisticRefMapper->fetchStatisticOverview($quizId, $data['onlyCompleted'], $start, $limit);
+		$statisticModel = $statisticRefMapper->fetchStatisticOverviewWithArgs( $data );
 		
 		$view = new WpProQuiz_View_StatisticsAjax();
 		$view->statisticModel = $statisticModel;
 		
 		$navi = null;
 		
-		if(isset($data['generateNav']) && $data['generateNav']) {
-			$count = $statisticRefMapper->countOverviewNew($quizId, $data['onlyCompleted']);
-			$navi = ceil(($count > 0 ? $count : 1) / $limit);
+		if ( isset( $data['generateNav'] ) && $data['generateNav'] ) {
+			$count = $statisticRefMapper->countOverviewNew( $data['quizId'], $data['onlyCompleted'] );
+			$navi  = ceil( ( $count > 0 ? $count : 1 ) / $data['pageLimit'] );
 		}
 		
-		return json_encode(array(
-			'navi' => $navi,
-			'html' => $view->getOverviewTable()
-		));
+		return json_encode(
+			array(
+				'navi' => $navi,
+				'html' => $view->getOverviewTable()
+			)
+		);
 	}
 }

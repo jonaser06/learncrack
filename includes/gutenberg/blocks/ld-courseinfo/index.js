@@ -36,7 +36,9 @@ const {
 registerBlockType(
     'learndash/ld-courseinfo',
     {
+		// translators: placeholder: Course.
 		title: sprintf( _x( 'LearnDash %s Info [courseinfo]', 'placeholder: Course', 'learndash' ), ldlms_get_custom_label( 'course' ) ),
+		// translators: placeholder: Course.
 		description: sprintf(_x('This block displays %s related information', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ),
 		icon: 'analytics',
 		category: 'learndash-blocks',
@@ -87,82 +89,106 @@ registerBlockType(
 			const field_show = (
 				<SelectControl
 					key="show"
-					value={show}
+					value={show || 'course_title'}
 					label={__('Show', 'learndash')}
 					options={[
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Title', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'course_title',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s URL', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'course_url',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'course_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Price', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'course_price',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Price Type', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'course_price_type',
 						},
 						{
+							// translators: placeholder: Course.
+							label: sprintf(_x('%s Enrolled Users Count', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
+							value: 'course_users_count',
+						},
+						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Total User %s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'user_course_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Total User %s Time', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'user_course_time',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Completed On (date)', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'completed_on',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('%s Enrolled On (date)', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
 							value: 'enrolled_on',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Cumulative %s Score', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'cumulative_score',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Cumulative %s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'cumulative_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Possible Cumulative %s Total Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'cumulative_total_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Cumulative %s Percentage', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'cumulative_percentage',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Cumulative %s Time Spent', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'cumulative_timespent',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Aggregate %s Percentage', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'aggregate_percentage',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Aggregate %s Score', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'aggregate_score',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Aggregate %s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'aggregate_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Possible Aggregate %s Total Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'aggregate_total_points',
 						},
 						{
+							// translators: placeholder: Course.
 							label: sprintf(_x('Aggregate %s Time Spent', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('quizzes')),
 							value: 'aggregate_timespent',
 						},
@@ -173,15 +199,18 @@ registerBlockType(
 			
 			const field_course_id = (
 				<TextControl
-					label={sprintf(_x('%s ID', 'Course ID', 'learndash'), ldlms_get_custom_label('course'))}
-					help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course'))}
+					// translators: placeholder: Course.
+					label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+					// translators: placeholders: Course, Course.
+					help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course'))}
 					value={course_id || ''}
 					onChange={course_id => setAttributes({ course_id })}
 				/>
 			);
+
 			let field_user_id = '';
 
-			if ((show != 'course_title') && (show != 'course_url') && (show != 'course_url') && (show != 'course_points') && (show != 'course_price') && (show != 'course_price_type') ) {
+			if ( ['user_course_points', 'user_course_time', 'completed_on', 'enrolled_on', 'cumulative_score', 'cumulative_points', 'cumulative_total_points', 'cumulative_percentage', 'cumulative_timespent', 'aggregate_percentage', 'aggregate_score', 'aggregate_points', 'aggregate_total_points', 'aggregate_timespent'].includes(show) ) {
 				field_user_id = (
 					<TextControl
 						label={__('User ID', 'learndash')}

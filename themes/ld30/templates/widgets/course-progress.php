@@ -7,6 +7,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! isset( $user_id ) ) {
 	$cuser   = wp_get_current_user();
 	$user_id = $cuser->ID;

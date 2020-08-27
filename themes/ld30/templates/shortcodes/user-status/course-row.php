@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 $course      = get_post( $course_id );
 $course_link = get_permalink( $course_id );
@@ -18,6 +21,7 @@ if ( empty( $since ) ) {
 	$since = ld_course_access_from( $course_id, $user_id );
 }
 
+/** This filter is documented in plugins/learndash-core/themes/ld30/templates/shortcodes/profile/course-row.php */
 $course_class = apply_filters(
 	'learndash-course-row-class',
 	'ld-item-list-item ld-item-list-item-course ld-expandable ' . ( 100 === absint( $progress['percentage'] ) ? 'learndash-complete' : 'learndash-incomplete' ),
@@ -25,6 +29,13 @@ $course_class = apply_filters(
 	$user_id
 );
 
+/**
+ * Filters course icon CSS class.
+ *
+ * @param string              $course_icon_class List of Course icon CSS class.
+ * @param \WP_Post|array|null $course            Course Object.
+ * @param int                 $user_id           User ID.
+ */
 $course_icon_class = apply_filters(
 	'learndash-course-icon-class',
 	'ld-status-icon ' . ( 100 === absint( $progress['percentage'] ) ? 'ld-status-complete' : 'ld-status-incomplete' ),
@@ -53,6 +64,11 @@ $course_icon_class = apply_filters(
 					$components['since'] = sprintf( esc_html_x( 'Since %s', 'User Status Course Since', 'learndash' ), learndash_adjust_date_time_display( $since ) );
 				}
 
+				/**
+				 * Filters user status course components.
+				 *
+				 * @param array $components An Array of user status components.
+				 */
 				$components = apply_filters( 'learndash_user_status_course_components', $components );
 				?>
 				<span class="ld-item-components">

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Front {
 
 	/**
@@ -57,7 +61,8 @@ class WpProQuiz_Controller_Front {
 				'ajaxurl' => str_replace(array("http:", "https:"), array("",""), admin_url('admin-ajax.php')),
 				'loadData' => esc_html__('Loading', 'learndash'),
 				'questionNotSolved' => esc_html__('You must answer this question.', 'learndash'),
-				'questionsNotSolved' => sprintf( esc_html_x('You must answer all questions before you can complete the %s.', 'You must answer all questions before you can complete the quiz.', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
+				// translators: placeholder: quiz.
+				'questionsNotSolved' => sprintf( esc_html_x('You must answer all questions before you can complete the %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ),
 				'fieldsNotFilled' => esc_html__('All fields have to be filled.', 'learndash')
 			));
 			
@@ -88,7 +93,8 @@ class WpProQuiz_Controller_Front {
 						'ajaxurl' => str_replace(array("http:", "https:"), array("",""), admin_url('admin-ajax.php')),
 						'loadData' => esc_html__('Loading', 'learndash'),
 						'questionNotSolved' => esc_html__('You must answer this question.', 'learndash'),
-						'questionsNotSolved' => sprintf( esc_html_x('You must answer all questions before you can complete the %s.', 'You must answer all questions before you can complete the quiz.', 'learndash'), learndash_get_custom_label_lower( 'quiz' )),
+						// translators: placeholder: quiz.
+						'questionsNotSolved' => sprintf( esc_html_x('You must answer all questions before you can complete the %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' )),
 						'fieldsNotFilled' => esc_html__('All fields have to be filled.', 'learndash')
 					)
 				);

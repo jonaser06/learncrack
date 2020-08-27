@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_StatisticRefModel extends WpProQuiz_Model_Model {
 
 	protected $_statisticRefId = 0;

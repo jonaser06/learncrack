@@ -135,7 +135,7 @@ jQuery(document).ready(function(){
 		var userId 				= 	jQuery(this).data('user_id');
 		var statistic_nonce 	= 	jQuery(this).data('statistic_nonce');
 		var post_data = {
-			'action': 'wp_pro_quiz_admin_ajax',
+			'action': 'wp_pro_quiz_admin_ajax_statistic_load_user',
 			'func': 'statisticLoadUser',
 			'data': {
 				'quizId': quizId,

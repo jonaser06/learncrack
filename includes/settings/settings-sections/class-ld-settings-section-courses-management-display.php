@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Courses_Management_Display' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -259,7 +263,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 						'name'           => 'course_pagination_lessons',
 						'type'           => 'number',
 						'label'          => sprintf(
-							// translators: placeholder: Lessons
+							// translators: placeholder: Lessons.
 							esc_html_x( '%s', 'placeholder: Lessons', 'learndash' ),
 							learndash_get_custom_label( 'lessons' )
 						),
@@ -276,7 +280,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 						'name'           => 'course_pagination_topics',
 						'type'           => 'number',
 						'label'          => sprintf(
-							// translators: placeholder: Topics
+							// translators: placeholder: Topics.
 							esc_html_x( '%s', 'placeholder: Topics', 'learndash' ),
 							learndash_get_custom_label( 'topics' )
 						),
@@ -359,6 +363,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				);
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			global $wp_rewrite;

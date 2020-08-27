@@ -7,12 +7,20 @@
  * @package LearnDash\Users
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Delete user data
+ * Deletes the user data.
+ *
+ * Fires on `delete_user` hook.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.1.0
  *
- * @param int $user_id user id.
+ * @param int|void $user_id User ID.
  */
 function learndash_delete_user_data( $user_id ) {
 	global $wpdb;
@@ -29,17 +37,20 @@ function learndash_delete_user_data( $user_id ) {
 
 		if ( ! empty( $ref_ids[0] ) ) {
 			$wpdb->delete( LDLMS_DB::get_table_name( 'quiz_statistic_ref' ), array( 'user_id' => $user->ID ) );
+			$ref_ids = array_map( 'absint', $ref_ids );
 			$wpdb->query( 'DELETE FROM ' . LDLMS_DB::get_table_name( 'quiz_statistic' ) . ' WHERE statistic_ref_id IN (' . implode( ',', $ref_ids ) . ')' );
 		}
 
 		$wpdb->delete(
-			$wpdb->usermeta, array(
+			$wpdb->usermeta,
+			array(
 				'meta_key' => '_sfwd-quizzes',
 				'user_id'  => $user->ID,
 			)
 		);
 		$wpdb->delete(
-			$wpdb->usermeta, array(
+			$wpdb->usermeta,
+			array(
 				'meta_key' => '_sfwd-course_progress',
 				'user_id'  => $user->ID,
 			)
@@ -90,6 +101,11 @@ function learndash_delete_user_data( $user_id ) {
 		}
 		wp_reset_postdata();
 
+		/**
+		 * Fires after deleting user data.
+		 *
+		 * @param int $user_id User ID.
+		 */
 		do_action( 'learndash_delete_user_data', $user_id );
 	}
 }
@@ -98,13 +114,15 @@ add_action( 'delete_user', 'learndash_delete_user_data' );
 
 
 /**
- * Get all Courses enrolled by User
+ * Gets the list of all courses enrolled by the user.
  *
  * @since 2.2.1
  *
- * @param int   $user_id User ID.
- * @param array $course_query_args Array of WP_Query type arguments.
- * @param bool  $bypass_transient To bypass transient or not.
+ * @param int     $user_id           Optional. User ID. Default 0.
+ * @param array   $course_query_args Optional. An array of `WP_Query` arguments. Default empty array.
+ * @param boolean $bypass_transient  Optional. Whether to bypass the transient cache or not. Default false.
+ *
+ * @return array An array of courses enrolled by user.
  */
 function learndash_user_get_enrolled_courses( $user_id = 0, $course_query_args = array(), $bypass_transient = false ) {
 
@@ -132,6 +150,15 @@ function learndash_user_get_enrolled_courses( $user_id = 0, $course_query_args =
 			$course_autoenroll_admin = false;
 		}
 
+		/**
+		 * Filters whether to auto enroll a user into a course or not.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param boolean $auto_enroll Whether to auto enroll user or not.
+		 * @param int     $user_id     ID of the logged in user to check.
+		 * @param int     $post_id     ID of the Course to check.
+		 */
 		if ( ( learndash_is_admin_user( $user_id ) ) && ( apply_filters( 'learndash_override_course_auto_enroll', $course_autoenroll_admin, $user_id ) ) ) {
 
 			$defaults = array(
@@ -183,7 +210,7 @@ function learndash_user_get_enrolled_courses( $user_id = 0, $course_query_args =
 					'nopaging'  => true,
 				);
 
-				$course_query_args = wp_parse_args( $course_query_args, $defaults );
+				$course_query_args             = wp_parse_args( $course_query_args, $defaults );
 				$course_query_args['post__in'] = $course_ids;
 
 				$course_query = new WP_Query( $course_query_args );
@@ -203,12 +230,12 @@ function learndash_user_get_enrolled_courses( $user_id = 0, $course_query_args =
 }
 
 /**
- * Set Courses enrolled by User
+ * Enrolls the user in new courses.
  *
  * @since 2.2.1
  *
- * @param   int   $user_id user id.
- * @param   array $user_courses_new An array of new course ids.
+ * @param int   $user_id          Optional. The ID of user to enroll courses. Default 0.
+ * @param array $user_courses_new Optional. An array of new course ids to enroll a user. Default empty array.
  */
 function learndash_user_set_enrolled_courses( $user_id = 0, $user_courses_new = array() ) {
 
@@ -240,11 +267,15 @@ function learndash_user_set_enrolled_courses( $user_id = 0, $user_courses_new = 
 }
 
 /**
- * Get all courses for the user via the user meta 'course_XXX_access_from'
+ * Gets all courses for the user via the user meta 'course_XXX_access_from'.
  *
  * @since 2.2.1
  *
- * @param int $user_id user id.
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int $user_id Optional. ID of the user to get meta. Default 0.
+ *
+ * @return array An array of user's course IDs.
  */
 function learndash_get_user_courses_from_meta( $user_id = 0 ) {
 	global $wpdb;
@@ -253,9 +284,11 @@ function learndash_get_user_courses_from_meta( $user_id = 0 ) {
 
 	$user_id = intval( $user_id );
 	if ( ! empty( $user_id ) ) {
-		$sql_str = $wpdb->prepare( "SELECT REPLACE( REPLACE(meta_key, 'course_', ''), '_access_from', '' ) FROM " . $wpdb->usermeta . ' as usermeta WHERE user_id=%d AND meta_key LIKE %s ', $user_id, 'course_%_access_from' );
-
-		$user_course_ids = $wpdb->get_col( $sql_str );
+		$user_course_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT REPLACE( REPLACE(meta_key, 'course_', ''), '_access_from', '' ) FROM " . $wpdb->usermeta . ' as usermeta WHERE user_id=%d AND meta_key LIKE %s ', $user_id, 'course_%_access_from'
+			)
+		);
 		if ( ! empty( $user_course_ids ) ) {
 			$user_course_ids = array_map( 'intval', $user_course_ids );
 		}
@@ -264,10 +297,13 @@ function learndash_get_user_courses_from_meta( $user_id = 0 ) {
 }
 
 /**
- * Check if we show user course complete
+ * Checks whether to show user course complete.
  *
- * @param int $user_id User ID.
- * @return bool true or false
+ * @global string $pagenow
+ *
+ * @param int $user_id Optional. User ID. Default 0.
+ *
+ * @return boolean Returns true to show user course complete otherwise false.
  */
 function learndash_show_user_course_complete( $user_id = 0 ) {
 
@@ -289,15 +325,23 @@ function learndash_show_user_course_complete( $user_id = 0 ) {
 	}
 
 	// See example snippet of this filter https://bitbucket.org/snippets/learndash/bMA7r .
+	/**
+	 * Filters the status of whether the course is completed for a user or not.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param boolean $show_options Whether the course is completed or not.
+	 * @param int     $user_id      ID of the logged in user to check.
+	 */
 	return apply_filters( 'learndash_show_user_course_complete_options', $show_options, $user_id );
 }
 
 /**
- * Save User Courses Complete date
+ * Saves the date of course completion for a user.
  *
- * @since 2.3
+ * @since 2.3.0
  *
- * @param int $user_id User ID.
+ * @param int $user_id Optional. User ID. Default 0.
  */
 function learndash_save_user_course_complete( $user_id = 0 ) {
 
@@ -315,7 +359,7 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 		if ( ! learndash_is_group_leader_of_user( get_current_user_id(), $user_id ) ) {
 			return;
 		}
-	} else if ( ! current_user_can( 'edit_users' ) ) {
+	} elseif ( ! current_user_can( 'edit_users' ) ) {
 		return;
 	}
 
@@ -323,7 +367,7 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 		if ( ( isset( $_POST[ 'user_progress-' . $user_id . '-nonce' ] ) ) && ( ! empty( $_POST[ 'user_progress-' . $user_id . '-nonce' ] ) ) ) {
 			if ( wp_verify_nonce( $_POST[ 'user_progress-' . $user_id . '-nonce' ], 'user_progress-' . $user_id ) ) {
 				$user_progress = (array) json_decode( stripslashes( $_POST['user_progress'][ $user_id ] ) );
-				$user_progress = json_decode( json_encode( $user_progress ), true );
+				$user_progress = json_decode( wp_json_encode( $user_progress ), true );
 
 				$processed_course_ids = array();
 
@@ -351,7 +395,7 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 						$_COURSE_CHANGED = true;
 					}
 
-					if ( $_COURSE_CHANGED === true ) {
+					if ( true === $_COURSE_CHANGED ) {
 						update_user_meta( $user_id, '_sfwd-course_progress', $course_progress );
 					}
 				}
@@ -371,33 +415,33 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 
 								// For Quiz if the admin marks a qiz complete we don't attempt to update an existing attempt for the user quiz.
 								// Instead we add a new entry. LD doesn't care as it will take the complete one for calculations where needed.
-								if ( $quiz_new_status == true ) {
-									if ( $quiz_old_status != true ) {
+								if ( true === $quiz_new_status ) {
+									if ( true !== $quiz_old_status ) {
 
 										// If the admin is marking the quiz complete AND the quiz is NOT already complete...
 										// Then we add the minimal quiz data to the user profile.
 										$quizdata = array(
-											'quiz'   => $quiz_id,
-											'score'  => 0,
-											'count'  => 0,
-											'pass'   => true,
-											'rank'   => '-',
-											'time'   => time(),
-											'pro_quizid' => $quiz_meta['sfwd-quiz_quiz_pro'],
-											'course' => $course_id,
-											'points' => 0,
+											'quiz'         => $quiz_id,
+											'score'        => 0,
+											'count'        => 0,
+											'pass'         => true,
+											'rank'         => '-',
+											'time'         => time(),
+											'pro_quizid'   => $quiz_meta['sfwd-quiz_quiz_pro'],
+											'course'       => $course_id,
+											'points'       => 0,
 											'total_points' => 0,
-											'percentage' => 0,
-											'timespent' => 0,
-											'has_graded' => false,
+											'percentage'   => 0,
+											'timespent'    => 0,
+											'has_graded'   => false,
 											'statistic_ref_id' => 0,
-											'm_edit_by' => get_current_user_id(),  // Manual Edit By ID.
-											'm_edit_time' => time(),          // Manual Edit timestamp.
+											'm_edit_by'    => get_current_user_id(),  // Manual Edit By ID.
+											'm_edit_time'  => time(),          // Manual Edit timestamp.
 										);
 
 										$quizz_progress[] = $quizdata;
 
-										if ( $quizdata['pass'] == true ) {
+										if ( true === $quizdata['pass'] ) {
 											$quizdata_pass = true;
 										} else {
 											$quizdata_pass = false;
@@ -406,31 +450,37 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 										// Then we add the quiz entry to the activity database.
 										learndash_update_user_activity(
 											array(
-												'course_id'             => $course_id,
-												'user_id'               => $user_id,
-												'post_id'               => $quiz_id,
-												'activity_type'         => 'quiz',
-												'activity_action'       => 'insert',
-												'activity_status'       => $quizdata_pass,
-												'activity_started'      => $quizdata['time'],
-												'activity_completed'    => $quizdata['time'],
-												'activity_meta'         => $quizdata,
+												'course_id' => $course_id,
+												'user_id' => $user_id,
+												'post_id' => $quiz_id,
+												'activity_type' => 'quiz',
+												'activity_action' => 'insert',
+												'activity_status' => $quizdata_pass,
+												'activity_started' => $quizdata['time'],
+												'activity_completed' => $quizdata['time'],
+												'activity_meta' => $quizdata,
 											)
 										);
 
 										$_QUIZ_CHANGED = true;
 
+										/**
+										 * Fires after the quiz is marked as complete.
+										 *
+										 * @param arrat   $quizdata An array of quiz data.
+										 * @param WP_User $user     WP_User object.
+										 */
 										do_action( 'learndash_quiz_completed', $quizdata, get_user_by( 'ID', $user_id ) );
 
 									}
-								} elseif ( $quiz_new_status !== true ) {
+								} elseif ( true !== $quiz_new_status ) {
 									// If we are unsetting a quiz ( changing from complete to incomplete). We need to do some complicated things...
-									if ( $quiz_old_status === true ) {
+									if ( true === $quiz_old_status ) {
 
 										if ( ! empty( $quizz_progress ) ) {
 											foreach ( $quizz_progress as $quiz_idx => $quiz_item ) {
 
-												if ( ( $quiz_item['quiz'] == $quiz_id ) && ( $quiz_item['pass'] == true ) ) {
+												if ( ( $quiz_item['quiz'] == $quiz_id ) && ( true === $quiz_item['pass'] ) ) {
 													$quizz_progress[ $quiz_idx ]['pass'] = false;
 
 													// We need to update the activity database records for this quiz_id
@@ -442,7 +492,7 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 													$quiz_activity       = learndash_reports_get_activity( $activity_query_args );
 													if ( ( isset( $quiz_activity['results'] ) ) && ( ! empty( $quiz_activity['results'] ) ) ) {
 														foreach ( $quiz_activity['results'] as $result ) {
-															if ( ( isset( $result->activity_meta['pass'] ) ) && ( $result->activity_meta['pass'] == true ) ) {
+															if ( ( isset( $result->activity_meta['pass'] ) ) && ( true === $result->activity_meta['pass'] ) ) {
 
 																// If the activity meta 'pass' element is set to true we want to update it to false.
 																learndash_update_user_activity_meta( $result->activity_id, 'pass', false );
@@ -457,7 +507,6 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 																		'activity_type' => 'quiz',
 																		'activity_action' => 'update',
 																		'activity_status' => false,
-																		// 'activity_started'        =>  $result->activity_started,
 																	)
 																);
 															}
@@ -480,15 +529,12 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 									}
 								}
 
-								// $course_id = learndash_get_course_id( $quiz_id );
-								// if ( !empty( $course_id ) ) {
-									$processed_course_ids[ intval( $course_id ) ] = intval( $course_id );
-								// }
+								$processed_course_ids[ intval( $course_id ) ] = intval( $course_id );
 							}
 						}
 					}
 
-					if ( $_QUIZ_CHANGED == true ) {
+					if ( true === $_QUIZ_CHANGED ) {
 						update_user_meta( $user_id, '_sfwd-quizzes', $quizz_progress );
 					}
 				}
@@ -496,6 +542,7 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 				if ( ! empty( $processed_course_ids ) ) {
 					foreach ( array_unique( $processed_course_ids ) as $course_id ) {
 						learndash_process_mark_complete( $user_id, $course_id );
+						learndash_update_group_course_user_progress( $course_id, $user_id );
 					}
 				}
 			}
@@ -505,15 +552,18 @@ function learndash_save_user_course_complete( $user_id = 0 ) {
 
 
 /**
- * We need to compare the new course item progress array to the existing one. Also update the new activity db table
+ * Syncs the course date with the user activity.
  *
- * @since 2.3
+ * We need to compare the new course item progress array to the existing one. Also, update the new activity DB table
  *
- * @param  int   $user_id The user ID related to this course entry
- * @param  int   $course_id The course ID related to this user course entry
- * @param  array $course_data_new The new course data item
- * @param  array $course_data_old The old course data item
- * @return null
+ * @since 2.3.0
+ *
+ * @param int   $user_id         Optional. The user ID related to this course entry. Default 0.
+ * @param int   $course_id       Optional. The course ID related to this user course entry. Default 0.
+ * @param array $course_data_new Optional. The new course data item. Default empty array.
+ * @param array $course_data_old Optional. The old course data item. Default empty array.
+ *
+ * @return void|array
  */
 function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $course_data_new = array(), $course_data_old = array() ) {
 	if ( ( empty( $user_id ) ) || ( empty( $course_id ) ) || ( empty( $course_data_new ) ) ) {
@@ -543,7 +593,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 
 				$lesson_activity = learndash_get_user_activity( $lesson_args );
 				if ( ! $lesson_activity ) {
-					if ( $lesson_complete == true ) {
+					if ( true === $lesson_complete ) {
 						$lesson_args['activity_started']   = time();
 						$lesson_args['activity_completed'] = time();
 					} else {
@@ -551,7 +601,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 						$lesson_args['activity_completed'] = 0;
 					}
 				} else {
-					if ( $lesson_complete == true ) {
+					if ( true === $lesson_complete ) {
 						if ( empty( $lesson_activity->activity_started ) ) {
 							$lesson_args['activity_started'] = time();
 						}
@@ -564,7 +614,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 					}
 				}
 
-				if ( $lesson_complete == true ) {
+				if ( true === $lesson_complete ) {
 					$lesson_args['activity_status'] = true;
 				} else {
 					$lesson_args['activity_status'] = false;
@@ -590,7 +640,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 
 						$topic_activity = learndash_get_user_activity( $topic_args );
 						if ( ! $topic_activity ) {
-							if ( $topic_complete == true ) {
+							if ( true === $topic_complete ) {
 								$topic_args['activity_started']   = time();
 								$topic_args['activity_completed'] = time();
 							} else {
@@ -598,7 +648,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 								$topic_args['activity_completed'] = 0;
 							}
 						} else {
-							if ( $topic_complete == true ) {
+							if ( true === $topic_complete ) {
 								if ( empty( $topic_activity->activity_started ) ) {
 									$topic_args['activity_started'] = time();
 								}
@@ -611,7 +661,7 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 							}
 						}
 
-						if ( $topic_complete == true ) {
+						if ( true === $topic_complete ) {
 							$topic_args['activity_status'] = true;
 						} else {
 							$topic_args['activity_status'] = false;
@@ -706,12 +756,15 @@ function learndash_course_item_to_activity_sync( $user_id = 0, $course_id = 0, $
 }
 
 /**
- * Get all Courses where the User ID in the course meta 'access_list' field.
+ * Gets the list of course IDs accessible by the user.
  *
- * @since 2.3
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @param int $user_id User ID.
- * @return array an array of course_ids.
+ * @since 2.3.0
+ *
+ * @param int $user_id Optional. The ID of the user to get course list. Default 0.
+ *
+ * @return array An array of course IDs.
  */
 function learndash_get_user_course_access_list( $user_id = 0 ) {
 	global $wpdb;
@@ -721,14 +774,14 @@ function learndash_get_user_course_access_list( $user_id = 0 ) {
 	if ( ! empty( $user_id ) ) {
 		if ( true === learndash_use_legacy_course_access_list() ) {
 			$data_settings_courses = learndash_data_upgrades_setting( 'course-access-lists' );
-			if ( version_compare( $data_settings_courses['version'], LEARNDASH_SETTINGS_TRIGGER_UPGRADE_VERSION, '>=') ) {
+			if ( ( isset( $data_settings_courses['version'] ) ) && ( version_compare( $data_settings_courses['version'], LEARNDASH_SETTINGS_TRIGGER_UPGRADE_VERSION, '>=') ) ) {
 
-				$is_like = " postmeta.meta_value = '". $user_id ."'
-					OR postmeta.meta_value REGEXP '^". $user_id .",' 
-					OR postmeta.meta_value REGEXP ',". $user_id .",' 
-					OR postmeta.meta_value REGEXP  ',". $user_id ."$'";
+				$is_like = " postmeta.meta_value = '" . $user_id . "'
+					OR postmeta.meta_value REGEXP '^" . $user_id . ",' 
+					OR postmeta.meta_value REGEXP '," . $user_id . ",' 
+					OR postmeta.meta_value REGEXP  '," . $user_id . "$'";
 
-				$sql_str = "SELECT post_id FROM ". $wpdb->prefix ."postmeta as postmeta INNER JOIN ". $wpdb->prefix ."posts as posts ON posts.ID = postmeta.post_id WHERE posts.post_status='publish' AND posts.post_type='sfwd-courses' AND postmeta.meta_key='course_access_list' AND (". $is_like .")";
+				$sql_str = 'SELECT post_id FROM ' . $wpdb->prefix . 'postmeta as postmeta INNER JOIN ' . $wpdb->prefix . "posts as posts ON posts.ID = postmeta.post_id WHERE posts.post_status='publish' AND posts.post_type='sfwd-courses' AND postmeta.meta_key='course_access_list' AND (" . $is_like . ')';
 			} else {
 				// OR the access list is not empty.
 				$not_like = " postmeta.meta_value NOT REGEXP '\"sfwd-courses_course_access_list\";s:0:\"\";' ";
@@ -762,23 +815,24 @@ function learndash_get_user_course_access_list( $user_id = 0 ) {
 					OR postmeta.meta_value REGEXP 's:31:\"sfwd-courses_course_access_list\";s:(.*):\"(.*)," . $user_id . "\";s:35:\"sfwd-courses_course_lesson_per_page\"'
 					";
 
-				$sql_str = 'SELECT post_id FROM ' . $wpdb->postmeta . ' as postmeta INNER JOIN ' . $wpdb->posts . " as posts ON posts.ID = postmeta.post_id WHERE posts.post_status='publish' AND posts.post_type='sfwd-courses' AND postmeta.meta_key='_sfwd-courses' AND ( " . $not_like . ' AND (' . $is_like . '))';	
+				$sql_str = 'SELECT post_id FROM ' . $wpdb->postmeta . ' as postmeta INNER JOIN ' . $wpdb->posts . " as posts ON posts.ID = postmeta.post_id WHERE posts.post_status='publish' AND posts.post_type='sfwd-courses' AND postmeta.meta_key='_sfwd-courses' AND ( " . $not_like . ' AND (' . $is_like . '))';
 			}
 			$user_course_ids = $wpdb->get_col( $sql_str );
 		} else {
 			$user_course_ids = learndash_user_get_enrolled_courses( $user_id );
 		}
-	}	
+	}
 	return $user_course_ids;
 }
 
 /**
- * Get all Courses within all the Groups the user has access.
+ * Gets all courses accessible by the user's groups.
  *
- * @since 2.3
+ * @since 2.3.0
  *
- * @param int $user_id User ID.
- * @return array an array of course_ids.
+ * @param int $user_id Optional. User ID. Default 0.
+ *
+ * @return array An array of course IDs.
  */
 function learndash_get_user_groups_courses_ids( $user_id = 0 ) {
 	$user_group_course_ids = array();
@@ -791,7 +845,6 @@ function learndash_get_user_groups_courses_ids( $user_id = 0 ) {
 	$users_group_ids = learndash_get_users_group_ids( $user_id );
 
 	if ( ! empty( $users_group_ids ) ) {
-		// $user_group_course_ids = learndash_get_groups_courses_ids( $user_id, $users_group_ids );
 		foreach ( $users_group_ids as $group_id ) {
 			$group_course_ids = learndash_group_enrolled_courses( $group_id );
 			if ( ! empty( $group_course_ids ) ) {
@@ -801,26 +854,24 @@ function learndash_get_user_groups_courses_ids( $user_id = 0 ) {
 	}
 
 	/**
-	 * Filter for user group courses.
+	 * Filters the list of user group courses.
 	 *
-	 * @since 3.2.1
-	 *
-	 * @param array $user_group_course_ids Array of found user group courses.
-	 * @param integer $user_id User ID.
-	 * @return array;
+	 * @param array $user_group_course_ids An array of found user group courses.
+	 * @param int   $user_id               User ID.
 	 */
-
 	return apply_filters( 'learndash_get_user_groups_courses_ids', $user_group_course_ids, $user_id );
 }
 
 
 /**
- * Record the last login time for the user.
+ * Records the last login time for the user.
  *
- * @since 2.3
+ * Fires on `wp_login` hook.
  *
- * @param string $user_login login name.
- * @param object $user Object WP_User with user details.
+ * @since 2.3.0
+ *
+ * @param string         $user_login Optional. Username. Default empty.
+ * @param WP_User|string $user       Optional. The `WP_User` object of the logged-in user. Default empty.
  */
 function learndash_wp_login( $user_login = '', $user = '' ) {
 	if ( ! empty( $user_login ) ) {
@@ -837,11 +888,14 @@ add_action( 'wp_login', 'learndash_wp_login', 99, 1 );
 
 
 /**
- * Remove Quiz lock for specific User and Quiz
+ * Removes the lock from a quiz for a user.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.3.1
- * @param int $user_id the User ID.
- * @param int $quiz_id the Quiz ID (post ID).
+ *
+ * @param int $user_id Optional. The User ID. Default 0.
+ * @param int $quiz_id Optional. The Quiz post ID. Default 0.
  */
 function learndash_remove_user_quiz_locks( $user_id = 0, $quiz_id = 0 ) {
 	global $wpdb;
@@ -849,30 +903,29 @@ function learndash_remove_user_quiz_locks( $user_id = 0, $quiz_id = 0 ) {
 	if ( ( ! empty( $user_id ) ) && ( ! empty( $quiz_id ) ) ) {
 		$pro_quiz_id = get_post_meta( $quiz_id, 'quiz_pro_id', true );
 		if ( ! empty( $pro_quiz_id ) ) {
-			$sql_str = $wpdb->prepare( 'DELETE FROM ' . LDLMS_DB::get_table_name( 'quiz_lock' ) . ' WHERE quiz_id = %d AND user_id = %s', $pro_quiz_id, $user_id );
-			$wpdb->query( $sql_str );
+			$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . LDLMS_DB::get_table_name( 'quiz_lock' ) . ' WHERE quiz_id = %d AND user_id = %s', $pro_quiz_id, $user_id ) );
 		}
 	}
 }
 
 
 /**
- * Given a User ID will retreive and return the calculated course points plus
- * the optional 'course_points' user meta.
+ * Gets the course points for a user.
  *
  * The course points calculation is based on all completed courses by the user. From
- * these completed courses we get any with assigned course points into a total
+ * these completed courses we get any with assigned course points into a total.
+ * Then we add the optional 'course_points' user meta value if present. This is a value the
+ * admin can set to help increase the student's point total.
  *
- * Then we et the optional 'course_points' user meta value if present. This is a value the
- * admin can set to help increase the students point total.
+ * The calculated course points plus user meta course points are added together and returned.
  *
- * The calculate courses points plus user meta course points are added together and returned.
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.4.0
  *
- * @param int $user_id user id.
+ * @param int $user_id Optional. User ID. Default 0.
  *
- * @return bool 0 or greater course points.
+ * @return boolean|float|void User course points.
  */
 function learndash_get_user_course_points( $user_id = 0 ) {
 	global $wpdb;
@@ -888,7 +941,7 @@ function learndash_get_user_course_points( $user_id = 0 ) {
 	$user_id = intval( $user_id );
 	if ( ! empty( $user_id ) ) {
 
-		$sql_str = $wpdb->prepare(
+		$sql_str               = $wpdb->prepare(
 			'SELECT DISTINCT postmeta.post_id as post_id, postmeta.meta_value as points
 			FROM ' . $wpdb->postmeta . " as postmeta 
 			WHERE postmeta.post_id IN 
@@ -899,7 +952,10 @@ function learndash_get_user_course_points( $user_id = 0 ) {
 					AND user_meta.user_id = %d and user_meta.meta_value != ''
 			) 
 			AND postmeta.meta_key=%s 
-			AND postmeta.meta_value != ''", 'course_completed_%', $user_id, 'course_points'
+			AND postmeta.meta_value != ''",
+			'course_completed_%',
+			$user_id,
+			'course_points'
 		);
 		$course_points_results = $wpdb->get_results( $sql_str );
 
@@ -917,26 +973,38 @@ function learndash_get_user_course_points( $user_id = 0 ) {
 	}
 }
 
-
+/**
+ * Gets the quiz statistic ID for a quiz attempt.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int   $user_id      Optional. Quiz ID. Default 0.
+ * @param array $quiz_attempt Optional. An array of quiz attemp data. Default empty array.
+ *
+ * @return int The quiz statistic reference ID.
+ */
 function learndash_get_quiz_statistics_ref_for_quiz_attempt( $user_id = 0, $quiz_attempt = array() ) {
 	global $wpdb;
 
 	if ( empty( $user_id ) ) {
 		return 0;
 	}
-	
+
 	if ( ( ! isset( $quiz_attempt['pro_quizid'] ) ) || ( empty( $quiz_attempt['pro_quizid'] ) ) ) {
 		return 0;
-	} 
+	}
 
 	if ( ( ! isset( $quiz_attempt['time'] ) ) || ( empty( $quiz_attempt['time'] ) ) ) {
 		return 0;
-	} 
+	}
 
 	$sql_str = $wpdb->prepare(
-		'SELECT statistic_ref_id FROM ' . LDLMS_DB::get_table_name( 'quiz_statistic_ref' )  . ' as stat
+		'SELECT statistic_ref_id FROM ' . LDLMS_DB::get_table_name( 'quiz_statistic_ref' ) . ' as stat
 		INNER JOIN ' . LDLMS_DB::get_table_name( 'quiz_master' ) . ' as master ON stat.quiz_id=master.id
-		WHERE  user_id = %d AND quiz_id = %d AND create_time = %d AND master.statistics_on=1 LIMIT 1', $user_id, $quiz_attempt['pro_quizid'], $quiz_attempt['time']
+		WHERE  user_id = %d AND quiz_id = %d AND create_time = %d AND master.statistics_on=1 LIMIT 1',
+		$user_id,
+		$quiz_attempt['pro_quizid'],
+		$quiz_attempt['time']
 	);
 
 	$ref_id = $wpdb->get_var( $sql_str );
@@ -944,21 +1012,26 @@ function learndash_get_quiz_statistics_ref_for_quiz_attempt( $user_id = 0, $quiz
 }
 
 /**
- * Get the shortcode [usermeta] available fields.
+ * Gets the available fields for `usermeta` shortcode.
  *
  * @since 2.4.0
  *
- * @param array $attr An array of attributes to provide context for filter.
+ * @param array $attr Optional. An array of attributes to provide context for filter. Default empty array.
  *
  * @return array An array of available usermeta fields.
  */
 function learndash_get_usermeta_shortcode_available_fields( $attr = array() ) {
 
 	/**
+	 * Filters the `usermeta` shortcode available fields.
+	 *
 	 * Added logic to allow protect certain user meta fields. The default
 	 * fields is based on some of the fields returned via get_userdata().
 	 *
-	 * @since 2.4
+	 * @since 2.4.0
+	 *
+	 * @param array $available_fields An array of available shortcode fields.
+	 * @param array $attributes      An array of attributes to provide context for the filter.
 	 */
 	return apply_filters(
 		'learndash_usermeta_shortcode_available_fields',
@@ -972,6 +1045,7 @@ function learndash_get_usermeta_shortcode_available_fields( $attr = array() ) {
 			'user_email'    => esc_html__( 'User Email', 'learndash' ),
 			'user_url'      => esc_html__( 'User URL', 'learndash' ),
 			'description'   => esc_html__( 'User Description', 'learndash' ),
-		), $attr
+		),
+		$attr
 	);
 }

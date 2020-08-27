@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( ! class_exists( 'LearnDash_Shortcodes_Section_visitor' ) ) ) {
 	class LearnDash_Shortcodes_Section_visitor extends LearnDash_Shortcodes_Section {
 
@@ -8,7 +12,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( ! class_exists( 'Le
 			$this->shortcodes_section_key         = 'visitor';
 			$this->shortcodes_section_title       = esc_html__( 'Visitor', 'learndash' );
 			$this->shortcodes_section_type        = 2;
-			$this->shortcodes_section_description = sprintf( wp_kses_post( _x( 'This shortcode shows the content if the user is not enrolled in the %s. The shortcode can be used on <strong>any</strong> page or widget area.', 'placeholders: course', 'learndash' ) ), learndash_get_custom_label_lower( 'course' ) );
+			// translators: placeholder: course.
+			$this->shortcodes_section_description = sprintf( wp_kses_post( _x( 'This shortcode shows the content if the user is not enrolled in the %s. The shortcode can be used on <strong>any</strong> page or widget area.', 'placeholder: course', 'learndash' ) ), learndash_get_custom_label_lower( 'course' ) );
 
 			parent::__construct();
 		}
@@ -53,6 +58,7 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( ! class_exists( 'Le
 				$this->shortcodes_option_fields['course_id']['help_text'] = sprintf( esc_html_x( 'Enter single %s ID', 'placeholders: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->shortcodes_option_fields = apply_filters( 'learndash_settings_fields', $this->shortcodes_option_fields, $this->shortcodes_section_key );
 
 			parent::init_shortcodes_section_fields();

@@ -18,6 +18,9 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 		protected $block_attributes;
 		protected $self_closing;
 
+		/**
+		 * Constructor.
+		 */
 		public function __construct() {
 		}
 
@@ -87,7 +90,6 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 		 */
 		public function render_block( $attributes = array() ) {
 			return;
-			wp_die();
 		}
 
 		/**
@@ -95,7 +97,7 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 		 *
 		 * @since 2.5.9
 		 *
-		 * @param string $content Content text to be wrapper.
+		 * @param string  $content Content text to be wrapper.
 		 * @param boolean $with_inner Flag to control inclusion of inner block div element.
 		 *
 		 * @return string wrapped content.
@@ -143,6 +145,7 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 
 								if ( ! empty( $pattern_atts_json ) ) {
 									$pattern_atts_array = (array) json_decode( $pattern_atts_json );
+									/** This filter is documented in includes/gutenberg/blocks/ld-course-list/index.php */
 									$pattern_atts_array = apply_filters( 'learndash_block_markers_shortcode_atts', $pattern_atts_array, $shortcode_slug, $block_slug, $content );
 									if ( ( is_array( $pattern_atts_array ) ) && ( ! empty( $pattern_atts_array ) ) ) {
 										$shortcode_atts = '';
@@ -174,6 +177,14 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 								if ( ! empty( $replacement_text ) ) {
 									$replacement_text .= ']';
 									$content           = str_replace( $ar[0][ $pattern_key ], $replacement_text, $content );
+									/**
+									 * Filters the shortcode content after converting it from WordPress block content.
+									 *
+									 * @param string $content            Shortcode content after conversion.
+									 * @param array  $pattern_atts_array An array of pattern attributes to use for conversion.
+									 * @param string $shortcode_slug     The slug of shortcode.
+									 * @param string $block_slug         The slug of gutenberg block.
+									 */
 									$content           = apply_filters( 'learndash_convert_block_markers_to_shortcode_content', $content, $pattern_atts_array, $shortcode_slug, $block_slug );
 								}
 							}
@@ -203,8 +214,9 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 
 									if ( ! empty( $pattern_atts_json ) ) {
 										$pattern_atts_array = (array) json_decode( $pattern_atts_json );
+										/** This filter is documented in includes/gutenberg/blocks/ld-course-list/index.php */
 										$pattern_atts_array = apply_filters( 'learndash_block_markers_shortcode_atts', $pattern_atts_array, $shortcode_slug, $block_slug, $content );
-										$shortcode_atts = '';
+										$shortcode_atts     = '';
 										if ( ( is_array( $pattern_atts_array ) ) && ( ! empty( $pattern_atts_array ) ) ) {
 											foreach ( $pattern_atts_array as $attr_key => $attr_value ) {
 												if ( 'meta' === $attr_key ) {
@@ -233,6 +245,7 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 									// If we have built a replacement text then replace it in the main $content.
 									if ( ! empty( $replacement_text ) ) {
 										$content = str_replace( $ar[0][ $pattern_key ], $replacement_text, $content );
+										/** This filter is documented in includes/gutenberg/lib/class-learndash-gutenberg-block.php */
 										$content = apply_filters( 'learndash_convert_block_markers_to_shortcode_content', $content, $pattern_atts_array, $shortcode_slug, $block_slug );
 									}
 								}
@@ -336,17 +349,17 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 					} else {
 						continue;
 					}
-				} elseif ( 'lesson_id' === $key ) {	
+				} elseif ( 'lesson_id' === $key ) {
 					if ( '' === $val ) {
 						continue;
 					}
-				} elseif ( 'status' === $key ) {	
+				} elseif ( 'status' === $key ) {
 					if ( empty( $val ) ) {
 						continue;
 					}
 
 					$val_str = implode( ',', $val );
-					$val = $val_str;
+					$val     = $val_str;
 				} elseif ( empty( $val ) ) {
 					continue;
 				}
@@ -366,8 +379,16 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 		 * @since 3.1
 		 * @return integer $user_id User ID.
 		 */
-		function get_example_user_id() {
+		public function get_example_user_id() {
 			$user_id = 0;
+			/**
+			 * Filters gutenberg block example ID.
+			 * 
+			 * @param int    $id         The ID of the resource.
+			 * @param string $context    The context of the resource.
+			 * @param string $post_type  The post type slug of the resource.
+			 * @param string $block_slug The slug of the block.
+			 */
 			$user_id = apply_filters( 'learndash_gutenberg_block_example_id', $user_id, 'user_id', 'user', $this->block_slug );
 			$user_id = absint( $user_id );
 			if ( ! empty( $user_id ) ) {
@@ -393,8 +414,9 @@ if ( ! class_exists( 'LearnDash_Gutenberg_Block' ) ) {
 		 * @param string $post_type Post Type Slug to retreive.
 		 * @return integer $post_id Post ID.
 		 */
-		function get_example_post_id( $post_type = '' ) {
+		public function get_example_post_id( $post_type = '' ) {
 			$post_id = 0;
+			/** This filter is documented in includes/gutenberg/lib/class-learndash-gutenberg-block.php */
 			$post_id = apply_filters( 'learndash_gutenberg_block_example_id', $post_id, 'post_id', $post_type, $this->block_slug );
 			$post_id = absint( $post_id );
 			if ( ! empty( $post_id ) ) {

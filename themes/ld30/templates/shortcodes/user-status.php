@@ -3,6 +3,10 @@
  * @param array $course_info
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $pagenow;
 
 $shortcode_atts_json = htmlspecialchars( wp_json_encode( $shortcode_atts ) );

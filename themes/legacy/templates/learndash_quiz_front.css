@@ -605,3 +605,15 @@
 .wpProQuiz_content .wpProQuiz_forms select {
 	width: auto ;
 }
+
+.wpProQuiz_content .uploadEssayMessage {
+	width: 100%;
+}
+
+.wpProQuiz_content .uploadEssayMessage_fail {
+	color: red;
+}
+
+.wpProQuiz_content .uploadEssayMessage_success {
+	color: green;
+}

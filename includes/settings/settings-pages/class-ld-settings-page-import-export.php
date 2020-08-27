@@ -8,6 +8,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDash_Settings_Page_Import_Export' ) ) ) {
 	/**
 	 * Class to create the settings page.
@@ -56,6 +60,8 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 		 * @since 2.5.5
 		 */
 		public function get_admin_page_title() {
+
+			/** This filter is documented in includes/settings/class-ld-settings-pages.php */
 			return apply_filters( 'learndash_admin_page_title', '<h1>' . $this->settings_page_title . '</h1>' );
 		}
 
@@ -107,15 +113,27 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 				<?php settings_errors(); ?>
 
-				<?php do_action( 'learndash_settings_page_before_title', $this->settings_screen_id ); ?>
+				<?php
+				/** This filter is documented in includes/settings/class-ld-settings-pages.php */
+				do_action( 'learndash_settings_page_before_title', $this->settings_screen_id );
+				?>
 				<?php echo $this->get_admin_page_title(); ?>
-				<?php do_action( 'learndash_settings_page_after_title', $this->settings_screen_id ); ?>
+				<?php
+				/** This filter is documented in includes/settings/class-ld-settings-pages.php */
+				do_action( 'learndash_settings_page_after_title', $this->settings_screen_id );
+				?>
 
-				<?php do_action( 'learndash_settings_page_before_form', $this->settings_screen_id ); ?>
+				<?php
+				/** This filter is documented in includes/settings/class-ld-settings-pages.php */
+				do_action( 'learndash_settings_page_before_form', $this->settings_screen_id );
+				?>
 
 				<?php $this->import_export->show(); ?>
 
-				<?php do_action( 'learndash_settings_page_after_form', $this->settings_screen_id ); ?>
+				<?php
+				/** This filter is documented in includes/settings/class-ld-settings-pages.php */
+				do_action( 'learndash_settings_page_after_form', $this->settings_screen_id );
+				?>
 			</div>
 			<?php
 			/**

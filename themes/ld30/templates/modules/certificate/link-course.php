@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Displays the infobar in course context
  *
@@ -33,7 +37,10 @@
  */
 
 if ( ! empty( $course_certficate_link ) ) : ?>
-	<a href='<?php echo esc_attr( $course_certficate_link ); ?>' target="_blank">
-		<?php echo apply_filters( 'ld_certificate_link_label', esc_html__( 'Print Your Certificate', 'learndash' ), $user_id, $post->ID ); ?>
+	<a href='<?php echo esc_url( $course_certficate_link ); ?>' target="_blank">
+		<?php
+		/** This filter is documented in includes/ld-certificates.php */
+		echo apply_filters( 'ld_certificate_link_label', esc_html__( 'Print Your Certificate', 'learndash' ), $user_id, $post->ID );
+		?>
 	</a>
 <?php endif; ?>

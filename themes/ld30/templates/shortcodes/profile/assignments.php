@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $assignment_post_type_object = get_post_type_object( 'sfwd-assignment' ); ?>
 
 <div class="ld-table-list ld-assignment-list">
@@ -8,6 +12,11 @@ $assignment_post_type_object = get_post_type_object( 'sfwd-assignment' ); ?>
 		</div> <!--/.ld-table-list-tittle-->
 		<div class="ld-table-list-columns">
 			<?php
+			/**
+			 * Filters assignment columns in user's profile.
+			 *
+			 * @param array $assignment_columns An array of profile assignment column fields.
+			 */
 			$cols = apply_filters(
 				'learndash-profile-assignment-cols',
 				array(

@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Permalinks' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -44,6 +48,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 		 * Remember the Permalinks page is not a LD page.
 		 */
 		public function admin_init() {
+			/** This filter is documented in includes/settings/class-ld-settings-pages.php */
 			do_action( 'learndash_settings_page_init', $this->settings_page_id );
 		}
 
@@ -95,6 +100,10 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					$this->setting_option_values['quizzes'] = learndash_get_custom_label_slug( 'quizzes' );
 				}
 
+				if ( ( isset( $custom_label_settings['groups'] ) ) && ( ! empty( $custom_label_settings['groups'] ) ) ) {
+					$this->setting_option_values['groups'] = learndash_get_custom_label_slug( 'groups' );
+				}
+
 				// As we don't have existing values we want to save here and force the flush rewrite.
 				update_option( $this->settings_section_key, $this->setting_option_values );
 				learndash_setup_rewrite_flush();
@@ -107,6 +116,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'lessons' => 'lessons',
 					'topics'  => 'topic',
 					'quizzes' => 'quizzes',
+					'groups'  => 'groups',
 				)
 			);
 		}
@@ -161,7 +171,18 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 						),
 						'value' => $this->setting_option_values['quizzes'],
 						'class' => 'regular-text',
-					)
+					),
+					'groups'     => array(
+						'name'  => 'groups',
+						'type'  => 'text',
+						'label' => sprintf(
+							// translators: placeholder: Groups.
+							esc_html_x( '%s', 'placeholder: Groups', 'learndash' ),
+							LearnDash_Custom_Label::get_label( 'groups' )
+						),
+						'value' => $this->setting_option_values['groups'],
+						'class' => 'regular-text',
+					),
 				);
 			}
 
@@ -210,6 +231,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				'class' => 'hidden',
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();

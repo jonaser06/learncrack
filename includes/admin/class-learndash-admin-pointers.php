@@ -3,6 +3,10 @@
  * LearnDash Admin Pointers
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Pointers' ) ) {
 	class Learndash_Admin_Pointers {
 
@@ -65,6 +69,12 @@ if ( ! class_exists( 'Learndash_Admin_Pointers' ) ) {
 		 */
 		public function register_pointers() {
 			$this->screen_id = get_current_screen()->id;
+			/**
+			 * Filters screen pointers.
+			 *
+			 * @param array  $pointers  An array of screen pointer data.
+			 * @param string $screen_id Current Screen id.
+			 */
 			$pointers        = apply_filters( 'learndash_screen_pointers', array(), $this->screen_id );
 			if ( ( ! empty( $pointers ) ) && ( is_array( $pointers ) ) ) {
 				$screen_pointers = array();

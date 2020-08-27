@@ -6,6 +6,10 @@
  * @subpackage Admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learndash_Admin_Quiz_Edit' ) ) ) {
 	/**
 	 * Class for LearnDash Admin Question Edit.
@@ -88,6 +92,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 		public function on_load() {
 			if ( $this->post_type_check() ) {
 
+				/** This filter is documented in includes/class-ld-semper-fi-module.php */
 				if ( ! apply_filters( 'learndash_settings_metaboxes_legacy_quiz', LEARNDASH_SETTINGS_METABOXES_LEGACY_QUIZ, $this->post_type ) ) {
 					require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php';
 
@@ -105,6 +110,13 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				if ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Quizzes_Builder', 'enabled' ) == 'yes' ) {
 					$this->use_quiz_builder = true;
 
+					/**
+					 * Filters whether to show quiz builder metabox or not.
+					 *
+					 * @since 2.5.0
+					 *
+					 * @param boolean $show_course_builder Whether to show course builder or not.
+					 */
 					if ( apply_filters( 'learndash_show_quiz_builder', $this->use_quiz_builder ) === true ) {
 						$this->quiz_builder = Learndash_Admin_Metabox_Quiz_Builder::add_instance();
 						$this->quiz_builder->builder_on_load();
@@ -158,13 +170,17 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 			$this->init_quiz_edit( $post );
 
-			/**
-			 * Save Quiz Builder
-			 * Within CB will be security checks.
-			 */
+			/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
 			if ( apply_filters( 'learndash_show_quiz_builder', $this->use_quiz_builder ) === true ) {
 				$this->quiz_builder = Learndash_Admin_Metabox_Quiz_Builder::add_instance();
 				$this->quiz_builder->save_course_builder( $post_id, $post, $update );
+			}
+
+			if ( isset( $_POST['ld-course-primary-set'] ) ) {
+				$course_primary = absint( $_POST['ld-course-primary-set'] );
+				if ( ! empty( $course_primary ) ) {
+					learndash_set_primary_course_for_step( $post_id, $course_primary );
+				}
 			}
 
 			if ( ! empty( $this->_metaboxes ) ) {
@@ -198,17 +214,19 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 			if ( $this->post_type_check( $post_type ) ) {
 				parent::add_metaboxes( $post_type );
 
+				/**
+				 * Filters whether to disable advanced quiz or not.
+				 *
+				 * @param boolean $disable_advanced_quiz Whether to disable advanced quiz.
+				 * @param int     $post_id               Post ID.
+				 */
 				if ( apply_filters( 'learndash_disable_advance_quiz', false, $post->ID ) ) {
 					return;
 				}
 
-				/**
-				 * Add Quiz Builder metabox.
-				 *
-				 * @since 2.6.0
-				 */
+				/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
 				if ( true === apply_filters( 'learndash_show_quiz_builder', $this->use_quiz_builder ) ) {
-					$data_settings          = learndash_data_upgrades_setting( 'pro-quiz-questions' );
+					$data_settings = learndash_data_upgrades_setting( 'pro-quiz-questions' );
 
 					$quiz_questions_data_upgrade_link = '';
 					if ( ( isset( $data_settings['last_run'] ) ) && ( ! empty( $data_settings['last_run'] ) ) ) {
@@ -230,6 +248,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 					);
 				}
 
+				/** This filter is documented in includes/class-ld-semper-fi-module.php */
 				if ( apply_filters( 'learndash_settings_metaboxes_legacy_quiz', LEARNDASH_SETTINGS_METABOXES_LEGACY_QUIZ, $this->post_type ) ) {
 					add_meta_box(
 						'learndash_quiz_advanced_aggregated',
@@ -247,9 +266,9 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 				if ( isset( $wp_meta_boxes[ $this->post_type ]['normal']['high']['learndash_quiz_builder'] ) ) {
 					$quiz_builder_metabox = $wp_meta_boxes[ $this->post_type ]['normal']['high']['learndash_quiz_builder'];
 					unset( $wp_meta_boxes[ $this->post_type ]['normal']['high']['learndash_quiz_builder'] );
-                    $wp_meta_boxes[ $this->post_type ]['normal']['high'] = array_merge(
-                        array( 'learndash_quiz_builder' => $quiz_builder_metabox ),
-                        $wp_meta_boxes[ $this->post_type ]['normal']['high']
+					$wp_meta_boxes[ $this->post_type ]['normal']['high'] = array_merge(
+						array( 'learndash_quiz_builder' => $quiz_builder_metabox ),
+						$wp_meta_boxes[ $this->post_type ]['normal']['high']
 					);
 				}
 				*/
@@ -494,10 +513,10 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 		 */
 		public function quiz_templates_page_box( $post ) {
 
-			//$this->init_quiz_edit( $post );
-			//if ( ( $this->pro_quiz_edit ) && is_a( $this->pro_quiz_edit, 'WpProQuiz_View_QuizEdit' ) ) {
-			//	$this->pro_quiz_edit->show_templates( $this->_get );
-			//}
+			// $this->init_quiz_edit( $post );
+			// if ( ( $this->pro_quiz_edit ) && is_a( $this->pro_quiz_edit, 'WpProQuiz_View_QuizEdit' ) ) {
+			// $this->pro_quiz_edit->show_templates( $this->_get );
+			// }
 
 			$template_mapper = new WpProQuiz_Model_TemplateMapper();
 			$templates       = $template_mapper->fetchAll( WpProQuiz_Model_Template::TEMPLATE_TYPE_QUIZ, false );
@@ -519,7 +538,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 									<?php
 									if ( ( isset( $_GET['post'] ) ) && ( ! empty( $_GET['post'] ) ) && ( isset( $_GET['templateLoadId'] ) ) && ( ! empty( $_GET['templateLoadId'] ) ) ) {
 										$template_url = remove_query_arg( 'templateLoadId' );
-										echo '<option value="' . $template_url . '">' . sprintf(
+										echo '<option value="' . esc_url( $template_url ) . '">' . sprintf(
 											// translators: Quiz Title.
 											esc_html_x( 'Revert: %s', 'placeholder: Quiz Title', 'learndash' ),
 											get_the_title( $_GET['post'] )
@@ -530,7 +549,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 									foreach ( $templates as $template ) {
 										$template_url = add_query_arg( 'templateLoadId', absint( $template->getTemplateId() ) );
-										echo '<option ' . selected( $template_loaded_id, $template->getTemplateId() ) . ' value="' . $template_url . '">' . esc_html( $template->getName() ) . '</option>';
+										echo '<option ' . selected( $template_loaded_id, $template->getTemplateId() ) . ' value="' . esc_url( $template_url ) . '">' . esc_html( $template->getName() ) . '</option>';
 									}
 									?>
 								</select><br />
@@ -553,11 +572,12 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 								</select><br /> 
 								<input type="text" placeholder="<?php esc_html_e( 'new template name', 'learndash' ); ?>" class="regular-text" name="templateName">
 								<?php
-								/*?>
+								/*
+								?>
 								<br />
 								<input type="submit" name="template" class="button-primary" id="wpProQuiz_saveTemplate" value="<?php esc_html_e( 'Save as template', 'learndash' ); ?>">
 								<?php */
-?>
+								?>
 							</td>
 						</tr>
 					</tbody>

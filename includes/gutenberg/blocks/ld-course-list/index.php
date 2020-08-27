@@ -112,7 +112,14 @@ if ( ( class_exists( 'LearnDash_Gutenberg_Block' ) ) && ( ! class_exists( 'Learn
 		 */
 		public function render_block( $attributes = array() ) {
 			if ( is_user_logged_in() ) {
-
+				/**
+				 * Filters WordPress block content shortcode attributes.
+				 * 
+				 * @param array  $attributes     An array of shortcode attributes.
+				 * @param string $shortcode_slug Slug of the shortcode.
+				 * @param string $block_slug     Slug of the gutenberg block.
+				 * @param string $content        Shortcode content.
+				 */
 				$attributes           = apply_filters( 'learndash_block_markers_shortcode_atts', $attributes, $this->shortcode_slug, $this->block_slug, '' );
 				$shortcode_params_str = $this->prepare_course_list_atts_to_param( $attributes );
 				$shortcode_params_str = '[' . $this->shortcode_slug . ' ' . $shortcode_params_str . ']';

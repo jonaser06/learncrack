@@ -8,10 +8,16 @@
  * @package LearnDash\Quiz
  */
 
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Migrates the LearnDash quiz
+ * Migrates the LearnDash quiz.
+ *
+ * Fires on `admin_init` hook.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.1.0
  */
@@ -81,7 +87,7 @@ add_action( 'admin_init', 'learndash_quiz_migration' );
 
 
 /**
- * Creates a quiz for each advanced quiz
+ * Creates a quiz post for each advanced quiz.
  *
  * @since 2.1.0
  */
@@ -112,10 +118,12 @@ function learndash_create_quiz_for_all_adv_quiz() {
 
 
 /**
- * Migrates the content from a pro quiz object to a custom post type
+ * Migrates the content from a pro quiz object to the quiz custom post type.
  *
- * @param  object $quiz  Pro Quiz to be migrated
- * @param  int $post_id
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param WpProQuiz_Model_Quiz $quiz    Pro Quiz to be migrated.
+ * @param int                  $post_id Post ID.
  */
 function learndash_migrate_content_from_pro_quiz_to_custom_post_type( $quiz, $post_id ) {
 	$quiz_desc = $quiz->getText();
@@ -133,10 +141,11 @@ function learndash_migrate_content_from_pro_quiz_to_custom_post_type( $quiz, $po
 
 
 /**
- * Create a post type of sfwd-quiz for the input pro quiz ID
+ * Creates a sfwd-quiz post for the given pro quiz ID.
  *
- * @param  int $quizId Quiz ID
- * @return int Quiz Post ID
+ * @param int $quizId Pro quiz ID.
+ *
+ * @return int|void Quiz Post ID.
  */
 function learndash_create_quiz_for_adv_quiz( $quizId ) {
 	$quizMapper = new WpProQuiz_Model_QuizMapper();

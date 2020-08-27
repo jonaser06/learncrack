@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! class_exists( 'Learndash_Admin_Settings_Data_Reports' ) ) {
 	class Learndash_Admin_Settings_Data_Reports {
@@ -19,10 +22,12 @@ if ( ! class_exists( 'Learndash_Admin_Settings_Data_Reports' ) ) {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
 			if ( ! defined( 'LEARNDASH_PROCESS_TIME_PERCENT' ) ) {
+				/** This filter is documented in includes/admin/class-learndash-admin-data-upgrades.php */
 				define( 'LEARNDASH_PROCESS_TIME_PERCENT', apply_filters( 'learndash_process_time_percent', 80 ) );
 			}
 
 			if ( ! defined( 'LEARNDASH_PROCESS_TIME_SECONDS' ) ) {
+				/** This filter is documented in includes/admin/class-learndash-admin-data-upgrades.php */
 				define( 'LEARNDASH_PROCESS_TIME_SECONDS', apply_filters( 'learndash_process_time_seconds', 10 ) );
 			}
 
@@ -48,12 +53,22 @@ if ( ! class_exists( 'Learndash_Admin_Settings_Data_Reports' ) ) {
 									'Pragma: no-cache',
 									'Expires: 0',
 								);
+								/**
+								 * Filters http headers for CSV download request.
+								 *
+								 * @param array  $http_headers  An array of http headers.
+								 * @param array  $transient_data An array of transient data for csv download.
+								 * @param string $data_slug     The slug of the data to be downloaded.
+								 */
 								$http_headers = apply_filters( 'learndash_csv_download_headers', $http_headers, $transient_data, esc_attr( $_GET['data-slug'] ) );
 								if ( ! empty( $http_headers ) ) {
 									foreach ( $http_headers as $http_header ) {
 										header( $http_header );
 									}
 								}
+								/**
+								 * Fires after setting CSV download headers.
+								 */
 								do_action( 'learndash_csv_download_after_headers' );
 
 								echo file_get_contents( $report_filename );
@@ -148,11 +163,19 @@ if ( ! class_exists( 'Learndash_Admin_Settings_Data_Reports' ) ) {
 
 		public function init_report_actions() {
 
+			/**
+			 * Filters admin report register actions.
+			 *
+			 * @param array $report_actions An array of report actions.
+			 */
 			$this->report_actions = apply_filters( 'learndash_admin_report_register_actions', $this->report_actions );
 		}
 
 		public function admin_page() {
 
+			/**
+			 * Fires before settings page content.
+			 */
 			do_action( 'learndash_settings_page_before_content' );
 			?>
 			<div id="learndash-settings" class="wrap">
@@ -168,7 +191,7 @@ if ( ! class_exists( 'Learndash_Admin_Settings_Data_Reports' ) ) {
 
 										<table id="learndash-data-reports" class="wc_status_table widefat" cellspacing="0">
 										<?php
-											//error_log('report_actions<pre>'. print_r($this->report_actions, true) .'</pre>');
+										wp_nonce_field( 'learndash-data-reports-nonce-' . get_current_user_id(), 'learndash-data-reports-nonce' );
 										foreach ( $this->report_actions as $report_action_slug => $report_action ) {
 											$report_action['instance']->show_report_action();
 										}
@@ -265,20 +288,18 @@ function learndash_data_reports_ajax() {
 	$reply_data = array( 'status' => false );
 
 	if ( current_user_can( 'read' ) ) {
-		if ( isset( $_POST['data'] ) ) {
-			$post_data = $_POST['data'];
-		} else {
-			$post_data = array();
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-data-reports-nonce-' . get_current_user_id() ) ) ) {
+			if ( ( isset( $_POST['data'] ) ) && ( ! empty( $_POST['data'] ) ) ) {
+
+				$ld_admin_settings_data_reports = new Learndash_Admin_Settings_Data_Reports();
+				$reply_data['data']             = $ld_admin_settings_data_reports->do_data_reports( $_POST['data'], $reply_data );
+
+				if ( ! empty( $reply_data ) ) {
+					echo json_encode( $reply_data );
+				}
+			}
 		}
-
-		$ld_admin_settings_data_reports = new Learndash_Admin_Settings_Data_Reports();
-		$reply_data['data']             = $ld_admin_settings_data_reports->do_data_reports( $post_data, $reply_data );
 	}
-
-	if ( ! empty( $reply_data ) ) {
-		echo json_encode( $reply_data );
-	}
-
 	wp_die(); // this is required to terminate immediately and return a proper response
 }
 

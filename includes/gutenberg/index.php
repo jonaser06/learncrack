@@ -27,8 +27,11 @@ require plugin_dir_path( __FILE__ ) . 'blocks/ld-course-notstarted/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-course-resume/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-course-info/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-user-course-points/index.php';
+
+require plugin_dir_path( __FILE__ ) . 'blocks/ld-group-list/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-user-groups/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-group/index.php';
+
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-payment-buttons/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-course-content/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-course-expire-status/index.php';
@@ -37,4 +40,5 @@ require plugin_dir_path( __FILE__ ) . 'blocks/ld-certificate/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-quiz-complete/index.php';
 
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-courseinfo/index.php';
+require plugin_dir_path( __FILE__ ) . 'blocks/ld-groupinfo/index.php';
 require plugin_dir_path( __FILE__ ) . 'blocks/ld-usermeta/index.php';

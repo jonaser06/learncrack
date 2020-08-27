@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 	/**
 	 * Absract for LearnDash Posts Listing Pages.
@@ -155,7 +159,19 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 		/**
 		 * Function to show selectors before the post_type selectors.
 		 */
-		protected function show_early_selectors() {}
+		protected function show_early_selectors() {
+			if ( ! empty( $this->early_selectors ) ) {
+				foreach ( $this->early_selectors as $selector_slug => $selector_args ) {
+					if ( isset( $_GET[ $selector_slug ] ) ) {
+						$selector_args['selected'] = esc_attr( $_GET[ $selector_slug ] );
+					} else {
+						$selector_args['selected'] = 0;
+					}
+
+					$this->show_early_selector( $selector_args );
+				}
+			}
+		}
 
 		/**
 		 * Function to show selectors after the taxonomy selectors.
@@ -192,6 +208,12 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 			// Maybe at some point we can move the filter earlier
 			$object_taxonomies = array_diff( $object_taxonomies, array( 'category' ) );
 
+			/**
+			 * Filters admin settings taxonomy filters list.
+			 *
+			 * @param array $object_taxonomies An array of the names or objects of all taxonomies of all the listing post types.
+			 * @param array $post_types        An array of listing post types.
+			 */
 			$object_taxonomies = apply_filters( 'learndash-admin-taxonomy-filters-display', $object_taxonomies, $this->post_type );
 			if ( ( ! empty( $object_taxonomies ) ) && ( is_array( $object_taxonomies ) ) ) {
 				foreach ( $object_taxonomies as $taxonomy_slug ) {
@@ -283,6 +305,44 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 		}
 
 		/**
+		 * Shows early filters above the table listing.
+		 *
+		 * @since 3,1,8
+		 * @param array $selector_args Array of attributes used to display the filter selector.
+		 */
+		protected function show_early_selector( $selector_args = array() ) {
+
+			$field_nonce = wp_create_nonce( $selector_args['field_name'] );
+
+			echo '<select name="' . esc_attr( $selector_args['field_name'] ) . '" id="' . esc_attr( $selector_args['field_id'] ) . '" class="postform" data-ld_selector_nonce="' . esc_attr( $field_nonce ) . '" data-ld_selector_default="0" >';
+
+			if ( ( isset( $selector_args['show_all_value'] ) ) && ( isset( $selector_args['show_all_label'] ) ) ) {
+				$all_selected = '';
+				if ( ( isset( $_GET[ $selector_args['field_name'] ] ) ) && ( $selector_args['show_all_value'] === $_GET[ $selector_args['field_name'] ] ) ) {
+					$all_selected = ' selected="selected" ';
+				}
+				echo '<option value="' . esc_attr( $selector_args['show_all_value'] ) . '" ' . esc_attr( $all_selected ) . '>' . wp_kses_post( $selector_args['show_all_label'] ) . '</option>';
+			}
+
+			if ( ( isset( $selector_args['show_empty_value'] ) ) && ( isset( $selector_args['show_empty_label'] ) ) ) {
+				$empty_selected = '';
+				$field_name     = $selector_args['field_name'];
+				if ( ( isset( $_GET[ $selector_args['field_name'] ] ) ) && ( $selector_args['show_empty_value'] === $_GET[ $selector_args['field_name'] ] ) ) {
+					$empty_selected = ' selected="selected" ';
+				}
+				echo '<option value="' . esc_attr( $selector_args['show_empty_value'] ) . '" ' . esc_attr( $empty_selected ) . '>' . wp_kses_post( $selector_args['show_empty_label'] ) . '</option>';
+			}
+
+			if ( ( isset( $selector_args['options'] ) ) && ( ! empty( $selector_args['options'] ) ) ) {
+				foreach ( $selector_args['options'] as $key => $val ) {
+					echo '<option value="' . esc_attr( $key ) . '" ' . selected( $key, $selector_args['selected'], false ) . '>' . esc_attr( $val ) . '</option>';
+				}
+
+				echo '</select>';
+			}
+		}
+
+		/**
 		 * Shows post type filters above the table listing.
 		 *
 		 * @since 2.6.0
@@ -306,8 +366,10 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 			if ( learndash_check_query_post_type( $selector_args['query_args'] ) ) {
 
 				$post_type_nonce = wp_create_nonce( $selector_args['query_args']['post_type'] );
-
+				/** This filter is documented in includes/class-ld-lms.php */
 				if ( ( ! isset( $selector_args['lazy_load'] ) ) || ( false !== $selector_args['lazy_load'] ) && ( true === apply_filters( 'learndash_element_lazy_load_admin', $selector_args['lazy_load'] ) ) ) {
+
+					/** This filter is documented in includes/class-ld-lms.php */
 					$posts_per_page = apply_filters( 'learndash_element_lazy_load_per_page', LEARNDASH_LMS_DEFAULT_LAZY_LOAD_PER_PAGE, $selector_args['query_args']['post_type'], $this->post_type );
 					if ( $posts_per_page < 1 ) {
 						$posts_per_page  = -1;
@@ -332,6 +394,12 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 					$lazy_load_data = '';
 				}
 
+				/**
+				 * Filters post type selector filter query arguments.
+				 *
+				 * @param array $query_arguments An array of selector query arguments.
+				 * @param array $post_types      An array of listing post types.
+				 */
 				$selector_args['query_args'] = apply_filters( 'learndash_show_post_type_selector_filter', $selector_args['query_args'], $this->post_type );
 				$query_results               = new WP_Query( $selector_args['query_args'] );
 
@@ -352,6 +420,13 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 					}
 					echo '<option value="' . $selector_args['show_empty_value'] . '" ' . $empty_selected . '>' . $selector_args['show_empty_label'] . '</option>';
 				}
+				/**
+				 * Filters post type listing filter posts results.
+				 *
+				 * @param array $posts           An array of post listing result posts.
+				 * @param array $query_arguments An array of selector query arguments.
+				 * @param array $post_types      An array of listing post types.
+				 */
 				$query_results->posts = apply_filters( 'learndash_post_listing_results_posts', $query_results->posts, $selector_args['query_args'], $this->post_type );
 				if ( ! empty( $query_results->posts ) ) {
 					if ( count( $query_results->posts ) >= $query_results->found_posts ) {
@@ -360,9 +435,23 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 					}
 
 					foreach ( $query_results->posts as $p ) {
+						/**
+						 * Filters the post listing before displaying it to user.
+						 *
+						 * @param WP_Post $post            Post object to be displayed.
+						 * @param array   $query_arguments An array of selector query arguments.
+						 * @param array   $post_types      An array of listing post types.
+						 */
 						$p = apply_filters( 'learndash_post_listing_before_option', $p, $selector_args['query_args'], $this->post_type );
 						if ( ( $p ) && ( is_a( $p, 'WP_Post' ) ) ) {
-							echo '<option value="' . $p->ID . '" ' . selected( $p->ID, $selector_args['selected'], false ) . '>' . $p->post_title . '</option>';
+							echo '<option value="' . absint( $p->ID ) . '" ' . selected( $p->ID, $selector_args['selected'], false ) . '>' . apply_filters( 'the_title', $p->post_title, $p->ID ) . '</option>';
+
+							/**
+							 * Fires after the admin post listing option.
+							 *
+							 * @param WP_Post $post            WP_Post object.
+							 * @param array   $query_arguments An array of admin post listing query arguments.
+							 */
 							do_action( 'learndash_post_listing_after_option', $p, $selector_args['query_args'], $this->post_type );
 						}
 					}
@@ -380,7 +469,6 @@ if ( ! class_exists( 'Learndash_Admin_Posts_Listing' ) ) {
 		 * @param object $query WP_Query instance.
 		 */
 		public function parse_query_table_filter( $query ) {
-
 		}
 
 		/**
@@ -434,3 +522,5 @@ require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/c
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/class-learndash-admin-topics-listing.php';
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php';
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/class-learndash-admin-questions-listing.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/class-learndash-admin-groups-listing.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php';

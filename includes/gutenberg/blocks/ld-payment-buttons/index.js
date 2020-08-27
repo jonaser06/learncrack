@@ -37,6 +37,7 @@ registerBlockType(
     'learndash/ld-payment-buttons',
     {
         title: __( 'LearnDash Payment Buttons', 'learndash' ),
+        // translators: placeholder: Course.
         description: sprintf(_x('This block the %s payment buttons', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ),
         icon: 'cart',
         category: 'learndash-blocks',
@@ -69,8 +70,10 @@ registerBlockType(
                         title={ __( 'Settings', 'learndash' ) }
                     >
                         <TextControl
-                            label={sprintf(_x('%s ID', 'Course ID', 'learndash'), ldlms_get_custom_label('course') ) }
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
+                            // translators: placeholder: Course.
+                            label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
+                            // translators: placeholders: Course, Course.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
                             value={ course_id || '' }
                             onChange={ course_id => setAttributes( { course_id } ) }
                         />
@@ -85,7 +88,9 @@ registerBlockType(
                             onChange={preview_show => setAttributes({ preview_show })}
                         />
                         <TextControl
+                            // translators: placeholder: Course.
                             label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+                            // translators: placeholder: Course.
                             help={sprintf(_x('Enter a %s ID to test preview', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
                             value={preview_course_id || ''}
                             type={'number'}
@@ -105,6 +110,7 @@ registerBlockType(
                         preview_course_id = ldlms_get_integer_value(preview_course_id);
 
                         if (preview_course_id == 0) {
+                            // translators: placeholders: Course, Course.
                             ld_block_error_message = sprintf(_x('%1$s ID is required when not used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course'));
                         }
                     }

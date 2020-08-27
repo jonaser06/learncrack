@@ -6,15 +6,23 @@
  * @subpackage Quiz
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Get a Quiz Pro's quiz ID
+ * Gets the quiz ID from the pro quiz ID.
  *
  * @todo   purpose of this function and how quiz pro id's relate to quizzes
  *
+ * @global wpdb  $wpdb                     WordPress database abstraction object.
+ * @global array $learndash_shortcode_atts LearnDash global shortcode attributes.
+ *
  * @since 2.1.0
  *
- * @param int $quiz_pro_id quiz pro id.
- * @return int quiz post id
+ * @param int $quiz_pro_id Optional. Pro quiz ID. Default 0.
+ *
+ * @return int Quiz post ID.
  */
 function learndash_get_quiz_id_by_pro_quiz_id( $quiz_pro_id = 0 ) {
 	global $wpdb;
@@ -112,12 +120,15 @@ function learndash_get_quiz_id_by_pro_quiz_id( $quiz_pro_id = 0 ) {
 }
 
 /**
- * Get a Question Post ID from the Proquiz ID
+ * Gets the question post ID from the pro quiz question ID.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.6.0
  *
- * @param int $question_pro_id ProQuiz Question id.
- * @return int quiz post id
+ * @param int $question_pro_id Optional. ProQuiz question id. Default 0.
+ *
+ * @return int|void Question post ID.
  */
 function learndash_get_question_post_by_pro_id( $question_pro_id = 0 ) {
 	global $wpdb;
@@ -150,13 +161,17 @@ function learndash_get_question_post_by_pro_id( $question_pro_id = 0 ) {
 }
 
 /**
- * Action hook called when a Question (sfwd-question) is moved to trash or untrashed.
+ * Marks a quiz question dirty when the question post is trashed or untrashed.
+ *
+ * Fires on `transition_post_status` hook.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.6.0
  *
- * @param string $new_status New post_status value.
- * @param string $old_status Old post_status value.
- * @param Object $post WP_Post object instance.
+ * @param string  $new_status New post_status value.
+ * @param string  $old_status Old post_status value.
+ * @param WP_Post $post       The `WP_Post` object instance.
  */
 function learndash_transition_quiz_question_post_status( $new_status, $old_status, $post ) {
 	global $wpdb;
@@ -179,13 +194,15 @@ add_action( 'transition_post_status', 'learndash_transition_quiz_question_post_s
 
 
 /**
- * Interface function to set the Quiz 'dirty' flag for questions.
- * This 'dirty' flag is used to trigger the Quiz logic to relod the questions
+ * Sets the 'dirty' flag for the quiz.
+ *
+ * This 'dirty' flag is used to trigger the Quiz logic to reload the questions
  * via queries instead of using the stored questions post meta. This generally
  * means something changed with the questions.
  *
  * @since 2.6.0
- * @param integer $quiz_id Quiz ID to change dirty flag.
+ *
+ * @param int $quiz_id Optional. Quiz ID to set dirty flag. Default 0.
  */
 function learndash_set_quiz_questions_dirty( $quiz_id = 0 ) {
 	if ( ! empty( $quiz_id ) ) {
@@ -197,11 +214,11 @@ function learndash_set_quiz_questions_dirty( $quiz_id = 0 ) {
 }
 
 /**
- * For a given Question post gather all the quiz posts and set each as
- * questions dirty.
+ * Marks all the quizzes associated with the given question as dirty.
  *
  * @since 2.6.0
- * @param integer $question_post_id Question Post ID.
+ *
+ * @param int $question_post_id Optional. Question Post ID. Default 0.
  */
 function learndash_set_question_quizzes_dirty( $question_post_id = 0 ) {
 	$question_post_id = absint( $question_post_id );
@@ -219,9 +236,11 @@ function learndash_set_question_quizzes_dirty( $question_post_id = 0 ) {
  * Adds a WPProQuiz question to mirror a Question post (sfwd-question).
  *
  * @since 2.6.0
- * @param integer $question_pro_id Post ID of Question (sfwd-question).
- * @param array   $post_data Post Data containing post_title and post_content.
- * @return integer new question pro id.
+ *
+ * @param int   $question_pro_id Optional. Post ID of Question (sfwd-question). Default 0.
+ * @param array $post_data       Optional. Post Data containing post_title and post_content. Default empty array.
+ *
+ * @return int The new pro question ID generated from question post.
  */
 function learndash_update_pro_question( $question_pro_id = 0, $post_data = array() ) {
 	$question_pro_id = absint( $question_pro_id );
@@ -282,11 +301,13 @@ function learndash_update_pro_question( $question_pro_id = 0, $post_data = array
 }
 
 /**
- * Handle the Question Save Template logic.
+ * Handles the question save template logic.
  *
  * @since 2.6.0
- * @param object $question WpProQuiz_Model_Question instance.
- * @param array  $post_data $_POST data to process the templated related fields.
+ *
+ * @param WpProQuiz_Model_Question|null $question  Optional. The `WpProQuiz_Model_Question` instance. Default null.
+ * @param array                         $post_data Optional. An array of global HTTP post data. Default empty array.
+ *
  * @return mixed on success WpProQuiz_Model_Template instance.
  */
 function learndash_update_question_template( $question = null, $post_data = array() ) {
@@ -311,12 +332,16 @@ function learndash_update_question_template( $question = null, $post_data = arra
 }
 
 /**
- * Gets an array of Quiz IDS where the question is used.
+ * Gets an array of Quiz IDs where the question is used.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.6.0
- * @param integer $question_post_id Question Post ID.
- * @param boolean $return_flat_array Default is false and will return primary and secondary sub-array sets.
- * @return array of Quiz post IDs.
+ *
+ * @param int     $question_post_id Optional. Question Post ID. Default 0.
+ * @param boolean $return_flat_array Optional. Default is false and will return primary and secondary sub-array sets. Default false.
+ *
+ * @return array An array of quiz post IDs.
  */
 function learndash_get_quizzes_for_question( $question_post_id = 0, $return_flat_array = false ) {
 	global $wpdb;
@@ -364,11 +389,15 @@ function learndash_get_quizzes_for_question( $question_post_id = 0, $return_flat
 }
 
 /**
- * Determine the Quiz ID based on the global post being viewed.
+ * Gets the quiz ID from a post ID.
+ *
+ * @global WP_Post $post Global post object.
  *
  * @since 2.6.0
- * @param integer $id Post ID being viewed.
- * @return integer The found quiz ID or false.
+ *
+ * @param int $id Post ID. Optional. Defaults to the global post object. Default null.
+ *
+ * @return int|false Returns Quiz ID if found otherwise false.
  */
 function learndash_get_quiz_id( $id = null ) {
 	global $post;
@@ -430,7 +459,9 @@ function learndash_get_quiz_id( $id = null ) {
 
 
 /**
- * Add content to quiz navigation meta box for admin
+ * Prints content for the quiz navigation meta box for admin.
+ *
+ * @global string $typenow
  *
  * @since 2.6.0
  */
@@ -487,11 +518,13 @@ function learndash_quiz_navigation_admin_box_content() {
 
 
 /**
- * Utility function to get the questions associated with a Quiz
+ * Gets the list of questions associated with the quiz.
  *
  * @since 2.6.0
- * @param integer $quiz_id The Quiz Post ID.
- * @return array of quiz question (sfwd-question) post ids.
+ *
+ * @param integer $quiz_id Optional. The Quiz Post ID. Default 0.
+ *
+ * @return array An array of quiz question (sfwd-question) post ids.
  */
 function learndash_get_quiz_questions( $quiz_id = 0 ) {
 	if ( ! empty( $quiz_id ) ) {
@@ -504,15 +537,13 @@ function learndash_get_quiz_questions( $quiz_id = 0 ) {
 }
 
 /**
- * Outputs quiz navigation admin template for widget
+ * Prints the quiz navigation admin template for the widget.
  *
  * @since 2.6.0
  *
- * @param integer $quiz_id Quiz Post ID.
- * @param array   $instance Widget instance array.
- * @param array   $question_query_args array of query options for pagnination etc.
- *
- * @return string quiz navigation output
+ * @param int   $quiz_id             Optional. Quiz Post ID. Default 0.
+ * @param array $instance            Optional. An array of widget instance settings. Default empty array.
+ * @param array $question_query_args Optional. An array of query arguments for pagnination etc. Default empty array.
  */
 function learndash_quiz_navigation_admin( $quiz_id = 0, $instance = array(), $question_query_args = array() ) {
 	if ( empty( $quiz_id ) ) {
@@ -588,10 +619,11 @@ function learndash_quiz_navigation_admin( $quiz_id = 0, $instance = array(), $qu
 }
 
 /**
- * Show the Quiz Switcher within the Quiz Questions Admin metabox.
+ * Prints the quiz switcher within the quiz questions in the admin meta box.
  *
  * @since 2.6.0
- * @param integer $quiz_id Quiz Post ID.
+ *
+ * @param int $quiz_id The Quiz Post ID.
  */
 function learndash_quiz_switcher_admin( $quiz_id ) {
 	$template_file = SFWD_LMS::get_template(
@@ -607,44 +639,46 @@ function learndash_quiz_switcher_admin( $quiz_id ) {
 }
 
 /**
- * Quiz Questions Navigation AJAX Pager handler function
+ * Handles the AJAX pagination for the quiz questions navigation.
  *
  * @since 2.5.4
  */
 function learndash_wp_ajax_ld_quiz_navigation_admin_pager() {
 	$reply_data = array();
 
-	if ( ( isset( $_POST['paged'] ) ) && ( ! empty( $_POST['paged'] ) ) ) {
-		$paged = intval( $_POST['paged'] );
-	} else {
-		$paged = 1;
-	}
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
+		if ( ( isset( $_POST['paged'] ) ) && ( ! empty( $_POST['paged'] ) ) ) {
+			$paged = intval( $_POST['paged'] );
+		} else {
+			$paged = 1;
+		}
 
-	if ( ( isset( $_POST['widget_data'] ) ) && ( ! empty( $_POST['widget_data'] ) ) ) {
-		$widget_data = $_POST['widget_data'];
-	} else {
-		$widget_data = array();
-	}
+		if ( ( isset( $_POST['widget_data'] ) ) && ( ! empty( $_POST['widget_data'] ) ) ) {
+			$widget_data = $_POST['widget_data'];
+		} else {
+			$widget_data = array();
+		}
 
-	if ( ( isset( $widget_data['quiz_id'] ) ) && ( ! empty( $widget_data['quiz_id'] ) ) ) {
-		$quiz_id = intval( $widget_data['quiz_id'] );
-	} else {
-		$quiz_id = 0;
-	}
+		if ( ( isset( $widget_data['quiz_id'] ) ) && ( ! empty( $widget_data['quiz_id'] ) ) ) {
+			$quiz_id = intval( $widget_data['quiz_id'] );
+		} else {
+			$quiz_id = 0;
+		}
 
-	if ( ( ! empty( $quiz_id ) ) && ( ! empty( $widget_data ) ) ) {
-		if ( ( isset( $_POST['widget_data']['nonce'] ) ) && ( ! empty( $_POST['widget_data']['nonce'] ) ) && ( wp_verify_nonce( $_POST['widget_data']['nonce'], 'ld_quiz_navigation_admin_pager_nonce_' . $quiz_id . '_' . get_current_user_id() ) ) ) {
-			$questions_query_args = array();
-			//$course_lessons_per_page = learndash_get_course_lessons_per_page( $course_id );
-			//if ( $course_lessons_per_page > 0 ) {		
-				$questions_query_args['pagination'] = 'true';
-				$questions_query_args['paged'] = $paged;
-			//}
-			$widget_data['show_widget_wrapper'] = false;
-			$level = ob_get_level();
-			ob_start();
-			learndash_quiz_navigation_admin( $quiz_id, $widget_data, $questions_query_args );
-			$reply_data['content'] = learndash_ob_get_clean( $level );
+		if ( ( ! empty( $quiz_id ) ) && ( ! empty( $widget_data ) ) ) {
+			if ( ( isset( $_POST['widget_data']['nonce'] ) ) && ( ! empty( $_POST['widget_data']['nonce'] ) ) && ( wp_verify_nonce( $_POST['widget_data']['nonce'], 'ld_quiz_navigation_admin_pager_nonce_' . $quiz_id . '_' . get_current_user_id() ) ) ) {
+				$questions_query_args = array();
+				//$course_lessons_per_page = learndash_get_course_lessons_per_page( $course_id );
+				//if ( $course_lessons_per_page > 0 ) {		
+					$questions_query_args['pagination'] = 'true';
+					$questions_query_args['paged'] = $paged;
+				//}
+				$widget_data['show_widget_wrapper'] = false;
+				$level = ob_get_level();
+				ob_start();
+				learndash_quiz_navigation_admin( $quiz_id, $widget_data, $questions_query_args );
+				$reply_data['content'] = learndash_ob_get_clean( $level );
+			}
 		}
 	}
 
@@ -655,11 +689,12 @@ add_action( 'wp_ajax_ld_quiz_navigation_admin_pager', 'learndash_wp_ajax_ld_quiz
 
 
 /**
- * This function will copy the WPProQuiz Question Category to the LearnDadh Question taxonomy
+ * Syncs the question pro fields with the question post.
  *
  * @since 2.6.0
- * @param integer $question_post_id WP_Post Question ID.
- * @param integer $question_pro_id WpProQuiz_Model_Question object or ID.
+ *
+ * @param int                          $question_post_id Optional. The `WP_Post` Question ID. Default 0.
+ * @param WpProQuiz_Model_Question|int $question_pro_id  Optional. WpProQuiz_Model_Question object or ID. Default 0.
  */
 function learndash_proquiz_sync_question_fields( $question_post_id = 0, $question_pro_id = 0 ) {
 
@@ -709,12 +744,14 @@ function learndash_proquiz_sync_question_fields( $question_post_id = 0, $questio
 }
 
 /**
- * This function will copy the WPProQuiz Question Category to the LearnDadh Question taxonomy
+ * Syncs the `WPProQuiz` question category with the LearnDadh question taxonomy.
  *
  * @since 2.6.0
- * @param integer $question_post_id WP_Post Question ID.
- * @param integer $question_pro_id WpProQuiz_Model_Question object or ID.
- * @return object WP_Term object.
+ *
+ * @param int                          $question_post_id Optional. The `WP_Post` Question ID. Default 0.
+ * @param WpProQuiz_Model_Question|int $question_pro_id  Optional. The `WpProQuiz_Model_Question` object or ID. Default 0.
+ *
+ * @return array An array of question category terms or newly created category term.
  */
 function learndash_proquiz_sync_question_category( $question_post_id = 0, $question_pro_id = 0 ) {
 
@@ -765,13 +802,16 @@ function learndash_proquiz_sync_question_category( $question_post_id = 0, $quest
 }
 
 /**
- * Utility function to return all the quiz posts IDs based on the quiz pro id.
+ * Gets all the quiz post IDs from the quiz pro ID.
+ *
  * This is similar to the function learndash_get_quiz_id_by_pro_quiz_id() but returns
  * an array instead of a single post ID.
  *
  * @since 2.6.0
- * @param integer $quiz_pro_id ID of WPProQuiz Quiz.
- * @return array of quiz post IDs.
+ *
+ * @param int $quiz_pro_id Optional. The ID of `WPProQuiz` Quiz. Default 0.
+ *
+ * @return array An array of quiz post IDs.
  */
 function learndash_get_quiz_post_ids( $quiz_pro_id = 0 ) {
 	static $quiz_post_ids = array();
@@ -808,12 +848,14 @@ function learndash_get_quiz_post_ids( $quiz_pro_id = 0 ) {
 }
 
 /**
- * This function retreives the WPProQuiz Question row column by field.
+ * Gets the `WPProQuiz` Question row column fields.
  *
  * @since 2.6.0
- * @param integer $question_pro_id WPProQuiz Question ID.
- * @param mixed   $fields Array or string of fields to return.
- * @return array of field values.
+ *
+ * @param int          $question_pro_id Optional. The `WPProQuiz` Question ID. Default 0.
+ * @param string|array $fields           Optional. An array or comma delimited string of fields to return. Default null.
+ *
+ * @return array An array of WPProQuiz question field values.
  */
 function leandash_get_question_pro_fields( $question_pro_id = 0, $fields = null ) {
 	$values = array();
@@ -845,12 +887,14 @@ function leandash_get_question_pro_fields( $question_pro_id = 0, $fields = null 
 }
 
 /**
- * This function retreives the WPProQuiz Quiz row column by field.
+ * Gets the `WPProQuiz` Quiz row column fields.
  *
  * @since 2.6.0
- * @param integer $question_pro_id WPProQuiz Question ID.
- * @param mixed   $fields Array or string of fields to return.
- * @return array of field values.
+ *
+ * @param int          $quiz_pro_id Optional. The `WPProQuiz` Question ID. Default 0.
+ * @param string|array $fields       Optional. An array or comma delimited string of fields to return. Default null.
+ *
+ * @return array An array of `WPProQuiz` quiz field values.
  */
 function leandash_get_quiz_pro_fields( $quiz_pro_id = 0, $fields = null ) {
 	$values = array();
@@ -882,15 +926,19 @@ function leandash_get_quiz_pro_fields( $quiz_pro_id = 0, $fields = null ) {
 }
 
 /**
+ * Gets the primary quiz post ID from a pro quiz ID.
+ *
  * This function accepts a list of Quiz posts. It is assumed quiz posts
  * all share the same ProQuiz Quiz ID. This function will determine which
  * is the 'primary' quiz post. If one is not found the first in the array
  * will be set as the primary.
  *
  * @since 2.6.0
- * @param integer $quiz_pro_id ProQuiz Quiz ID.
- * @param boolean $set_first If true will take first quiz post fount and use as primary.
- * @return integer Primary Quiz Post ID.
+ *
+ * @param int     $quiz_pro_id Optional. The ProQuiz Quiz ID. Default 0.
+ * @param boolean $set_first    Optional. If true will take first quiz post found and used as primary. Default true.
+ *
+ * @return int The primary quiz post ID.
  */
 function learndash_get_quiz_primary_shared( $quiz_pro_id = 0, $set_first = true ) {
 	static $quiz_primary_post_ids = array();
@@ -940,7 +988,13 @@ function learndash_get_quiz_primary_shared( $quiz_pro_id = 0, $set_first = true 
 	}
 }
 
-
+/**
+ * Sorts the quiz results messages.
+ *
+ * @param array $messages Optional. An array of quiz result messages. Default empty array.
+ *
+ * @return array An array of sorted quiz result messages.
+ */
 function learndash_quiz_result_message_sort( $messages = array() ) {
 	$sorted = array();
 	if ( ( isset( $messages ) ) && ( ! empty( $messages ) ) ) {

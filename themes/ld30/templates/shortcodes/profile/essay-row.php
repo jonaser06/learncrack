@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Essay Row
  */
@@ -7,6 +11,11 @@ $meta     = get_post_meta( $essay->ID );
 $comments = get_comment_count( $essay->ID );
 $details  = learndash_get_essay_details( $essay->ID );
 
+/**
+ * Filters list of profile essay columns.
+ *
+ * @param array $essay_columns An Associative array of essay columns with slug as key and content as value.
+ */
 $essay_columns = apply_filters(
 	'learndash-profile-essay-column',
 	array(

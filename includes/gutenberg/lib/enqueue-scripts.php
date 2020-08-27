@@ -1,75 +1,53 @@
 <?php
 
 /**
- * Enqueue block editor only JavaScript and CSS
+ * Enqueues block editor styles and scripts.
+ * 
+ * Fires on `enqueue_block_editor_assets` hook.
  */
 function learndash_editor_scripts() {
 	// Make paths variables so we don't write em twice ;).
-	$blockPath = '../assets/js/editor.blocks.js';
-	$editorStylePath = '../assets/css/blocks.editor.css';
+	$learndash_block_path        = '../assets/js/editor.blocks.js';
+	$learndash_editor_style_path = '../assets/css/blocks.editor.css';
 
 	// Enqueue the bundled block JS file.
 	wp_enqueue_script(
 		'ldlms-blocks-js',
-		plugins_url( $blockPath, __FILE__ ),
-		[ 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-editor' ],
-		//filemtime( plugin_dir_path(__FILE__) . $blockPath )
+		plugins_url( $learndash_block_path, __FILE__ ),
+		array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-editor' ),
 		LEARNDASH_SCRIPT_VERSION_TOKEN
 	);
 
 	/**
 	 * @TODO: This needs to move to an external JS library since it will be used globally.
 	 */
-	$ldlms = array(
+	$ldlms                                       = array(
 		'settings' => array(),
 	);
-	//$ldlms_settings['settings']['custom_labels'] = get_option( 'learndash_settings_custom_labels' );
 	$ldlms_settings['settings']['custom_labels'] = LearnDash_Settings_Section_Custom_Labels::get_section_settings_all();
 	if ( ( is_array( $ldlms_settings['settings']['custom_labels'] ) ) && ( ! empty( $ldlms_settings['settings']['custom_labels'] ) ) ) {
 		foreach ( $ldlms_settings['settings']['custom_labels'] as $key => $val ) {
 			if ( empty( $val ) ) {
 				$ldlms_settings['settings']['custom_labels'][ $key ] = LearnDash_Custom_Label::get_label( $key );
-				if ( substr( $key, 0, strlen( 'button') ) != 'button' ) {
+				if ( substr( $key, 0, strlen( 'button' ) ) != 'button' ) {
 					$ldlms_settings['settings']['custom_labels'][ $key . '_lower' ] = learndash_get_custom_label_lower( $key );
-					$ldlms_settings['settings']['custom_labels'][ $key . '_slug' ] = learndash_get_custom_label_slug( $key );
+					$ldlms_settings['settings']['custom_labels'][ $key . '_slug' ]  = learndash_get_custom_label_slug( $key );
 				}
 			}
 		}
 	}
 
-	//$ldlms_settings['settings']['per_page'] = get_option( 'learndash_settings_per_page' );
-	$ldlms_settings['settings']['per_page'] =  LearnDash_Settings_Section_General_Per_Page::get_section_settings_all();
-
-	//$ldlms_settings['settings']['courses_taxonomies'] = get_option( 'learndash_settings_courses_taxonomies' );
+	$ldlms_settings['settings']['per_page']           = LearnDash_Settings_Section_General_Per_Page::get_section_settings_all();
 	$ldlms_settings['settings']['courses_taxonomies'] = LearnDash_Settings_Courses_Taxonomies::get_section_settings_all();
-
-	//$ldlms_settings['settings']['lessons_taxonomies'] = get_option( 'learndash_settings_lessons_taxonomies' );
 	$ldlms_settings['settings']['lessons_taxonomies'] = LearnDash_Settings_Lessons_Taxonomies::get_section_settings_all();
-	
-	//$ldlms_settings['settings']['topics_taxonomies'] = get_option( 'learndash_settings_topics_taxonomies' );
-	$ldlms_settings['settings']['topics_taxonomies'] = LearnDash_Settings_Topics_Taxonomies::get_section_settings_all();
-
-	//$ldlms_settings['settings']['quizzes_taxonomies'] = get_option( 'learndash_settings_quizzes_taxonomies' );
-
-	/*
-	$ldlms_settings['settings']['quizzes_taxonomies'] = array();
-	$object_taxonomies = get_object_taxonomies( 'sfwd-quiz' );
-
-	if ( ( !empty( $object_taxonomies ) ) && ( is_array( $object_taxonomies ) ) ) {
-		if ( in_array( 'category', $object_taxonomies ) ) {
-			$ldlms_settings['settings']['quizzes_taxonomies']['wp_post_category'] = 'yes';
-		}
-		if ( in_array( 'post_tag', $object_taxonomies ) ) {
-			$ldlms_settings['settings']['quizzes_taxonomies']['wp_post_tag'] = 'yes';
-		}
-	}
-	*/
+	$ldlms_settings['settings']['topics_taxonomies']  = LearnDash_Settings_Topics_Taxonomies::get_section_settings_all();
 	$ldlms_settings['settings']['quizzes_taxonomies'] = LearnDash_Settings_Quizzes_Taxonomies::get_section_settings_all();
+	$ldlms_settings['settings']['groups_taxonomies'] = LearnDash_Settings_Groups_Taxonomies::get_section_settings_all();
 
-	$ldlms_settings['plugins']['learndash-course-grid'] = array();
-	$ldlms_settings['plugins']['learndash-course-grid']['enabled'] = learndash_enqueue_course_grid_scripts();
+	$ldlms_settings['plugins']['learndash-course-grid']                = array();
+	$ldlms_settings['plugins']['learndash-course-grid']['enabled']     = learndash_enqueue_course_grid_scripts();
 	$ldlms_settings['plugins']['learndash-course-grid']['col_default'] = 3;
-	$ldlms_settings['plugins']['learndash-course-grid']['col_max'] = 12;
+	$ldlms_settings['plugins']['learndash-course-grid']['col_max']     = 12;
 
 	if ( true === $ldlms_settings['plugins']['learndash-course-grid']['enabled'] ) {
 		if ( defined( 'LEARNDASH_COURSE_GRID_COLUMNS' ) ) {
@@ -87,7 +65,7 @@ function learndash_editor_scripts() {
 		}
 	}
 
-	$ldlms_settings['meta'] = array();
+	$ldlms_settings['meta']                   = array();
 	$ldlms_settings['meta']['posts_per_page'] = get_option( 'posts_per_page' );
 	if ( is_admin() ) {
 		$current_screen = get_current_screen();
@@ -96,9 +74,9 @@ function learndash_editor_scripts() {
 			global $post, $post_type, $editing;
 			$ldlms_settings['meta']['post'] = array();
 
-			$ldlms_settings['meta']['post']['post_id'] = $post->ID;
+			$ldlms_settings['meta']['post']['post_id']   = $post->ID;
 			$ldlms_settings['meta']['post']['post_type'] = $post_type;
-			$ldlms_settings['meta']['post']['editing'] = $editing;
+			$ldlms_settings['meta']['post']['editing']   = $editing;
 
 			$ldlms_settings['meta']['post']['course_id'] = 0;
 
@@ -108,7 +86,7 @@ function learndash_editor_scripts() {
 				$course_id = 0;
 				if ( 'sfwd-courses' === $post_type ) {
 					$course_id = $post->ID;
-				} else if ( in_array( $post_type, $course_post_types ) ) {
+				} elseif ( in_array( $post_type, $course_post_types, true ) ) {
 					$course_id = learndash_get_course_id();
 				}
 				$ldlms_settings['meta']['post']['course_id'] = $course_id;
@@ -119,15 +97,13 @@ function learndash_editor_scripts() {
 	// Load the MO file translations into wp.i18n script hook.
 	learndash_load_inline_script_locale_data();
 
-	//error_log('ldlms_settings<pre>'. print_r($ldlms_settings, true) .'</pre>');
 	wp_localize_script( 'ldlms-blocks-js', 'ldlms_settings', $ldlms_settings );
 
 	// Enqueue optional editor only styles.
 	wp_enqueue_style(
 		'ldlms-blocks-editor-css',
-		plugins_url( $editorStylePath, __FILE__ ),
-		[],
-		//filemtime( plugin_dir_path( __FILE__ ) . $editorStylePath )
+		plugins_url( $learndash_editor_style_path, __FILE__ ),
+		array(),
 		LEARNDASH_SCRIPT_VERSION_TOKEN
 	);
 	wp_style_add_data( 'ldlms-blocks-editor-css', 'rtl', 'replace' );
@@ -140,10 +116,10 @@ function learndash_editor_scripts() {
 		wp_enqueue_style( 'learndash_pager_css', learndash_template_url_from_path( $filepath ), array(), LEARNDASH_SCRIPT_VERSION_TOKEN );
 		wp_style_add_data( 'learndash_pager_css', 'rtl', 'replace' );
 		$learndash_assets_loaded['styles']['learndash_pager_css'] = __FUNCTION__;
-	} 
+	}
 
 	$filepath = SFWD_LMS::get_template( 'learndash_pager.js', null, null, true );
-	if ( !empty( $filepath ) ) {
+	if ( ! empty( $filepath ) ) {
 		wp_enqueue_script( 'learndash_pager_js', learndash_template_url_from_path( $filepath ), array( 'jquery' ), LEARNDASH_SCRIPT_VERSION_TOKEN, true );
 		$learndash_assets_loaded['scripts']['learndash_pager_js'] = __FUNCTION__;
 	}
@@ -152,20 +128,21 @@ function learndash_editor_scripts() {
 add_action( 'enqueue_block_editor_assets', 'learndash_editor_scripts' );
 
 /**
- * Enqueue front end and editor JavaScript and CSS
+ * Enqueues front end and editor styles and scripts for the blocks.
+ *
+ * Fires on `enqueue_block_assets` hook.
  */
 function learndash_scripts() {
 	// Make paths variables so we don't write em twice ;)
-	$blockPath = '../assets/js/frontend.blocks.js';
-	$stylePath = '../assets/css/blocks.style.css';
+	$learndash_block_path = '../assets/js/frontend.blocks.js';
+	$learndash_style_path = '../assets/css/blocks.style.css';
 
 	if ( ! is_admin() ) {
 		// Enqueue the bundled block JS file.
 		wp_enqueue_script(
 			'ldlms-blocks-frontend',
-			plugins_url( $blockPath, __FILE__ ),
-			[],
-			//filemtime( plugin_dir_path(__FILE__) . $blockPath )
+			plugins_url( $learndash_block_path, __FILE__ ),
+			array(),
 			LEARNDASH_SCRIPT_VERSION_TOKEN
 		);
 	}
@@ -173,9 +150,8 @@ function learndash_scripts() {
 	// Enqueue frontend and editor block styles
 	wp_enqueue_style(
 		'learndash-blocks',
-		plugins_url($stylePath, __FILE__),
-		[],
-		//filemtime(plugin_dir_path(__FILE__) . $stylePath )
+		plugins_url( $learndash_style_path, __FILE__ ),
+		array(),
 		LEARNDASH_SCRIPT_VERSION_TOKEN
 	);
 	wp_style_add_data( 'learndash-blocks', 'rtl', 'replace' );
@@ -185,11 +161,11 @@ function learndash_scripts() {
 add_action( 'enqueue_block_assets', 'learndash_scripts' );
 
 /**
- * Custom function to enqueue needed CSS/JS for Course Grid.
+ * Enqueues the required styles and scripts for the course grid.
  *
  * @since 2.5.9
  *
- * @return boolean true is resources loaded. false is not loaded.
+ * @return boolean Returns true if the assets are enqueued otherwise false.
  */
 function learndash_enqueue_course_grid_scripts() {
 
@@ -215,26 +191,30 @@ function learndash_enqueue_course_grid_scripts() {
 
 
 /**
- * Register custom block category.
+ * Registers a custom block category.
+ *
+ * Fires on `block_categories` hook.
  *
  * @since 2.6.0
- * @param array  $block_categories Array of current block categories.
- * @param object $post WP_Post instance of post being edited.
- * @return array $block_categories.
+ *
+ * @param array         $block_categories Optional. An array of current block categories. Default empty array.
+ * @param WP_Post|false $post             Optional. The `WP_Post` instance of post being edited. Default false.
+ *
+ * @return array An array of block categories.
  */
 function learndash_block_categories( $block_categories = array(), $post = false ) {
 
 	$ld_block_cat_found = false;
 
-	foreach( $block_categories as $block_cat ) {
-		if ( ( isset( $block_cat['slug'] ) ) && ( $block_cat['slug'] == 'learndash-blocks' ) ) {
+	foreach ( $block_categories as $block_cat ) {
+		if ( ( isset( $block_cat['slug'] ) ) && ( 'learndash-blocks' === $block_cat['slug'] ) ) {
 			$ld_block_cat_found = true;
 		}
 	}
 
 	if ( false === $ld_block_cat_found ) {
 		if ( ( $post ) && ( is_a( $post, 'WP_Post' ) ) ) {
-			if ( in_array( $post->post_type, LDLMS_Post_Types::get_post_types() ) ) {
+			if ( in_array( $post->post_type, LDLMS_Post_Types::get_post_types(), true ) ) {
 				$block_categories = array_merge(
 					array(
 						array(

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Toplist extends WpProQuiz_Controller_Controller {
 	
 	public function route() {
@@ -144,6 +148,13 @@ class WpProQuiz_Controller_Toplist extends WpProQuiz_Controller_Controller {
 			}
 	
 			// For logged in users to allow an override filter. 
+			/**
+			 * Filters whether to include admin users in the quiz toplist report or not.
+			 *
+			 * @param boolean $include_admin_in_reports Whether to include admin user in toplist report.
+			 * @param int     $user_id                  User ID.
+			 * @param array   $name                     Global post data.
+			 */
 			$include_admin_in_reports = apply_filters( 'learndash_quiz_add_toplist_bypass', $include_admin_in_reports, $user_id, $this->_post );
 		}
 

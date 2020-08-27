@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $learndash_profile_search_query = (
 	isset( $_GET['ld-profile-search'], $_GET['learndash_profile_course_search_nonce'] ) &&
 	! empty( $_GET['ld-profile-search'] ) &&

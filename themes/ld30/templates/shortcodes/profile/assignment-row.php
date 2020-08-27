@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $assignment_points = learndash_get_points_awarded_array( $assignment->ID );
 ( $assignment->ID );
 ?>
@@ -7,7 +11,7 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID );
 	<div class="ld-table-list-item-preview">
 		<div class="ld-table-list-title">
 
-			<a class="ld-item-icon" href='<?php echo esc_attr( get_post_meta( $assignment->ID, 'file_link', true ) ); ?>' target="_blank">
+			<a class="ld-item-icon" href='<?php echo esc_url( get_post_meta( $assignment->ID, 'file_link', true ) ); ?>' target="_blank">
 				<span class="ld-icon ld-icon-assignment" aria-label="<?php esc_html_e( 'Download Assignment', 'learndash' ); ?>"></span>
 			</a>
 
@@ -29,26 +33,19 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID );
 			 */
 			if ( true === (bool) $assignment_post_type_object->publicly_queryable ) :
 
-				/**
-				 * Action to add custom content before assignment post link
-				 *
-				 * @since 3.0
-				 */
+				/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 				do_action( 'learndash-assignment-row-columns-before', $assignment, get_the_ID(), $course_id, $user_id );
 
 				ob_start();
 
+				/** This filter is documented in https://developer.wordpress.org/reference/hooks/comments_open/ */
 				if ( post_type_supports( 'sfwd-assignment', 'comments' ) && apply_filters( 'comments_open', $assignment->comment_status, $assignment->ID ) ) : // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP Core hook
 
-					/**
-					 * Action to add custom content before assignment comment count & link
-					 *
-					 * @since 3.0
-					 */
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-comments-before', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 
-					<a href='<?php echo esc_attr( get_comments_link( $assignment->ID ) ); ?>' data-ld-tooltip="
+					<a href='<?php echo esc_url( get_comments_link( $assignment->ID ) ); ?>' data-ld-tooltip="
 										<?php
 										echo sprintf(
 											// translators: placeholder: commentd count.
@@ -68,11 +65,7 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID );
 					$row_columns['comments'] = ob_get_clean();
 					ob_flush();
 
-					/**
-					 * Action to add custom content after assignment comment count & link
-					 *
-					 * @since 3.0
-					 */
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-comments-after', $assignment, get_the_ID(), $course_id, $user_id );
 
 				endif;
@@ -122,22 +115,29 @@ $assignment_points = learndash_get_points_awarded_array( $assignment->ID );
 			$row_columns['date'] = get_the_date( get_option( 'date_format' ), $assignment->ID );
 
 			// Apply a fitler so devs can add more info here later
+			/** This filter is documented in themes/ld30/templates/assignment/partials/row.php */
 			$row_columns = apply_filters( 'learndash-assignment-list-columns-content', $row_columns );
 			if ( ! empty( $row_columns ) ) :
 				foreach ( $row_columns as $slug => $content ) :
 
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-' . $slug . '-before', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 				<div class="<?php echo esc_attr( 'ld-table-list-column ld-' . $slug . '-column' ); ?>">
 					<?php
+
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-' . $slug . '-inside-before', $assignment, get_the_ID(), $course_id, $user_id );
 
 					echo wp_kses_post( $content );
 
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-' . $slug . '-inside-after', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 				</div>
 					<?php
+
+					/** This action is documented in themes/ld30/templates/assignment/partials/row.php */
 					do_action( 'learndash-assignment-row-' . $slug . '-after', $assignment, get_the_ID(), $course_id, $user_id );
 					?>
 					<?php

@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Quizzes_Management_Display' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -87,7 +91,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				if ( true === is_data_upgrade_quiz_questions_updated() ) {
 					$this->setting_option_values['quiz_builder_enabled'] = 'yes';
 				} else {
-					$this->setting_option_values['quiz_builder_enabled'] = '';
+					$this->setting_option_values['quiz_builder_enabled']          = '';
 					$this->setting_option_values['quiz_builder_shared_questions'] = '';
 				}
 			}
@@ -322,6 +326,11 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 			$wp_date_time_format = $wp_date_format . ' ' . $wp_time_format;
 
 			$date_time_formats = array_unique(
+				/**
+				 * Filters the quiz date and time formats.
+				 *
+				 * @param array $date_time_formats An array of quiz date and time formats.
+				 */
 				apply_filters(
 					'learndash_quiz_date_time_formats',
 					array(
@@ -381,19 +390,21 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				'parent_setting' => 'quiz_builder_time_formats',
 			);
 
-
 			$template_mapper = new WpProQuiz_Model_TemplateMapper();
 			$quiz_templates  = $template_mapper->fetchAll( WpProQuiz_Model_Template::TEMPLATE_TYPE_QUIZ, false );
 			if ( ( ! empty( $quiz_templates ) ) && ( is_array( $quiz_templates ) ) ) {
+				$_templates = array();
 				foreach ( $quiz_templates as $template_quiz ) {
 					$template_name = $template_quiz->getName();
 					$template_id   = $template_quiz->getTemplateId();
 
-					if ( ( ! empty( $template_name ) ) && ( ! isset( $this->setting_option_values['quiz_templates'][ $template_id ] ) ) ) {
-						$this->setting_option_values['quiz_templates'][ $template_id ] = esc_html( $template_name );
+					if ( ( ! empty( $template_name ) ) && ( ! isset( $_templates[ $template_id ] ) ) ) {
+						$_templates[ $template_id ] = esc_html( $template_name );
 					}
 				}
-				sort( $this->setting_option_values['quiz_templates'] );
+				asort( $_templates );
+
+				$this->setting_option_values['quiz_templates'] += $_templates;
 			}
 
 			$this->setting_option_fields['quiz_template'] = array(
@@ -414,6 +425,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();
@@ -423,32 +435,32 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 		 * Intercept the WP options save logic and check that we have a valid nonce.
 		 *
 		 * @since 3.0
-		 * @param array $value Array of section fields values.
-		 * @param array $old_value Array of old values.
+		 * @param array  $value Array of section fields values.
+		 * @param array  $old_value Array of old values.
 		 * @param string $section_key Section option key should match $this->setting_option_key.
 		 */
 		public function section_pre_update_option( $current_values = '', $old_values = '', $option = '' ) {
 			if ( $option === $this->setting_option_key ) {
 				$current_values = parent::section_pre_update_option( $current_values, $old_values, $option );
 				if ( $current_values !== $old_values ) {
-					//if ( ( isset( $current_values['force_quiz_builder'] ) ) && ( 'yes' === $current_values['force_quiz_builder'] ) ) {
-					//	$current_values['quiz_builder_enabled'] = 'yes';
-					//}
-					//if ( ( isset( $current_values['force_shared_questions'] ) ) && ( 'yes' === $current_values['force_shared_questions'] ) ) {
-					//	$current_values['quiz_builder_shared_questions'] = 'yes';
-					//}
+					// if ( ( isset( $current_values['force_quiz_builder'] ) ) && ( 'yes' === $current_values['force_quiz_builder'] ) ) {
+					// $current_values['quiz_builder_enabled'] = 'yes';
+					// }
+					// if ( ( isset( $current_values['force_shared_questions'] ) ) && ( 'yes' === $current_values['force_shared_questions'] ) ) {
+					// $current_values['quiz_builder_shared_questions'] = 'yes';
+					// }
 
-					//if ( ( isset( $current_values['shared_questions'] ) ) && ( 'yes' === $current_values['shared_questions'] ) ) {
-					//	if ( ( ! isset( $current_values['quiz_builder_enabled'] ) ) || ( 'yes' !== $current_values['quiz_builder_enabled'] ) ) {
-					//		$current_values['quiz_builder_shared_questions'] = 'no';
-					//	}
-					//}
+					// if ( ( isset( $current_values['shared_questions'] ) ) && ( 'yes' === $current_values['shared_questions'] ) ) {
+					// if ( ( ! isset( $current_values['quiz_builder_enabled'] ) ) || ( 'yes' !== $current_values['quiz_builder_enabled'] ) ) {
+					// $current_values['quiz_builder_shared_questions'] = 'no';
+					// }
+					// }
 
 					if ( ( isset( $current_values['quiz_builder_enabled'] ) ) && ( 'yes' === $current_values['quiz_builder_enabled'] ) ) {
 						$current_values['quiz_builder_per_page'] = absint( $current_values['quiz_builder_per_page'] );
 					} else {
 						$current_values['quiz_builder_shared_questions'] = '';
-						$current_values['quiz_builder_per_page'] = LEARNDASH_LMS_DEFAULT_WIDGET_PER_PAGE;
+						$current_values['quiz_builder_per_page']         = LEARNDASH_LMS_DEFAULT_WIDGET_PER_PAGE;
 					}
 
 					$wp_date_format      = get_option( 'date_format' );

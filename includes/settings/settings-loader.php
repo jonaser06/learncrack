@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! defined( 'LEARNDASH_SETTINGS_SECTION_TYPE' ) ) {
 	define( 'LEARNDASH_SETTINGS_SECTION_TYPE', 'metabox' );
 }

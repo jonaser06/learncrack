@@ -7,15 +7,20 @@
  * @package LearnDash\Navigation
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Generate previous post link for lesson or topic
+ * Generates the previous post link for lesson or topic.
  *
  * @since 2.1.0
- * 
- * @param  string  $prevlink
- * @param  boolean $url      return a url instead of HTML link
- * @return string            previous post link output
+ *
+ * @param  string       $prevlink Default previous post link.
+ * @param  boolean      $url      Whether to return URL instead of HTML output.
+ * @param  WP_Post|null $post     The `WP_Post` object. Defaults to global post object.
+ *
+ * @return string Previous post link URL or HTML output.
  */
 function learndash_previous_post_link( $prevlink='', $url = false, $post = null ) {
 if ( empty( $post) ) {
@@ -68,11 +73,14 @@ if ( empty( $post) ) {
 			$link = '<a href="'.$permalink.'" class="prev-link" rel="prev">' . $link_name_with_arrow . '</a>';
 
 			/**
-			 * Filter previous post link output
-			 * 
+			 * Filters course navigation previous post link output.
+			 *
 			 * @since 2.1.0
-			 * 
-			 * @param  string  $link 
+			 *
+			 * @param string  $link      Previous post link output.
+			 * @param string  $permalink Previous post permalink.
+			 * @param string  $link_name Text shown inside previous post link.
+			 * @param WP_Post $post      Post object.
 			 */
 			return apply_filters( 'learndash_previous_post_link', $link, $permalink, $link_name, $post );
 		}	
@@ -85,15 +93,15 @@ if ( empty( $post) ) {
 
 
 /**
- * Generate next post link for lesson or topic
+ * Generates the next post link for lesson or topic.
  *
  * @since 2.1.0
- * 
- * @param  string  $prevlink
- * @param  boolean $url      return a url instead of HTML link.
- *                           Added 3.1 'id' will return next step post ID.
- * @param  object  $post     WP_Post object
- * @return string            next post link output
+ *
+ * @param  string       $prevlink Default next post link.
+ * @param  boolean      $url      Whether to return URL instead of HTML output.
+ * @param  WP_Post|null $post     The `WP_Post` object. Defaults to global post object.
+ *
+ * @return string Next post link URL or HTML output.
  */
 function learndash_next_post_link( $prevlink='', $url = false, $post = null ) {
 	if ( empty( $post) ) {
@@ -147,12 +155,15 @@ function learndash_next_post_link( $prevlink='', $url = false, $post = null ) {
 
 			$link = '<a href="'.$permalink.'" class="next-link" rel="next">' . $link_name_with_arrow.'</a>';
 
-			 /**
-			 * Filter next post link output
-			 * 
+			/**
+			 * Filters course navigation next post link output.
+			 *
 			 * @since 2.1.0
-			 * 
-			 * @param  string  $link 
+			 *
+			 * @param string  $link      Next post link output.
+			 * @param string  $permalink Next post permalink.
+			 * @param string  $link_name Text shown inside next post link.
+			 * @param WP_Post $post      Post object.
 			 */
 			return apply_filters( 'learndash_next_post_link', $link, $permalink, $link_name, $post );
 		}
@@ -171,12 +182,15 @@ function learndash_next_post_link( $prevlink='', $url = false, $post = null ) {
 
 
 /**
- * Don't show previous/next link in certain situations
+ * Hides the next/previous post links in certain situations.
+ *
+ * Fires on `previous_post_link` and `next_post_link` hook.
  *
  * @since 2.1.0
- * 
- * @param  string $prevlink
- * @return string
+ *
+ * @param string $prevlink The next/previous post link.
+ *
+ * @return string The next/previous post link.
  */
 function learndash_clear_prev_next_links( $prevlink='' ){
 	global $post;
@@ -194,12 +208,11 @@ add_filter( 'next_post_link', 'learndash_clear_prev_next_links', 1, 2 );
 
 
 /**
- * Output quiz continue link
+ * Outputs the quiz continue link.
  *
- * @since  x.x.
- * 
- * @param  int 		$id 	quiz id
- * @return string   output of link
+ * @param int $id Quiz ID.
+ *
+ * @return string The quiz continue link output.
  */
 function learndash_quiz_continue_link( $id ) {
 	global $status, $pageQuizzes;
@@ -262,28 +275,30 @@ function learndash_quiz_continue_link( $id ) {
 	if ( $version >= '1.5.1' ) {
 
 		 /**
-		 * Filter output of quiz continue link
-		 * 
+		 * Filters output of quiz continue link.
+		 *
 		 * @since 2.1.0
-		 * 
-		 * @param  string  $returnLink
+		 *
+		 * @param string $continue_link Continue link output.
+		 * @param string $url           Continue link url.
 		 */
 		return apply_filters( 'learndash_quiz_continue_link', $returnLink, $url );
 
 	} else {
 
-		 /**
-		 * Filter output of quiz continue link
-		 * 
-		 * @since 2.1.0
-		 * 
-		 * @param  string  $returnLink
-		 */
+		/** This filter is documented in includes/course/ld-course-navigation.php */
 		return apply_filters( 'learndash_quiz_continue_link', $returnLink );
 
 	}
 }
 
+/**
+ * Outputs the quiz continue link(old).
+ *
+ * @param int $id Quiz ID.
+ *
+ * @return string The quiz continue link output.
+ */
 function learndash_quiz_continue_link_OLD( $id ) {
 	global $status, $pageQuizzes;
 
@@ -311,24 +326,12 @@ function learndash_quiz_continue_link_OLD( $id ) {
 	
 	if ( $version >= '1.5.1' ) {
 
-		 /**
-		 * Filter output of quiz continue link
-		 * 
-		 * @since 2.1.0
-		 * 
-		 * @param  string  $returnLink
-		 */
+		 /** This filter is documented in includes/course/ld-course-navigation.php */
 		return apply_filters( 'learndash_quiz_continue_link', $returnLink, $url );
 
 	} else {
 
-		 /**
-		 * Filter output of quiz continue link
-		 * 
-		 * @since 2.1.0
-		 * 
-		 * @param  string  $returnLink
-		 */
+		/** This filter is documented in includes/course/ld-course-navigation.php */
 		return apply_filters( 'learndash_quiz_continue_link', $returnLink );
 
 	}
@@ -337,16 +340,19 @@ function learndash_quiz_continue_link_OLD( $id ) {
 
 
 /**
- * Output LearnDash topic dots
- * Indicates name of topic and whether it's been completed
- * 
+ * Outputs the LearnDash topic dots.
+ *
+ * Indicates the name of the topic and whether it's been completed
+ *
  * @since 2.1.0
- * 
- * @param  int 		$lesson_id 
- * @param  boolean 	$show_text 
- * @param  string  	$type      	dots|list
- * @param  int  	$user_id   
- * @return string              	output
+ *
+ * @param int      $lesson_id Lesson ID.
+ * @param boolean  $show_text Whether to show text.
+ * @param string   $type      The type of dots. Value can be 'dots', 'list' or 'array'.
+ * @param int|null $user_id   User ID.
+ * @param int|null $course_id Course ID.
+ *
+ * @return string|array The topic dots output or an array of topics.
  */
 function learndash_topic_dots( $lesson_id, $show_text = false, $type = 'dots', $user_id = null, $course_id = null ) {
 	if ( empty( $lesson_id ) ) {
@@ -389,13 +395,16 @@ function learndash_topic_dots( $lesson_id, $show_text = false, $type = 'dots', $
 				}
 
 				 /**
-				 * Filter output of list topic dots
-				 * 
+				 * Filters output of topic list dots.
+				 *
 				 * @since 2.1.0
-				 * 
-				 * @param  string
+				 *
+				 * @param string  $topic_dots  Topic dots output.
+				 * @param WP_Post $topic       Topic WP_Post object to be checked.
+				 * @param string  $type        Type of dots. Value can dots or list.
+				 * @param mixed   $topic_count Count of topics.
 				 */
-				$html .= apply_filters( 'learndash_topic_dots_item', "<li><a class='".$completed."' href='".get_permalink( $topic->ID )."'  title='".$topic->post_title."'><span>".$topic->post_title.'</span></a></li>', $topic, $completed, $type, $sn );
+				$html .= apply_filters( 'learndash_topic_dots_item', "<li><a class='".$completed."' href='".get_permalink( $topic->ID )."'  title='" . esc_html( apply_filters( 'the_title', $topic->post_title, $topic->ID ) ) . "'><span>" . apply_filters( 'the_title', $topic->post_title, $topic->ID ) . '</span></a></li>', $topic, $completed, $type, $sn );
 			}
 
 			$html .= '</ul>';
@@ -416,14 +425,8 @@ function learndash_topic_dots( $lesson_id, $show_text = false, $type = 'dots', $
 					$completed = 'topic-notcompleted';
 				}
 
-				 /**
-				 * Filter output of topic dots
-				 * 
-				 * @since 2.1.0
-				 * 
-				 * @param  string
-				 */
-				$html .= apply_filters( 'learndash_topic_dots_item', '<a class="'.$completed.'" href="'.get_permalink( $topic->ID ).'"><SPAN TITLE="'.$topic->post_title.'"></SPAN></a>', $topic, $completed, $type, $sn );
+				/** This filter is documented in includes/course/ld-course-navigation.php */
+				$html .= apply_filters( 'learndash_topic_dots_item', '<a class="' . esc_attr( $completed ) . '" href="' . esc_url( get_permalink( $topic->ID ) ) . '"><span title="' . apply_filters( 'the_title', $topic->post_title, $topic->ID ) . '"></span></a>', $topic, $completed, $type, $sn );
 			}
 
 			break;
@@ -437,12 +440,17 @@ function learndash_topic_dots( $lesson_id, $show_text = false, $type = 'dots', $
 
 
 /**
- * Get lesson list for course
+ * Gets the lesson list for a course.
+ *
+ * @global wpdb    $wpdb WordPress database abstraction object.
+ * @global WP_Post $post Global post object.
  *
  * @since 2.1.0
- * 
- * @param  int 	 $id 	id of resource
- * @return array 		list of lessons
+ *
+ * @param int|null $id   The ID of the resource.
+ * @param array    $atts An array of lesson arguments.
+ *
+ * @return array|string Returns Lesson list output or empty array.
  */
 function learndash_get_lesson_list( $id = null, $atts = array() ) {
 	global $post;
@@ -507,9 +515,13 @@ function learndash_get_lesson_list( $id = null, $atts = array() ) {
 	}
 	
 	/**
-	 * Filter for lessons list args
+	 * Filters query arguments for getting the lesson list.
 	 *
 	 * @since 2.5.7
+	 *
+	 * @param array $lesson_args An array of arguments for getting lesson list.
+	 * @param int   $id          ID of resource.
+	 * @param int   $course_id   Course ID.
 	 */
 	$lessons_args = apply_filters( 'learndash_get_lesson_list_args', $lessons_args, $id, $course_id );
 	if ( !empty( $lessons_args ) ) {
@@ -520,12 +532,14 @@ function learndash_get_lesson_list( $id = null, $atts = array() ) {
 
 
 /**
- * Get topics list for a lesson
+ * Gets the topics list for a lesson.
  *
  * @since 2.1.0
  *
- * @param  int   $for_lesson_id
- * @return array topics list
+ * @param int|null $for_lesson_id The ID of the lesson to get topics.
+ * @param int|null $course_id     Course ID.
+ *
+ * @return array An array of topics list.
  */
 function learndash_get_topic_list( $for_lesson_id = null, $course_id = null ) {
 	if ( empty( $course_id ) ) {
@@ -628,12 +642,15 @@ function learndash_get_topic_list( $for_lesson_id = null, $course_id = null ) {
 }
 
 /**
- * Get quiz list for resource
+ * Gets the quiz list for a resource.
+ *
+ * @global WP_Post $post Global post object.
  *
  * @since 2.1.0
- * 
- * @param  int $id 	id of resource (topic, lesson, etc)
- * @return array    list of quizzes
+ *
+ * @param int|null $id An ID of the resource.
+ *
+ * @return array An array of quizzes.
  */
 function learndash_get_global_quiz_list( $id = null ){
 	global $post;
@@ -697,6 +714,17 @@ function learndash_get_global_quiz_list( $id = null ){
 	}
 }
 
+/**
+ * Gets the quiz list for a resource(old).
+ *
+ * @global WP_Post $post Global post object.
+ *
+ * @since 2.1.0
+ *
+ * @param int|null $id An ID of the resource.
+ *
+ * @return array An array of quizzes.
+ */
 function learndash_get_global_quiz_list_OLD( $id = null ){
 	global $post;
 
@@ -755,20 +783,15 @@ function learndash_get_global_quiz_list_OLD( $id = null ){
 
 
 /**
- * Get lesson list output for course
+ * Gets the lesson list output for a course.
  *
  * @since 2.1.0
- * 
- * @param  int|obj $course course id or course WP_Post
- * @return string          html output of lesson list for course
- */
-/**
- * Get lesson list output for course
  *
- * @since 2.1.0
- * 
- * @param  int|obj $course course id or course WP_Post
- * @return string          html output of lesson list for course
+ * @param int|WP_Post|null $course       Optional. The `WP_Post` course object or course ID. Default null.
+ * @param int|null         $user_id      Optional. User ID. Default null.
+ * @param array            $lessons_args Optional. An array of query arguments to get lesson list. Default empty array.
+ *
+ * @return string The lesson list HTML output.
  */
 function learndash_get_course_lessons_list( $course = null, $user_id = null, $lessons_args = array() ) {
 	if ( empty( $course ) ) {
@@ -857,12 +880,14 @@ function learndash_get_course_lessons_list( $course = null, $user_id = null, $le
 }
 
 /**
- * Get quiz list output for course
+ * Gets the quiz list output for a course.
  *
  * @since 2.1.0
- * 
- * @param  int|obj $course course id or course WP_Post
- * @return string          html output of quiz list for course
+ *
+ * @param int|WP_Post|null $course  Optional. The `WP_Post` course object or course ID. Default null.
+ * @param int|null         $user_id Optional. User ID. Default null.
+ *
+ * @return array|string The quiz list HTML output.
  */
 function learndash_get_course_quiz_list( $course = null, $user_id = null ) {
 	if ( empty( $course ) ) {
@@ -921,12 +946,15 @@ function learndash_get_course_quiz_list( $course = null, $user_id = null ) {
 
 
 /**
- * Get lesson list output for quiz
+ * Gets the quiz list output for a lesson.
  *
  * @since 2.1.0
- * 
- * @param  int|obj $quiz quiz id or quiz WP_Post
- * @return string          html output of lesson list for quiz
+ *
+ * @param int|WP_Post $lesson    The `WP_Post` lesson object or lesson ID.
+ * @param int|null    $user_id   Optional. User ID. Default null.
+ * @param int|null    $course_id Optional. Course ID. Default null.
+ *
+ * @return array|string The lesson quiz list HTML output.
  */
 function learndash_get_lesson_quiz_list( $lesson, $user_id = null, $course_id = null ) {
 	if ( is_numeric( $lesson ) ) {

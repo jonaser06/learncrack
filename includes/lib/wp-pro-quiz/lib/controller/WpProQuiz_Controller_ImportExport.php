@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_ImportExport extends WpProQuiz_Controller_Controller {
 	
 	public function route() {
@@ -50,6 +54,9 @@ class WpProQuiz_Controller_ImportExport extends WpProQuiz_Controller_Controller 
 		$this->view = new WpProQuiz_View_Import();
 		$this->view->error = false;
 		
+		if ( ! defined( 'LEARNDASH_PROQUIZ_IMPORT' ) ) {
+			define( 'LEARNDASH_PROQUIZ_IMPORT', true );
+		}
 		if(isset($_FILES, $_FILES['import']) && substr($_FILES['import']['name'], -3) == 'xml' || isset($this->_post['importType']) && $this->_post['importType'] == 'xml') {
 			$import = new WpProQuiz_Helper_ImportXml();
 			$importType = 'xml';			

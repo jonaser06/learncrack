@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Course_Access_Settings' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -121,7 +125,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				}
 
 				if ( ! isset( $this->setting_option_values['course_price_type'] ) ) {
-					$this->setting_option_values['course_price_type'] = 'open';
+					$this->setting_option_values['course_price_type'] = LEARNDASH_DEFAULT_COURSE_PRICE_TYPE;
 				}
 
 				if ( ! isset( $this->setting_option_values['course_prerequisite_enabled'] ) ) {
@@ -166,6 +170,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 			$this->settings_sub_option_fields = array();
 
 			$select_course_options = $sfwd_lms->select_a_course();
+
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_course_options_default = sprintf(
 					// translators: placeholder: course.
@@ -256,7 +262,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'name'      => 'course_price_type_closed_custom_button_url',
 					'label'     => esc_html__( 'Button URL', 'learndash' ),
 					'type'      => 'url',
-					'class'   => 'full-text',
+					'class'     => 'full-text',
 					'value'     => $this->setting_option_values['course_price_type_closed_custom_button_url'],
 					'help_text' => sprintf(
 						// translators: placeholder: "Take this Course" button label
@@ -281,7 +287,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'label'   => esc_html__( 'Access Mode', 'learndash' ),
 					'type'    => 'radio',
 					'value'   => $this->setting_option_values['course_price_type'],
-					'default' => 'open',
+					'default' => LEARNDASH_DEFAULT_COURSE_PRICE_TYPE,
 					'options' => array(
 						'open'      => array(
 							'label'       => esc_html__( 'Open', 'learndash' ),
@@ -328,9 +334,10 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 						'closed'    => array(
 							'label'               => esc_html__( 'Closed', 'learndash' ),
 							'description'         => sprintf(
-								// translators: placeholder: course.
-								esc_html_x( 'The %s can only be accessed through admin enrollment (manual), group enrollment, or integration (shopping cart or membership) enrollment. No enrollment button will be displayed, unless a URL is set (optional).', 'placeholder: course', 'learndash' ),
-								learndash_get_custom_label_lower( 'course' )
+								// translators: placeholder: course, group.
+								esc_html_x( 'The %1$s can only be accessed through admin enrollment (manual), %2$s enrollment, or integration (shopping cart or membership) enrollment. No enrollment button will be displayed, unless a URL is set (optional).', 'placeholder: course', 'learndash' ),
+								learndash_get_custom_label_lower( 'course' ),
+								learndash_get_custom_label_lower( 'group' )
 							),
 							'inline_fields'       => array(
 								'course_price_type_closed' => $this->settings_sub_option_fields['course_price_type_closed_fields'],
@@ -401,7 +408,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				'course_points_enabled'         => array(
 					'name'                => 'course_points_enabled',
 					'label'               => sprintf(
-						// translators: placeholder: Course
+						// translators: placeholder: Course.
 						esc_html_x( '%s Points', 'placeholder: Course', 'learndash' ),
 						learndash_get_custom_label( 'course' )
 					),
@@ -425,7 +432,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'attrs'          => array(
 						'step'        => 'any',
 						'min'         => '0.00',
-						//'max'         => '10.00',
+						// 'max'         => '10.00',
 						'can_decimal' => 2,
 						'can_empty'   => true,
 					),
@@ -455,7 +462,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'attrs'          => array(
 						'step'        => 'any',
 						'min'         => '0.00',
-						//'max'         => '10.00',
+						// 'max'         => '10.00',
 						'can_decimal' => 2,
 						'can_empty'   => true,
 					),
@@ -522,7 +529,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'type'                => 'checkbox-switch',
 					'options'             => array(
 						'on' => sprintf(
-							// translators: placeholder: Course
+							// translators: placeholder: Course.
 							esc_html_x( 'You can change the LD-%s enrollees by user ID (Proceed with caution)', 'placeholder: Course', 'learndash' ),
 							learndash_get_custom_label( 'course' )
 						),
@@ -555,58 +562,60 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
-			/*
-			if ( isset( $_GET['course_access_list_meta'] ) ) {
-				$this->setting_option_fields['course_access_list_enabled']['value'] = 'on';
-				$this->setting_option_fields['course_access_list_enabled']['child_section_state'] = 'open';
-
-				$course_access_list_meta_array = learndash_get_course_users_access_from_meta( get_the_ID() );
-				if ( ! empty( $course_access_list_meta_array ) ) {
-					$course_access_list_meta_array = learndash_convert_course_access_list( $course_access_list_meta_array, true );
-				} else {
-					$course_access_list_meta_array = array();
-				}
-
-				$course_access_list_array = learndash_convert_course_access_list( $this->setting_option_values['course_access_list'], true );
-				
-				error_log('course_access_list_meta_array<pre>'. print_r($course_access_list_meta_array, true) .'</pre>');
-				error_log('course_access_list_array<pre>'. print_r($course_access_list_array, true) .'</pre>');
-				
-				$course_access_list_diff_array = array_diff( $course_access_list_meta_array, $course_access_list_array );
-				if ( ! empty( $course_access_list_diff_array ) ) {
-					$course_access_list_diff_str = learndash_convert_course_access_list( $course_access_list_diff_array );
-				} else {
-					$course_access_list_diff_str = '';
-				}
-
-				$this->setting_option_fields['course_access_list_meta'] = array(
-					'name'           => 'course_access_list_meta',
-					'label'          => esc_html__( 'Show Missing Users', 'learndash' ),
-					'type'           => 'textarea',
-					'value'          => $course_access_list_diff_str,
-					'default'        => '',
-					'parent_setting' => 'course_access_list_enabled',
-					'attrs'          => array(
-						'rows' => '2',
-						'cols' => '57',
-					),
-				);
-			} else {
-				$this->setting_option_fields['course_access_list_meta'] = array(
-					'name'           => 'course_access_list_meta',
-					'label'          => esc_html__( 'Show Missing Users', 'learndash' ),
-					'type'           => 'html',
-					'value'          => '<a href="'. add_query_arg( 'course_access_list_meta', '1' ) . '">' . esc_html( 'click to show missing users', 'learndash' ) .'</a>',
-					'parent_setting' => 'course_access_list_enabled',
-				);
-			}
-			*/
-
 			if ( false === learndash_use_legacy_course_access_list() ) {
-				unset( $this->setting_option_fields['course_access_list_enabled'] ); 
-				unset( $this->setting_option_fields['course_access_list'] ); 
+				unset( $this->setting_option_fields['course_access_list_enabled'] );
+				unset( $this->setting_option_fields['course_access_list'] );
 			}
 
+			$course_groups = learndash_get_course_groups( $this->_post->ID, true );
+			if ( ( ! empty( $course_groups ) ) && ( 'closed' !== $this->setting_option_values['course_price_type'] ) ) {
+				$alert_message = '';
+
+				if ( 1 === count( $course_groups ) ) {
+					$alert_message = sprintf(
+						// translators: placeholders, course, groups, Group, course, groups.
+						esc_html_x( 'This %1$s is a part of a %2$s. %3$s settings will override %4$s settings for any user enrolled in the %5$s.', 'placeholders, course, group, Group, course, group.', 'learndash' ),
+						learndash_get_custom_label_lower( 'course' ),
+						learndash_get_custom_label_lower( 'group' ),
+						learndash_get_custom_label( 'group' ),
+						learndash_get_custom_label_lower( 'course' ),
+						learndash_get_custom_label_lower( 'group' )
+					);
+				} else if ( 1 < count( $course_groups ) ) {
+					$alert_message = sprintf(
+						// translators: placeholders, course, groups, Group, course, groups.
+						esc_html_x( 'This %1$s is a part of multiple %2$s. %3$s settings will override %4$s settings for any user enrolled in the %5$s.', 'placeholders, course, groups, Group, course, groups.', 'learndash' ),
+						learndash_get_custom_label_lower( 'course' ),
+						learndash_get_custom_label_lower( 'groups' ),
+						learndash_get_custom_label( 'group' ),
+						learndash_get_custom_label_lower( 'course' ),
+						learndash_get_custom_label_lower( 'groups' )
+					);
+				}
+
+				if ( ! empty( $alert_message ) ) {
+					$this->setting_option_fields = array_merge(
+						array(
+							'course_price_type_group_alert' => array(
+								'name'  => 'course_price_type_group_alert',
+								'type'  => 'html',
+								//'label_none'  => true,
+								'input_full'  => true,
+								'value' => wpautop( $alert_message ),
+								'class' => 'ld-settings-info-banner ld-settings-info-banner-alert',
+							),
+						),
+						$this->setting_option_fields
+					);
+				}
+			}
+
+			/**
+			 * Filters learndash setting fields.
+			 *
+			 * @param array  $setting_option_fields Associative array of Setting field details like name,type,label,value.
+			 * @param string $settings_section_key Used within the Settings API to uniquely identify this section.
+			 */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();
@@ -645,7 +654,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 		/**
 		 * Filter settings values for metabox before save to database.
 		 *
-		 * @param array $settings_values Array of settings values.
+		 * @param array  $settings_values Array of settings values.
 		 * @param string $settings_metabox_key Metabox key.
 		 * @param string $settings_screen_id Screen ID.
 		 * @return array $settings_values.
@@ -718,6 +727,12 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					}
 				}
 
+				/**
+				 * Filters LearnDash settings save values.
+				 *
+				 * @param array  $settings_values      An array of setting save values.
+				 * @param string $settings_section_key Used within the Settings API to uniquely identify this section.
+				 */
 				$settings_values = apply_filters( 'learndash_settings_save_values', $settings_values, $this->settings_metabox_key );
 			}
 

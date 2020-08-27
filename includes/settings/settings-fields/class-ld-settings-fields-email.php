@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields_Text' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Email' ) ) ) {
 
 	/**

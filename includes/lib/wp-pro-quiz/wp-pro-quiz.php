@@ -10,6 +10,10 @@ Text Domain: wp-pro-quiz
 Domain Path: /languages
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 define('WPPROQUIZ_VERSION', '0.28');
 
 define('WPPROQUIZ_PATH', dirname(__FILE__));
@@ -40,6 +44,13 @@ if(is_admin()) {
 	new WpProQuiz_Controller_Front();
 }
 
+/**
+ * Handles the wp pro quiz class autoloading.
+ *
+ * Callback for `spl_autoload_register` function.
+ *
+ * @param string $class Class name.
+ */
 function wpProQuiz_autoload($class) {
 	$c = explode('_', $class);
 
@@ -72,6 +83,11 @@ function wpProQuiz_autoload($class) {
 		include_once WPPROQUIZ_PATH.'/lib/'.$dir.'/'.$class.'.php';
 }
 
+/**
+ * Runs the wp pro quiz upgrade after the plugins are loaded.
+ *
+ * Fires on `plugins_loaded` hook.
+ */
 function wpProQuiz_pluginLoaded() {
 
 	if ( get_option( 'wpProQuiz_version' ) !== WPPROQUIZ_VERSION ) {
@@ -79,20 +95,42 @@ function wpProQuiz_pluginLoaded() {
 	}
 }
 
+/**
+ * Instansiates the `WpProQuiz_Plugin_BpAchievementsV3` class.
+ *
+ * Fires on `dpa_ready` hook.
+ */
 function wpProQuiz_achievementsV3() {
 	achievements()->extensions->wp_pro_quiz = new WpProQuiz_Plugin_BpAchievementsV3();
 
+	/**
+	 * Fires after instansiating WpProQuiz_Plugin_BpAchievementsV3 class.
+	 */
 	do_action('wpProQuiz_achievementsV3');
 }
 
 add_action('dpa_ready', 'wpProQuiz_achievementsV3');
 
 /**
- * Format the Quiz Cloze type answers into an array to be used when comparing responses. 
- * @ since 2.5
- * copied from WpProQuiz_View_FrontQuiz
+ * Formats the quiz cloze type answers into an array to be used when comparing responses.
+ *
+ * The function is copied from `WpProQuiz_View_FrontQuiz` class.
+ *
+ * @since 2.5.0
+ *
+ * @param string  $answer_text      Answer text.
+ * @param boolean $convert_to_lower Optional. Whether to convert anwser to lowercase. Default true.
+ *
+ * @return array An array of cloze question data.
  */
 function fetchQuestionCloze( $answer_text, $convert_to_lower = true ) {
+
+	/**
+	 * Filters the value of quiz question answer before processing.
+	 *
+	 * @param string $answer  The quiz question anser text.
+	 * @param string $context The context of type of question.
+	 */
 	$answer_text = apply_filters( 'learndash_quiz_question_answer_preprocess', $answer_text, 'cloze' );
 
 	preg_match_all( '#\{(.*?)(?:\|(\d+))?(?:[\s]+)?\}#im', $answer_text, $matches, PREG_SET_ORDER );
@@ -109,6 +147,11 @@ function fetchQuestionCloze( $answer_text, $convert_to_lower = true ) {
 			foreach ( $multiTextMatches[1] as $multiText ) {
 				$multiText_clean = trim( html_entity_decode( $multiText, ENT_QUOTES ) );
 				
+				/**
+				 * Filters whether to convert quiz question cloze to lowercase or not.
+				 *
+				 * @param boolean $conver_to_lower Whether to convert quiz question cloze to lower case.
+				 */
 				if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', $convert_to_lower ) ) {
 					if ( function_exists( 'mb_strtolower' ) )
 						$x = mb_strtolower( $multiText_clean );
@@ -124,6 +167,7 @@ function fetchQuestionCloze( $answer_text, $convert_to_lower = true ) {
 			}
 		} else {
 			$text_clean = trim( html_entity_decode( $text, ENT_QUOTES ) );
+			/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 			if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', $convert_to_lower ) ) {
 				if ( function_exists( 'mb_strtolower' ) )
 					$x = mb_strtolower( trim( html_entity_decode( $text_clean, ENT_QUOTES ) ) );
@@ -148,6 +192,12 @@ function fetchQuestionCloze( $answer_text, $convert_to_lower = true ) {
 
 	$data['replace'] = preg_replace( '#\{(.*?)(?:\|(\d+))?(?:[\s]+)?\}#im', '@@wpProQuizCloze@@', $answer_text );
 
+	/**
+	 * Filters the value of quiz question answer after processing.
+	 *
+	 * @param string $answer  The quiz question anser text.
+	 * @param string $context The context of type of question.
+	 */
 	$data['replace'] = apply_filters( 'learndash_quiz_question_answer_postprocess', $data['replace'], 'cloze' );
 
 	return $data;
@@ -155,15 +205,16 @@ function fetchQuestionCloze( $answer_text, $convert_to_lower = true ) {
 
 
 /**
+ * Casts an instance of PHP stdClass to the type of given class name.
+ * 
  * This function will take an instance of a PHP stdClass and attempt to cast it to
- * the type of the specified $className.
- *
+ * the type of the specified $className parameter.
  * For example, we may pass 'Acme\Model\Product' as the $className.
  *
- * @param object $instance  an instance of the stdClass to convert
- * @param string $className the name of the class type to which we want to cals
+ * @param object $instance An instance of the stdClass to cast.
+ * @param string $className The name of the class type to which we want to convert.
  *
- * @return mixed a version of the incoming $instance casted as the specified className
+ * @return mixed The instance after casting.
  */
 function learndash_cast_WpProQuiz_Model_AnswerTypes($instance, $className) {
     return unserialize(sprintf(

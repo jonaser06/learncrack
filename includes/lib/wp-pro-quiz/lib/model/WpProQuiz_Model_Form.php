@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_Form extends WpProQuiz_Model_Model {
 	const FORM_TYPE_TEXT = 0;
 	const FORM_TYPE_TEXTAREA = 1;
@@ -107,6 +111,55 @@ class WpProQuiz_Model_Form extends WpProQuiz_Model_Model {
 			default:
 				return $form_data;
 				break;
+		}
+	}
+
+	public function get_object_as_array() {
+
+		$object_vars = array( 
+			'_formId'    => $this->getFormId(),
+			'_quizId'    => $this->getQuizId(),
+			'_fieldname' => $this->getFieldname(),
+			'_type'      => $this->getType(),
+			'_required'  => $this->isRequired(),
+			'_sort'      => $this->getSort(),
+			'_data'      => $this->getData(),
+		);
+
+		return $object_vars;
+	}
+
+	public function set_array_to_object( $array_vars = array() ) {
+		foreach ( $array_vars as $key => $value ) {
+			switch ( $key ) {
+				case '_formId':
+					$this->setFormId( $value );
+					break;
+
+				case '_quizId':
+					$this->setQuizId( $value );
+					break;
+
+				case '_fieldname':
+					$this->setFieldname( $value );
+					break;
+
+				case '_type':
+					$this->setType( $value );
+					break;
+
+				case '_required':
+					$this->setRequired( $value );
+					break;
+
+				case '_sort':
+					$this->setSort( $value );
+					break;
+
+				case '_data':
+					$this->setData( $value );
+					break;
+			}
 		}
 	}
 }

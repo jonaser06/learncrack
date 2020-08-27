@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Quiz_Templates_Save' ) ) ) {
 	/**
 	 * Class to create the settings field.
@@ -30,8 +34,11 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		 * @return void
 		 */
 		public function create_section_field( $field_args = array() ) {
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 
 			$select_template_options = array();
@@ -78,6 +85,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 
 			$html .= ' >';
 
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$html .= '   <option value="-1">';
 			} else {
@@ -97,6 +105,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 			$html .= '</span><br />';
 			$html .= '<input type="text" placeholder="' . esc_html__( 'new template name', 'learndash' ) . '" class="regular-text -medium" name="templateName">';
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_after', $html, $field_args );
 
 			echo $html;

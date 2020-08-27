@@ -6,6 +6,10 @@
  * @subpackage Admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learndash_Admin_Question_Edit' ) ) ) {
 	/**
 	 * Class for LearnDash Admin Question Edit.
@@ -415,6 +419,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 			$categoryMapper = new WpProQuiz_Model_CategoryMapper();
 			$allCategories  = $categoryMapper->fetchAll();
 			?>
+			<div id="wpProQuiz_nonce" data-nonce="<?php echo wp_create_nonce( 'wpProQuiz_nonce' ); ?>" style="display:none;"></div>
 			<p class="description">
 				<?php esc_html_e( 'You can assign classify category for a question. Categories are e.g. visible in statistics function.', 'learndash' ); ?>
 			</p>
@@ -701,7 +706,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 									<?php 
 									if ( ( isset( $_GET['post'] ) ) && ( ! empty( $_GET['post'] ) ) && ( isset( $_GET['templateLoadId'] ) ) && ( ! empty( $_GET['templateLoadId'] ) ) ) {
 										$template_url = remove_query_arg( 'templateLoadId' );
-										echo '<option value="' . $template_url . '">' . sprintf(
+										echo '<option value="' . esc_url( $template_url ) . '">' . sprintf(
 											// translators: Question Title.
 											esc_html_x( 'Revert: %s', 'placeholder: Question Title', 'learndash' ),
 											get_the_title( $_GET['post'] )
@@ -711,7 +716,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 									}
 									foreach ( $templates as $template ) {
 										$template_url = add_query_arg( 'templateLoadId', absint( $template->getTemplateId() ) );
-										echo '<option ' . selected( $template_loaded_id, $template->getTemplateId() ) . ' value="' . $template_url . '">' . esc_html( $template->getName() ) . '</option>';
+										echo '<option ' . selected( $template_loaded_id, $template->getTemplateId() ) . ' value="' . esc_url( $template_url ) . '">' . esc_html( $template->getName() ) . '</option>';
 									}
 									?>
 								</select><br />

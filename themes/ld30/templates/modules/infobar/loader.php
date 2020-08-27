@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Displays an informational bar
  *
@@ -42,18 +46,24 @@
  */
 
 /**
- * Action to add custom content before the infobar (all locations)
+ * Fires before the infobar (all locations).
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-all-infobar-before', get_post_type(), $user_id );
 
 SFWD::get_template_part( 'infobar', get_post_type() );
 
 /**
- * Action to add custom content after the infobar (all locations)
+ * Fires after the infobar (all locations).
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-all-infobar-after', get_post_type(), $user_id );
 

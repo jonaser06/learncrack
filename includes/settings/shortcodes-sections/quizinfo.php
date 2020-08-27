@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'LearnDash_Shortcodes_Section_quizinfo' ) ) ) {
 	class LearnDash_Shortcodes_Section_quizinfo extends LearnDash_Shortcodes_Section {
 
@@ -6,9 +10,11 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 			$this->fields_args = $fields_args;
 
 			$this->shortcodes_section_key 			= 	'quizinfo';
+			// translators: placeholder: Quiz.
 			$this->shortcodes_section_title 		= 	sprintf( esc_html_x( '%s Info', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 			$this->shortcodes_section_type			=	1;
-			$this->shortcodes_section_description	=	sprintf( esc_html_x( 'This shortcode displays information regarding %s attempts on the certificate. This shortcode can use the following parameters:', 'placeholders: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) );
+			// translators: placeholder: quiz.
+			$this->shortcodes_section_description	=	sprintf( esc_html_x( 'This shortcode displays information regarding %s attempts on the certificate. This shortcode can use the following parameters:', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) );
 			
 			parent::__construct(); 
 		}
@@ -20,7 +26,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'show', 
 					'type'  		=> 	'select',
 					'label' 		=> 	esc_html__( 'Show', 'learndash' ),
-					'help_text'		=>	sprintf( wp_kses_post( _x( 'This parameter determines the information to be shown by the shortcode.<br />cumulative - average for all %s of the %s.<br />aggregate - sum for all %s of the %s.', 'placeholders: quizzes, course, quizzes, course', 'learndash' ) ),
+					// translators: placeholders: quizzes, course, quizzes, course.
+					'help_text'		=>	sprintf( wp_kses_post( _x( 'This parameter determines the information to be shown by the shortcode.<br />cumulative - average for all %1$s of the %2$s.<br />aggregate - sum for all %3$s of the %4$s.', 'placeholders: quizzes, course, quizzes, course', 'learndash' ) ),
 											learndash_get_custom_label_lower( 'quizzes' ), learndash_get_custom_label_lower( 'course' ),
 											learndash_get_custom_label_lower( 'quizzes' ), learndash_get_custom_label_lower( 'course' ) ),
 					'value' 		=> 	'ID',
@@ -32,8 +39,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 											'points'		=>	esc_html__( 'Points', 'learndash' ),
 											'total_points'	=>	esc_html__( 'Total Points', 'learndash' ),
 											'percentage'	=>	esc_html__( 'Percentage', 'learndash' ),
+											// translators: placeholder: Quiz.
 											'quiz_title'	=>	sprintf(_x( '%s Title', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
-											'course_title'	=>	sprintf(_x( '%s Title', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ),
+											// translators: placeholder: Course.
+											'course_title'	=>	sprintf(_x( '%s Title', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ),
 											'timespent'		=>	esc_html__( 'Time Spent', 'learndash' ),
 											'field'         =>  esc_html__( 'Custom Field', 'learndash'),
 										)
@@ -51,7 +60,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'field_id', 
 					'type'  		=> 	'text',
 					'label' 		=> 	esc_html__( 'Custom Field ID', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'The Field ID is show on the %s Custom Fields table.', 'placeholders: quiz', 'learndash' ), learndash_get_custom_label( 'quiz' ) ),
+					// translators: placeholder: quiz.
+					'help_text'		=>	sprintf( esc_html_x( 'The Field ID is show on the %s Custom Fields table.', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label( 'quiz' ) ),
 					'value' 		=> 	'',
 				),
 			);
@@ -65,8 +75,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_quiz',
 					'name'  		=> 	'quiz', 
 					'type'  		=> 	'number',
+					// translators: placeholder: Quiz.
 					'label' 		=> 	sprintf( esc_html_x( '%s ID', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
-					'help_text'		=>	sprintf( esc_html_x( 'Enter single %s ID', 'placeholders: quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
+					// translators: placeholder: Quiz.
+					'help_text'		=>	sprintf( esc_html_x( 'Enter single %s ID', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text',
 					'required'		=>	'required'
@@ -88,12 +100,14 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'time', 
 					'type'  		=> 	'text',
 					'label' 		=> 	esc_html__( 'Timestamp', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'Enter single %s attempt timestamp', 'placeholders: quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
+					// translators: placeholder: Quiz.
+					'help_text'		=>	sprintf( esc_html_x( 'Enter single %s attempt timestamp', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ),
 					'value' 		=> 	'',
 					'required'		=>	'required'
 				);
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->shortcodes_option_fields = apply_filters( 'learndash_settings_fields', $this->shortcodes_option_fields, $this->shortcodes_section_key );
 			
 			parent::init_shortcodes_section_fields();

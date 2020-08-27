@@ -7,23 +7,55 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * LOGIN FUNCTIONS
  */
 
 /**
- * Add our hidden form field to the login form.
+ * Adds a hidden form field to the login form.
  *
- * @since 3.0
- * @param sting $content Login form content.
+ * Fires on `login_form_top` hook.
+ *
+ * @since 3.0.0
+ *
+ * @param string $content Login form content.
+ * 
+ * @return string Login form hidden field content.
  */
 function learndash_add_login_field_top( $content = '' ) {
 	$content .= '<input id="learndash-login-form" type="hidden" name="learndash-login-form" value="' . wp_create_nonce( 'learndash-login-form' ) . '" />';
 
-	$course_id = learndash_get_course_id( get_the_ID() );
-	if ( ( ! empty( $course_id ) ) && ( in_array( learndash_get_setting( $course_id, 'course_price_type' ), array( 'free' ), true ) ) && ( apply_filters( 'learndash_login_form_include_course', true, $course_id ) ) ) {
-		$content .= '<input name="learndash-login-form-course" value="' . $course_id . '" type="hidden" />';
-		$content .= wp_nonce_field( 'learndash-login-form-course-' . $course_id . '-nonce', 'learndash-login-form-course-nonce', false, false );
+	$post_type = get_post_type( get_the_ID() );
+	if ( in_array( $post_type, learndash_get_post_types( 'course' ), true ) ) {
+		$course_id = learndash_get_course_id( get_the_ID() );
+
+		/**
+		 * Filters whether to allow enrolment of course with the login. The default value is true.
+		 *
+		 * @param boolean $include_course Whether to allow login from the course.
+		 * @param int     $course_id      Course ID.
+		 */
+		if ( ( ! empty( $course_id ) ) && ( in_array( learndash_get_setting( $course_id, 'course_price_type' ), array( 'free' ), true ) ) && ( apply_filters( 'learndash_login_form_include_course', true, $course_id ) ) ) {
+			$content .= '<input name="learndash-login-form-course" value="' . $course_id . '" type="hidden" />';
+			$content .= wp_nonce_field( 'learndash-login-form-course-' . $course_id . '-nonce', 'learndash-login-form-course-nonce', false, false );
+		}
+	} elseif ( in_array( $post_type, array( learndash_get_post_type_slug( 'group' ) ), true ) ) {
+		$group_id = get_the_ID();
+
+		/**
+		 * Filters whether to allow enrolment of course with the login. The default value is true.
+		 *
+		 * @param boolean $include_course Whether to allow login from the course.
+		 * @param int     $group_id       Group ID.
+		 */
+		if ( ( ! empty( $group_id ) ) && ( in_array( learndash_get_setting( $group_id, 'group_price_type' ), array( 'free' ), true ) ) && ( apply_filters( 'learndash_login_form_include_group', true, $group_id ) ) ) {
+			$content .= '<input name="learndash-login-form-post" value="' . $group_id . '" type="hidden" />';
+			$content .= wp_nonce_field( 'learndash-login-form-post-' . $group_id . '-nonce', 'learndash-login-form-post-nonce', false, false );
+		}
 	}
 
 	return $content;
@@ -33,11 +65,15 @@ function learndash_add_login_field_top( $content = '' ) {
 add_filter( 'login_form_top', 'learndash_add_login_field_top' );
 
 /**
- * Login tasks
+ * Updates user course data on user login.
+ * 
+ * Fires on `authenticate` hook.
  *
- * @param object $user WP_User object if success. wp_error is error.
- * @param string $username Login form entered user login.
- * @param string $password Login form entered user password.
+ * @param WP_User $user     WP_User object if success. wp_error is error.
+ * @param string  $username Login form entered user login.
+ * @param string  $password Login form entered user password.
+ * 
+ * @return WP_User|void Returns WP_User if a valid user object is passed.
  */
 function learndash_authenticate( $user, $username, $password ) {
 	if ( ( $user ) && ( is_a( $user, 'WP_User' ) ) ) {
@@ -48,23 +84,31 @@ function learndash_authenticate( $user, $username, $password ) {
 		 * plugin. During the registration if the captured course ID is saved
 		 * in the user meta we enroll that user into that course.
 		 */
-		$registered_course_id = get_user_meta( $user->ID, '_ld_registered_course', true );
-		if ( '' !== $registered_course_id ) {
-			delete_user_meta( $user->ID, '_ld_registered_course' );
+		$registered_post_id = get_user_meta( $user->ID, '_ld_registered_post', true );
+		if ( '' !== $registered_post_id ) {
+			delete_user_meta( $user->ID, '_ld_registered_post' );
 		}
-		$registered_course_id = absint( $registered_course_id );
-		if ( ! empty( $registered_course_id ) ) {
-			ld_update_course_access( $user->ID, $registered_course_id );
+		$registered_post_id = absint( $registered_post_id );
+		if ( ! empty( $registered_post_id ) ) {
+			if ( in_array( get_post_type( $registered_post_id ), array( learndash_get_post_type_slug( 'course' ) ), true ) ) {
+				ld_update_course_access( $user->ID, $registered_post_id );
+			} elseif ( in_array( get_post_type( $registered_post_id ), array( learndash_get_post_type_slug( 'group' ) ), true ) ) {
+				ld_update_group_access( $user->ID, $registered_post_id );
+			}
 		}
 
 		/**
 		 * If the user login is coming from a LD course then we enroll the
 		 * user into the course. This helps save a step for the user.
 		 */
-		$login_course_id = learndash_validation_login_form_course();
-		$login_course_id = absint( $login_course_id );
-		if ( ! empty( $login_course_id ) ) {
-			ld_update_course_access( $user->ID, $login_course_id );
+		$login_post_id = learndash_validation_login_form_course();
+		$login_post_id = absint( $login_post_id );
+		if ( ! empty( $login_post_id ) ) {
+			if ( in_array( get_post_type( $login_post_id ), array( learndash_get_post_type_slug( 'course' ) ), true ) ) {
+				ld_update_course_access( $user->ID, $login_post_id );
+			} elseif ( in_array( get_post_type( $login_post_id ), array( learndash_get_post_type_slug( 'group' ) ), true ) ) {
+				ld_update_group_access( $user->ID, $login_post_id );
+			}
 		}
 	} elseif ( ( is_wp_error( $user ) ) && ( $user->has_errors() ) ) {
 		/**
@@ -92,13 +136,15 @@ function learndash_authenticate( $user, $username, $password ) {
 add_filter( 'authenticate', 'learndash_authenticate', 99, 3 );
 
 /**
- * Handle login fail scenario from WP.
+ * Handles the login fail scenario from WP.
  *
+ * Fires on `wp_login_failed` hook.
  * Note for 'empty_username', 'empty_password' error conditions this action
  * will not be called. Those conditions are handled in learndash_authenticate()
  * if the user logged in via the LD modal.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
  * @param string $username Login name from login form process. Not used.
  */
 function learndash_login_failed( $username = '' ) {
@@ -113,18 +159,28 @@ function learndash_login_failed( $username = '' ) {
 add_action( 'wp_login_failed', 'learndash_login_failed', 1, 1 );
 
 /**
- * Utility function to check and return the login form course_id.
+ * Gets the login form course ID.
  *
  * @since 3.1.2
- * @return integer $course_id Valid course_id if valid.
+ *
+ * @return int|false $course_id Valid course_id if valid otherwise false.
  */
 function learndash_validation_login_form_course() {
 	if ( ( isset( $_POST['learndash-login-form'] ) ) && ( wp_verify_nonce( $_POST['learndash-login-form'], 'learndash-login-form' ) ) ) {
-		if ( ( isset( $_POST['learndash-login-form-course'] ) ) && ( ! empty( $_POST['learndash-login-form-course'] ) ) ) {
-			$course_id = absint( $_POST['learndash-login-form-course'] );
-			if ( ( isset( $_POST['learndash-login-form-course-nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash-login-form-course-nonce'], 'learndash-login-form-course-' . $course_id . '-nonce' ) ) ) {
-				if ( ( ! empty( $course_id ) ) && ( apply_filters( 'learndash_login_form_include_course', true, $course_id ) ) ) {
-					return absint( $course_id );
+		if ( ( isset( $_POST['learndash-login-form-post'] ) ) && ( ! empty( $_POST['learndash-login-form-post'] ) ) ) {
+			$post_id = absint( $_POST['learndash-login-form-post'] );
+			if ( ( isset( $_POST['learndash-login-form-post-nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash-login-form-post-nonce'], 'learndash-login-form-post-' . $post_id . '-nonce' ) ) ) {
+
+				if ( in_array( get_post_type( $post_id ), array( learndash_get_post_type_slug( 'course' ) ), true ) ) {
+					/** This filter is documented in themes/ld30/includes/login-register-functions.php */
+					if ( ( ! empty( $post_id ) ) && ( apply_filters( 'learndash_login_form_include_course', true, $post_id ) ) ) {
+						return absint( $post_id );
+					}
+				} elseif ( in_array( get_post_type( $post_id ), array( learndash_get_post_type_slug( 'group' ) ), true ) ) {
+					/** This filter is documented in themes/ld30/includes/login-register-functions.php */
+					if ( ( ! empty( $post_id ) ) && ( apply_filters( 'learndash_login_form_include_group', true, $post_id ) ) ) {
+						return absint( $post_id );
+					}
 				}
 			}
 		}
@@ -133,10 +189,11 @@ function learndash_validation_login_form_course() {
 }
 
 /**
- * Utility function to check the login form course_id.
+ * Gets the login form validation redirect URL.
  *
  * @since 3.1.2
- * @return integer $course_id Valid course_id if valid.
+ *
+ * @return int|false $course_id Valid course_id if valid otherwise false.
  */
 function learndash_validation_login_form_redirect_to() {
 	if ( ( isset( $_POST['learndash-login-form'] ) ) && ( wp_verify_nonce( $_POST['learndash-login-form'], 'learndash-login-form' ) ) ) {
@@ -153,37 +210,38 @@ function learndash_validation_login_form_redirect_to() {
  */
 
 /**
- * User Register Success
+ * Handles user registration success.
  *
+ * Fires on `user_register` hook.
  * When the user registers it if was from a Course we capture that for later
  * when the user goes through the password set logic. After the password set
  * we can redirect the user to the course. See learndash_password_reset()
  * function.
  *
  * @since 3.1.2
+ *
  * @param integer $user_id The Registers user ID.
  */
 function learndash_register_user_success( $user_id = 0 ) {
 	if ( ! empty( $user_id ) ) {
-		$course_id = learndash_validation_registration_form_course();
-		if ( ! empty( $course_id ) ) {
-			if ( ( learndash_get_post_type_slug( 'course' ) === get_post_type( $course_id ) ) ) {
-				add_user_meta( $user_id, '_ld_registered_course', absint( $course_id ) );
-			}
+		$post_id = learndash_validation_registration_form_course();
+		if ( ! empty( $post_id ) ) {
+			add_user_meta( $user_id, '_ld_registered_post', absint( $post_id ) );
 		}
 	}
 }
 add_action( 'user_register', 'learndash_register_user_success', 10, 1 );
 
 /**
- * User Register Fail
+ * Handles user registration failure.
  *
+ * Fires on `register_post` hook.
  * From this function we capture the failed registration errors and send the user
  * back to the registration form part of the LD login modal.
  *
  * @param string $sanitized_user_login User entered login (sanitized).
- * @param string $user_email User entered email.
- * @param array  $errors Array of registration errors.
+ * @param string $user_email           User entered email.
+ * @param array  $errors               Array of registration errors.
  */
 function learndash_user_register_error( $sanitized_user_login, $user_email, $errors ) {
 
@@ -195,6 +253,7 @@ function learndash_user_register_error( $sanitized_user_login, $user_email, $err
 		 * This line is copied from register_new_user function of wp-login.php. So the
 		 * filtername should not be prefixed with 'learndash_'.
 		 */
+		/** This filter is documented in https://developer.wordpress.org/reference/hooks/registration_errors/ */
 		$errors = apply_filters( 'registration_errors', $errors, $sanitized_user_login, $user_email ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 		// This if check is copied from register_new_user function of wp-login.php.
@@ -208,6 +267,11 @@ function learndash_user_register_error( $sanitized_user_login, $user_email, $err
 
 			$redirect_url = learndash_add_login_hash( $redirect_url );
 
+			/**
+			 * Filters URL that a user should be redirected when there is an error while registration.
+			 *
+			 * @param string  $redirect_url The URL to be redirected when there are errors.
+			 */
 			$redirect_url = apply_filters( 'learndash_registration_error_url', $redirect_url );
 			if ( ! empty( $redirect_url ) ) {
 				// add finally, redirect to your custom page with all errors in attributes.
@@ -223,16 +287,38 @@ add_action( 'register_post', 'learndash_user_register_error', 99, 3 );
  * Utility function to check and return the registration form course_id.
  *
  * @since 3.1.2
- * @return integer $course_id Valid course_id if valid.
+ *
+ * @return int|false $course_id Valid course_id if valid otherwise false.
  */
 function learndash_validation_registration_form_course() {
 	if ( ( isset( $_POST['learndash-registration-form'] ) ) && ( wp_verify_nonce( $_POST['learndash-registration-form'], 'learndash-registration-form' ) ) ) {
-		if ( ( isset( $_POST['learndash-registration-form-course'] ) ) && ( ! empty( $_POST['learndash-registration-form-course'] ) ) ) {
-			$course_id = absint( $_POST['learndash-registration-form-course'] );
-
-			if ( ( ! empty( $course_id ) ) && ( apply_filters( 'learndash_registration_form_include_course', true, $course_id ) ) ) {
-				if ( ( isset( $_POST['learndash-registration-form-course-nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash-registration-form-course-nonce'], 'learndash-registration-form-course-' . $course_id . '-nonce' ) ) ) {
-					return absint( $course_id );
+		if ( ( isset( $_POST['learndash-registration-form-post'] ) ) && ( ! empty( $_POST['learndash-registration-form-post'] ) ) ) {
+			$post_id = absint( $_POST['learndash-registration-form-post'] );
+			if ( ! empty( $post_id ) ) {
+				if ( ! in_array( get_post_type( $post_id ), array( learndash_get_post_type_slug( 'course' ) ), true ) ) {	
+					/**
+					 * Filters whether to allow user registration from the course.
+					 *
+					 * @param boolean $include_course whether to allow user registration from the course.
+					 * @param int     $post_id      Course ID.
+					 */
+					if ( ( ! empty( $post_id ) ) && ( apply_filters( 'learndash_registration_form_include_course', true, $post_id ) ) ) {
+						if ( ( isset( $_POST['learndash-registration-form-post-nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash-registration-form-post-nonce'], 'learndash-registration-form-post-' . $post_id . '-nonce' ) ) ) {
+							return absint( $post_id );
+						}
+					}
+				} elseif ( ! in_array( get_post_type( $post_id ), array( learndash_get_post_type_slug( 'group' ) ), true ) ) {
+					/**
+					 * Filters whether to allow user registration from the course.
+					 *
+					 * @param boolean $include_course whether to allow user registration from the course.
+					 * @param int     $post_id      Course ID.
+					 */
+					if ( ( ! empty( $post_id ) ) && ( apply_filters( 'learndash_registration_form_include_group', true, $post_id ) ) ) {
+						if ( ( isset( $_POST['learndash-registration-form-post-nonce'] ) ) && ( wp_verify_nonce( $_POST['learndash-registration-form-post-nonce'], 'learndash-registration-form-post-' . $post_id . '-nonce' ) ) ) {
+							return absint( $post_id );
+						}
+					}
 				}
 			}
 		}
@@ -244,7 +330,8 @@ function learndash_validation_registration_form_course() {
  * Utility function to check the registration form course_id.
  *
  * @since 3.1.2
- * @return integer $course_id Valid course_id if valid.
+ *
+ * @return int|false $course_id Valid course_id if valid otherwise false.
  */
 function learndash_validation_registration_form_redirect_to() {
 	if ( ( isset( $_POST['learndash-registration-form'] ) ) && ( wp_verify_nonce( $_POST['learndash-registration-form'], 'learndash-registration-form' ) ) ) {
@@ -268,13 +355,16 @@ global $ld_password_reset_user;
 $ld_password_reset_user = ''; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 /**
- * Handle password reset logic.
+ * Handles password reset logic.
  *
  * Called after the user updates new password.
  *
  * @since 3.1.2
- * @param object $user WP_User object.
- * @param string $new_pass New Password.
+ * 
+ * @global WP_User $ld_password_reset_user Global password reset user.
+ *
+ * @param WP_User $user     WP_User object.
+ * @param string  $new_pass New Password.
  */
 function learndash_password_reset( $user, $new_pass ) {
 	if ( $user ) {
@@ -287,12 +377,19 @@ function learndash_password_reset( $user, $new_pass ) {
 add_action( 'password_reset', 'learndash_password_reset', 30, 2 );
 
 /**
- * Called only during password set to filter the login_url.
+ * Handles password reset logic.
+ *
+ * Fires on `login_url` hook.
  *
  * @since 3.1.2
- * @param string  $login_url Current login_url.
- * @param string  $redirect Query string redirect_to parameter and value.
- * @param boolean $force_reauth Force reauth.
+ *
+ * @global WP_User $ld_password_reset_user Global password reset user.
+ *
+ * @param string         $login_url    Current login_url.
+ * @param string         $redirect     Query string redirect_to parameter and value.
+ * @param boolean|string $force_reauth Whether to force reauthentication.
+ *
+ * @return string Returns login URL.
  */
 function learndash_password_reset_login_url( $login_url = '', $redirect = '', $force_reauth = '' ) {
 	global $ld_password_reset_user;
@@ -306,12 +403,12 @@ function learndash_password_reset_login_url( $login_url = '', $redirect = '', $f
 				if ( ! empty( $ld_login_url ) ) {
 					$login_url = esc_url( $ld_login_url );
 				} else {
-					$registered_course_id = get_user_meta( $user->ID, '_ld_registered_course', true );
-					delete_user_meta( $user->ID, '_ld_registered_course', $registered_course_id );
-					if ( ! empty( $registered_course_id ) ) {
-						$registered_course_url = get_permalink( $registered_course_id );
-						$registered_course_url = learndash_add_login_hash( $registered_course_url );
-						$login_url             = esc_url( $registered_course_url );
+					$registered_post_id = get_user_meta( $user->ID, '_ld_registered_post', true );
+					delete_user_meta( $user->ID, '_ld_registered_post', $registered_post_id );
+					if ( ! empty( $registered_post_id ) ) {
+						$registered_post_url = get_permalink( $registered_post_id );
+						$registered_post_url = learndash_add_login_hash( $registered_post_url );
+						$login_url           = esc_url( $registered_post_url );
 					}
 				}
 			}
@@ -321,7 +418,9 @@ function learndash_password_reset_login_url( $login_url = '', $redirect = '', $f
 	return $login_url;
 }
 /**
- * Store the password reset redirect_to URL.
+ * Stores the password reset redirect_to URL.
+ *
+ * Fires on `login_form_lostpassword` hook.
  *
  * When the user clicks the password reset on the LD login popup we capture the
  * 'redirect_to' URL. This is done at step 2 of the password reset process after
@@ -365,13 +464,15 @@ add_action( 'login_form_lostpassword', 'learndash_login_form_lostpassword', 30 )
 
 
 /**
- * Utility function to add '#login' to the end of a URL.
+ * Adds '#login' to the end of a the login URL.
  *
- * Used throughout LD30 login model and processing functions.
+ * Used throughout the LD30 login model and processing functions.
  *
  * @since 3.1.2
+ *
  * @param string $url URL to check and append hash.
- * @return string URL.
+ *
+ * @return string Returns URL after adding login hash.
  */
 function learndash_add_login_hash( $url = '' ) {
 	if ( strpos( $url, '#login' ) === false ) {
@@ -382,13 +483,21 @@ function learndash_add_login_hash( $url = '' ) {
 }
 
 /**
- * Get array of login error conditions.
+ * Gets an array of login error conditions.
  *
  * @since 3.1.2
+ *
  * @param boolean $return_keys True to return keys of conditions only.
- * @return array of conditions.
+ *
+ * @return array Returns an array of login error conditions.
  */
 function learndash_login_error_conditions( $return_keys = false ) {
+
+	/**
+	 * Filters list of User registration errors.
+	 *
+	 * @param array $registration_errors An Associative array of Registration error and description.
+	 */
 	$errors_conditions = apply_filters(
 		'learndash-registration-errors',
 		array(

@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Quiz_Progress_Settings' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -152,6 +156,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 		public function load_settings_fields() {
 			global $sfwd_lms;
 
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_cert_options_default = array(
 					'-1' => esc_html__( 'Search or select a certificate…', 'learndash' ),
@@ -167,67 +172,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 			} else {
 				$select_cert_options = $select_cert_options_default;
 			}
-/*
-			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
-				$select_quiz_options_default = array(
-					'' => sprintf(
-						// translators: placeholder: quiz.
-						esc_html_x( 'Search or select a %s…', 'placeholder: quiz', 'learndash' ),
-						learndash_get_custom_label_lower( 'quiz' )
-					),
-				);
-			} else {
-				$select_quiz_options_default = array(
-					'' => sprintf(
-						// translators: placeholder: quiz.
-						esc_html_x( 'Select a %s…', 'placeholder: quiz', 'learndash' ),
-						learndash_get_custom_label_lower( 'quiz' )
-					),
-				);
-			}
-			$select_quiz_options = $sfwd_lms->select_a_quiz();
-			if ( ( is_array( $select_quiz_options ) ) && ( ! empty( $select_quiz_options ) ) ) {
-				$select_quiz_options = $select_quiz_options_default + $select_quiz_options;
-			} else {
-				$select_quiz_options = $select_quiz_options_default;
-			}
-*/
-			/*
-			$this->setting_option_fields = array(
-                'quizRunOnceType' => array(
-					'name' => 'quizRunOnceType',
-					'label_none' => true,
-                    'type' => 'select',
-					'default' => '1',
-					'value' => $this->setting_option_values['quizRunOnceType'],
-					'input_label' => esc_html__( 'users', 'learndash' ),
-					'options' => array(
-						'1' => esc_html__( 'All users', 'learndash' ),
-						'2' => esc_html__( 'Registered users only', 'learndash' ),
-						'3' => esc_html__( 'Anonymous user only', 'learndash' ),
-					),
-				),
-				'quizRunOnceCookie' => array(
-					'name' => 'quizRunOnceCookie',
-					'label_none' => true,
-					'type' => 'checkbox-switch',
-					'options' => array(
-						'on' => esc_html__( 'Use a cookie to restrict ALL users, including anonymous visitors', 'learndash' ),
-					),
-					'value' => $this->setting_option_values['quizRunOnceCookie'],
-					'default' => '',
-				),
-				'quiz_reset_cookies' => array(
-					'name' => 'quiz_reset_cookies',
-					'type' => 'custom',
-					'html' => '<div style="margin-top: 15px;"><input class="button-secondary" type="button" name="resetQuizLock" value="'. esc_html__('Reset the user identification', 'learndash') .'"><span id="resetLockMsg" style="display:none; background-color: rgb(255, 255, 173); border: 1px solid rgb(143, 143, 143); padding: 4px; margin-left: 5px; ">'. esc_html__('User identification has been reset.', 'learndash') .'</span><p class="description"></p></div>',
-					'label_none' => true,
-					'input_full' => true,
-				)
-			);
-			parent::load_settings_fields();
-			$this->settings_sub_option_fields['retry_restrictions_options_once_fields'] = $this->setting_option_fields;
-			*/
 
 			$this->setting_option_fields = array(
 				'passingpercentage'       => array(
@@ -337,7 +281,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				'quiz_reset_cookies'      => array(
 					'name'           => 'quiz_reset_cookies',
 					'type'           => 'custom',
-					'html'           => '<div><input class="button-secondary" type="button" name="resetQuizLock" value="' . esc_html__( 'Reset the user identification', 'learndash' ) . '"><span id="resetLockMsg" style="display:none; background-color: rgb(255, 255, 173); border: 1px solid rgb(143, 143, 143); padding: 4px; margin-left: 5px; ">' . esc_html__( 'User identification has been reset.', 'learndash' ) . '</span><p class="description"></p></div>',
+					'html'           => '<div><input class="button-secondary" type="button" name="resetQuizLock" data-nonce="' . wp_create_nonce( 'learndash-wpproquiz-reset-lock' ) . '" value="' . esc_html__( 'Reset the user identification', 'learndash' ) . '"><span id="resetLockMsg" style="display:none; background-color: rgb(255, 255, 173); border: 1px solid rgb(143, 143, 143); padding: 4px; margin-left: 5px; ">' . esc_html__( 'User identification has been reset.', 'learndash' ) . '</span><p class="description"></p></div>',
 					'label'          => '',
 					'parent_setting' => 'retry_restrictions',
 				),
@@ -384,6 +328,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				),
 
 			);
+
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();

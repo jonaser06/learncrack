@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'Learndash_Admin_Lessons_Listing' ) ) ) {
 	/**
 	 * Class for LearnDash Lessons Listing Pages.
@@ -107,12 +111,44 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 								if ( ( isset( $_GET['lesson_id'] ) ) && ( ! empty( $_GET['lesson_id'] ) ) ) {
 									$selected = selected( absint( $_GET['lesson_id'] ), $topic->ID, false );
 								}
-								echo '<option value="' . $topic->ID . '" ' . $selected . '>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $topic->post_title . '</option>';
+								echo '<option value="' . absint( $topic->ID ) . '" ' . $selected . '>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . apply_filters( 'the_title', $topic->post_title, $topic->ID ) . '</option>';
 							}
 						}
 					}
 				}
 			}
+		}
+
+		/**
+		 * Add custom link to row action array.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param array   $row_actions Existing Row actions for course.
+		 * @param WP_Post $post        LEsson Post object for current row.
+		 *
+		 * @return array $row_actions
+		 */
+		public function post_row_actions( $row_actions = array(), $post = null ) {
+			global $typenow;
+
+			if ( $typenow === $this->post_type ) {
+				// Set the Primary Course for the post.
+				if ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'shared_steps' ) == 'yes' ) {
+					$course_id = learndash_get_primary_course_for_step( $post->ID );
+					if ( empty( $course_id ) ) {
+						$post_courses = learndash_get_courses_for_step( $post->ID );
+						if ( ( isset( $post_courses['secondary'] ) ) && ( ! empty( $post_courses['secondary'] ) ) ) {
+							foreach ( $post_courses['secondary'] as $course_id => $course_title ) {
+								learndash_set_primary_course_for_step( $post->ID, $course_id );
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			return $row_actions;
 		}
 
 		// End of functions.

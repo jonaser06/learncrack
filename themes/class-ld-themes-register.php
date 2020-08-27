@@ -6,6 +6,10 @@
  * @subpackage Themes
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'LearnDash_Theme_Register' ) ) {
 
 	/**
@@ -83,6 +87,10 @@ if ( ! class_exists( 'LearnDash_Theme_Register' ) ) {
 		final public static function init() {
 			if ( false === self::$_init_called ) {
 				self::$_init_called = true;
+
+				/**
+				 * Fires on initializing a theme.
+				 */
 				do_action( 'learndash_themes_init' );
 			}
 		}
@@ -423,10 +431,12 @@ if ( ! class_exists( 'LearnDash_Theme_Register' ) ) {
 }
 
 /**
- * Utility function to check if a theme_key is the active theme.
+ * Checks if a theme_key is the active theme.
  *
- * @since 3.0
- * @param string $theme_key Key/Slug for theme to check.
+ * @since 3.0.0
+ *
+ * @param string $theme_key Key/Slug for the theme to check.
+ *
  * @return boolean true if theme_key is the active theme, otherwise false.
  */
 function learndash_is_active_theme( $theme_key = '' ) {

@@ -118,10 +118,10 @@ if ( !class_exists('LD_REST_Posts_Controller_V1' ) ) {
 		}
 		
 		function ld_rest_validate_request_arg( $value, $args, $param = '' ) {
-			error_log('in '. __FUNCTION__ );
-			error_log('value<pre>'. print_r($value, true) .'</pre>');
-			error_log('args<pre>'. print_r($args, true) .'</pre>');
-			error_log('param<pre>'. print_r($param, true) .'</pre>');
+			//error_log('in '. __FUNCTION__ );
+			//error_log('value<pre>'. print_r($value, true) .'</pre>');
+			//error_log('args<pre>'. print_r($args, true) .'</pre>');
+			//error_log('param<pre>'. print_r($param, true) .'</pre>');
 
 			return true;
 		}

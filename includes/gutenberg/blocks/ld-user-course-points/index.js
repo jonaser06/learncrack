@@ -34,8 +34,10 @@ const {
 registerBlockType(
     'learndash/ld-user-course-points',
     {
-        title: sprintf(_x('LearnDash User %s Points', 'LearnDash User Course Points', 'learndash'), ldlms_get_custom_label('course') ),
-        description: sprintf(_x('This block shows the earned %s points for the user.', 'placeholders: course', 'learndash'), ldlms_get_custom_label('course') ),
+        // translators: placeholder: Course.
+        title: sprintf(_x('LearnDash User %s Points', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ),
+        // translators: placeholder: Course.
+        description: sprintf(_x('This block shows the earned %s points for the user.', 'placeholders: Course', 'learndash'), ldlms_get_custom_label('course') ),
         icon: 'chart-area',
         category: 'learndash-blocks',
         example: {

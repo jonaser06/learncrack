@@ -26,11 +26,13 @@ if ( ( isset( $course_step_post ) ) && ( $course_step_post instanceof WP_Post ) 
 			$php_max_upload = $post_settings['assignment_upload_limit_size'];
 		}
 	}
+	// translators: placeholder: PHP file upload size.
 	$upload_message = sprintf( esc_html_x( 'Maximum upload file size: %s', 'placeholder: PHP file upload size', 'learndash' ),  $php_max_upload );
 
 	if ( ( isset( $post_settings['assignment_upload_limit_extensions'] ) ) && ( !empty( $post_settings['assignment_upload_limit_extensions'] ) ) ) {
 		$limit_file_exts = learndash_validate_extensions( $post_settings['assignment_upload_limit_extensions'] );
 		if ( !empty( $limit_file_exts ) ) {
+			// translators: placeholder: comma list of file extentions.
 			$upload_message .= ' '. sprintf( esc_html_x('Allowed file types: %s', 'placeholder: comma list of file extentions', 'learndash' ), implode(', ', $limit_file_exts ) );
 		}
 	}

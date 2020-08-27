@@ -9,11 +9,16 @@
 
 namespace LearnDash\Admin\CourseBuilderHelpers;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Provide Course Data to Builder.
+ * Gets the course data for the course builder.
  *
- * @param Object $data The data passed down to front-end.
- * @return Object
+ * @param array $data The data passed down to the front-end.
+ *
+ * @return array The data passed down to the front-end.
  */
 function get_course_data( $data ) {
 	global $pagenow, $typenow;
@@ -153,9 +158,9 @@ if ( ( 'post.php' === $pagenow ) && ( learndash_get_post_type_slug( 'course' ) =
 //add_filter( 'learndash_header_data', 'LearnDash\Admin\CourseBuilderHelpers\get_course_data', 100 );
 
 /**
- * Checks if course builder should be enqueued.
+ * Checks if the course builder assets should be enqueued.
  *
- * @return bool
+ * @return boolean Returns true if the assets should be enqueued otherwise false.
  */
 function should_enqueue_assets() {
 	$screen        = get_current_screen();

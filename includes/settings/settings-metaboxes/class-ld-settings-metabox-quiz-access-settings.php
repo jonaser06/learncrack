@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Quiz_Access_Settings' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -91,6 +95,9 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 		 */
 		public function load_settings_values() {
 			parent::load_settings_values();
+
+			$this->quiz_edit = $this->init_quiz_edit( $this->_post );
+
 			if ( true === $this->settings_values_loaded ) {
 				if ( ! isset( $this->setting_option_values['course'] ) ) {
 					$this->setting_option_values['course'] = '';
@@ -129,6 +136,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 			global $sfwd_lms;
 
 			$select_course_options = $sfwd_lms->select_a_course();
+
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_course_options_default = array(
 					'-1' => sprintf(
@@ -148,6 +157,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 			}
 			$select_course_options = $select_course_options_default + $select_course_options;
 
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_lesson_options_default = array(
 					'-1' => sprintf(
@@ -184,6 +194,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				$select_lesson_options = $select_lesson_options_default;
 			}
 
+			/** This filter is documented in includes/class-ld-lms.php */
 			if ( ( defined( 'LEARNDASH_SELECT2_LIB' ) ) && ( true === apply_filters( 'learndash_select2_lib', LEARNDASH_SELECT2_LIB ) ) ) {
 				$select_quiz_prerequisite_options_default = array(
 					'-1' => sprintf(
@@ -222,8 +233,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				'course'                  => array(
 					'name'    => 'course',
 					'label'   => sprintf(
-						// translators: Associated Course Label.
-						esc_html_x( 'Associated %s', 'Associated Course Label', 'learndash' ),
+						// translators: placeholder: Course.
+						esc_html_x( 'Associated %s', 'placeholder: Course', 'learndash' ),
 						learndash_get_custom_label( 'course' )
 					),
 					'type'    => 'select',
@@ -305,6 +316,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				unset( $this->setting_option_fields['lesson'] );
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();

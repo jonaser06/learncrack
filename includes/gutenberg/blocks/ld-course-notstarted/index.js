@@ -37,8 +37,10 @@ const {
 registerBlockType(
     'learndash/ld-course-notstarted',
     {
+        // translators: placeholder: Course.
         title: sprintf(_x('LearnDash %s Not Started', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ),
-        description: sprintf(_x('This block shows the content if the user is enrolled into the %s but not yet started.', 'placeholders: course', 'learndash'), ldlms_get_custom_label('course') ),
+        // translators: placeholder: Course.
+        description: sprintf(_x('This block shows the content if the user is enrolled into the %s but not yet started.', 'placeholders: Course', 'learndash'), ldlms_get_custom_label('course') ),
         icon: 'star-empty',
         category: 'learndash-blocks',
         supports: {
@@ -67,8 +69,10 @@ registerBlockType(
                         title={__('Settings', 'learndash')}
                     >
                         <TextControl
+                            // translators: placeholder: Course.
                             label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
-                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
+                            // translators: placeholders: Course, Course.
+                            help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
                             value={course_id || ''}
                             onChange={course_id => setAttributes({ course_id })}
                         />
@@ -96,6 +100,7 @@ registerBlockType(
                 preview_course_id = ldlms_get_integer_value(preview_course_id);
 
                 if (preview_course_id == 0) {
+                    // translators: placeholders: Course, Course.
                     ld_block_error_message = sprintf(_x('%1$s ID is required when not used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course'));
                 }
             }

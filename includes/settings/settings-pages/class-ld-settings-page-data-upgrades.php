@@ -6,11 +6,23 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDash_Settings_Page_Data_Upgrades' ) ) ) {
 	/**
 	 * Class to create the settings page.
 	 */
 	class LearnDash_Settings_Page_Data_Upgrades extends LearnDash_Settings_Page {
+		/**
+		 * Private flag for when admin notices have been
+		 * show. This prevent multiple admin notices.
+		 *
+		 * @var boolean $admin_notice_shown
+		 */
+		private static $admin_notice_shown = false;
+
 		/**
 		 * Public constructor for class
 		 */
@@ -56,7 +68,32 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 			);
 
 			$learndash_assets_loaded['scripts']['learndash-admin-settings-data-upgrades-script'] = __FUNCTION__;
+
+			add_action( 'admin_notices', array( $this, 'show_upgrade_admin_notice' ) );
 		}
+
+		/**
+		 * Shows Data Upgrade admin notice.
+		 *
+		 * @version 2.3
+		 */
+		public function show_upgrade_admin_notice() {
+			if ( true !== self::$admin_notice_shown ) {
+				self::$admin_notice_shown = true;
+
+				?>
+				<div class="notice notice-error is-dismissible">
+					<p>
+					<?php
+					echo esc_html__( 'The Data Upgrades should only be run if prompted or advised by LearnDash Support. There is no need to re-run the Data Upgrades every time you update LearnDash core or one of the add-ons. Re-running the data upgrades when not needed can result in data corruption.', 'learndash' );
+					?>
+					</p>
+				</div>
+				<?php
+			}
+		}
+
+		// End of functions.
 	}
 }
 add_action(

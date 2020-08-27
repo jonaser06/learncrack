@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Controller_Template {
 	public static function ajaxEditTemplate($data, $func) {
 		if(!current_user_can('wpProQuiz_edit_quiz')) {

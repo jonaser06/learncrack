@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_StyleManager extends WpProQuiz_View_View {
 	
 	public function show() {

@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_General_Per_Page' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -158,7 +162,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'name'              => 'quiz_num',
 					'type'              => 'number',
 					'label'             => sprintf(
-						// translators: placeholders: Quiz.
+						// translators: placeholder: Quiz.
 						esc_html_x( '%s Attempts', 'placeholder: Quiz', 'learndash' ),
 						LearnDash_Custom_Label::get_label( 'quiz' )
 					),
@@ -221,6 +225,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();

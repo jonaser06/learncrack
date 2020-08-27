@@ -1,19 +1,40 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Action to add custom content before the content tabs
+ * Fires before the content tabs.
  *
- * @since 3.0
+ * @since 3.0.0
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
+ * @param int       $user_id   User ID.
  */
 do_action( 'learndash-content-tabs-before', get_the_ID(), $course_id, $user_id );
+
+/**
+ * Fires before the content tabs for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
+ * @param int       $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-content-tabs-before', get_the_ID(), $course_id, $user_id );
 
 $tab_count = 0;
 
 /**
- * Include as a filter so other plugins can add additional tabs
+ * Filters LearnDash content Tabs.
  *
- * @var [array]
+ * @param array  $tabs      An array of tabs array data. The tabs array data can contain keys for id, icon, label, content.
+ * @param string $context   The context where the tabs are shown like course, lesson, topic, quiz, etc.
+ * @param int    $course_id Course ID.
+ * @param int    $user_id   User ID.
  */
 $tabs = apply_filters(
 	'learndash_content_tabs',
@@ -83,11 +104,27 @@ foreach ( $tabs as $tab ) {
 	<div class="ld-tabs-content">
 		<?php
 		/**
-		 * Action to add custom content before the content tabs
+		 * Fires before the content tabs.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int|false $post_id   Post ID.
+		 * @param string    $context   The context for which the hook is fired such as `course`, `lesson`, `topic`, `quiz`, etc.
+		 * @param int       $course_id Course ID.
+		 * @param int       $user_id   User ID.
 		 */
 		do_action( 'learndash-content-tab-listing-before', get_the_ID(), $context, $course_id, $user_id );
+		
+		/**
+		 * Fires before the content tabs for any context.
+		 *
+		 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+		 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+		 *
+		 * @param string|false $post_id   Post ID.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
+		 */
 		do_action( 'learndash-' . $context . '-content-tab-listing-before', get_the_ID(), $course_id, $user_id );
 
 		$i = 0;
@@ -99,6 +136,16 @@ foreach ( $tabs as $tab ) {
 
 			$tab_class = 'ld-tab-content ' . ( 0 === $i ? 'ld-visible' : '' );
 
+			/**
+			 * Fires before any tab.
+			 *
+			 * The dynamic portion of the hook name, `$tab['id]`, refers id of the tab.
+			 *
+			 * @param int|false $post_id   Post ID.
+			 * @param string    $context   The context for which the hook is fired such as `course`, `lesson`, `topic`, `quiz`, etc.
+			 * @param int       $course_id Course ID.
+			 * @param int       $user_id   User ID.
+			 */
 			do_action( 'learndash-content-tabs-' . $tab['id'] . '-before', get_the_ID(), $context, $course_id, $user_id );
 			?>
 
@@ -108,17 +155,42 @@ foreach ( $tabs as $tab ) {
 			</div>
 
 			<?php
+			/**
+			 * Fires after any tab.
+			 *
+			 * The dynamic portion of the hook name, `$tab['id]`, refers to the id of the tab.
+			 *
+			 * @param int|false $post_id   Post ID.
+			 * @param string    $context   The context for which the hook is fired such as `course`, `lesson`, `topic`, `quiz`, etc.
+			 * @param int       $course_id Course ID.
+			 * @param int       $user_id   User ID.
+			 */
 			do_action( 'learndash-content-tabs-' . $tab['id'] . '-after', get_the_ID(), $context, $course_id, $user_id );
 
 			$i++;
 		endforeach;
 
 		/**
-		 * Action to add custom content after the content tabs
+		 * Fires after the content tabs.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int|false $post_id   Post ID.
+		 * @param int       $course_id Course ID.
+		 * @param int       $user_id   User ID.
 		 */
 		do_action( 'learndash-content-tab-listing-after', get_the_ID(), $course_id, $user_id );
+		
+		/**
+		 * Fires after the content tabs for any context.
+		 *
+		 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+		 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+		 *
+		 * @param string|false $post_id   Post ID.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
+		 */
 		do_action( 'learndash-' . $context . '-content-tab-listing-after', get_the_ID(), $course_id, $user_id );
 		?>
 
@@ -127,9 +199,24 @@ foreach ( $tabs as $tab ) {
 </div> <!--/.ld-tabs-->
 <?php
 /**
- * Action to add custom content after the content tabs
+ * Fires after the content tabs.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
+ * @param int       $user_id   User ID.
  */
 do_action( 'learndash-content-tabs-after', get_the_ID(), $course_id, $user_id );
+
+/**
+ * Fires before the content tabs for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param int|false $post_id   Post ID.
+ * @param int       $course_id Course ID.
+ * @param int       $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-content-tabs-after', get_the_ID(), $course_id, $user_id );

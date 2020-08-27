@@ -5,11 +5,40 @@
  * @package LearnDash
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Shortcode handler function for [learndash_login].
+ * Builds the `learndash_login` shortcode output.
  *
- * @param array  $atts Array of shortcode parameters.
+ * @param array  $atts {
+ *    An array of shortcode attributes.
+ *
+ *    @type string|false $login_modal Login mode setting.
+ *    @type string|false $url         Login/logout URL.
+ *    @type string|false $label       Login/logout label.
+ *    @type string|false $icon        Login/logout icon.
+ *    @type string|false $placement   Login/logout placement.
+ *    @type string|false $class       Login/logout CSS class.
+ *    @type string|false $button      Login/logout button.
+ *    @type string $login_url         Login URL.
+ *    @type string $login_label       Login label.
+ *    @type string $login_icon        Login icon.
+ *    @type string $login_placement   Login placement.
+ *    @type string $login_class       Login class.
+ *    @type string $login_button      Login button.
+ *    @type string $logout_url        Logout url.
+ *    @type string $logout_label      Logout label.
+ *    @type string $logout_placement  Logout placement.
+ *    @type string $logout_icon       Logout icon.
+ *    @type string $logout_class      Logout class.
+ *    @type string $logout_button     Logout button.
+ *    @type string $preview_action    Preview action
+ *    @type string $return            Whether to return the output.
+ * }
  * @param string $content Content to append to and return.
+ *
  * @return string $content.
  */
 function learndash_login_shortcode( $atts = array(), $content = '' ) {
@@ -61,6 +90,11 @@ function learndash_login_shortcode( $atts = array(), $content = '' ) {
 		$atts['action'] = $atts['preview_action'];
 	}
 
+	/**
+	 * Filters learndash_login shortcode attributes.
+	 *
+	 * @param array $attributes Shortcode attributes.
+	 */
 	$atts = apply_filters( 'learndash_login_shortcode_atts', $atts );
 
 	$filter_args = array();
@@ -196,8 +230,23 @@ function learndash_login_shortcode( $atts = array(), $content = '' ) {
 		}
 	}
 
+	/**
+	 * Filters URL that a user should be redirected to after a successful login.
+	 *
+	 * @param string $url    URL to be redirected
+	 * @param string $action The action attribute with two possible values login if the user is logged in and logout otherwise.
+	 * @param array  $atts   Shortcode Attributes.
+	 */
 	$filter_args['url'] = apply_filters( 'learndash_login_url', $filter_args['url'], $atts['action'], $atts );
 
+	/**
+	 * Filters the filter arguments depending on the action which is login and logout.
+	 *
+	 * The dynamic part depends on the action attribute it will be learndash-login-shortcode-login for the login action and learndash-login-shortcode-logout for the logout action.
+	 *
+	 * @param array  $filter_args An Array of filter arguments with identifiers like label, icon, placement, class.
+	 * @param array  $atts       Shortcode Attributes.
+	 */
 	$filter_args = apply_filters( $filter_action, $filter_args, $atts );
 
 	$filter_args['class'] .= ' ld-login-text ld-login-button ' . ( isset( $filter_args['button'] ) && 'true' == $filter_args['button'] ? 'ld-button' : '' );
@@ -234,6 +283,16 @@ function learndash_login_shortcode( $atts = array(), $content = '' ) {
 }
 add_shortcode( 'learndash_login', 'learndash_login_shortcode' );
 
+/**
+ * Builds the `learndash_user_status` shortcode output.
+ *
+ * @param array $atts {
+ *    An array of shortcode attributes.
+ *
+ *    @type string $user_id User ID.
+ *    @type string $return  Whether to return the output.
+ * }
+ */
 function learndash_user_status_shortcode( $atts = array() ) {
 
 	if ( isset( $atts['user_id'] ) && ! empty( $atts['user_id'] ) ) {

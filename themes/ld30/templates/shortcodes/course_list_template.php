@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 global $post;
 
@@ -16,7 +19,7 @@ if ( is_user_logged_in() ) {
 	<div class="ld-item-list">
 		<div class="ld-item-list-item">
 			<div class="ld-item-list-item-preview">
-				<a class="ld-item-name ld-primary-color-hover" href="<?php echo esc_attr( learndash_get_step_permalink( get_the_ID() ) ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
+				<a class="ld-item-name ld-primary-color-hover" href="<?php echo esc_url( learndash_get_step_permalink( get_the_ID() ) ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
 			</div>
 		</div>
 	</div>

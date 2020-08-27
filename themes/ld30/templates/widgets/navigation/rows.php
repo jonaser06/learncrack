@@ -7,6 +7,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! empty( $lessons ) ) :
 
 	$sections = learndash_30_get_course_sections( $course_id );
@@ -25,6 +29,7 @@ if ( ! empty( $lessons ) ) :
 
 		$all_topics = learndash_topic_dots( $course_lesson['post']->ID, false, 'array' );
 
+		/** This filter is documented in themes/ld30/includes/helpers.php */
 		$topic_pager_args = apply_filters(
 			'ld30_ajax_topic_pager_args',
 			array(

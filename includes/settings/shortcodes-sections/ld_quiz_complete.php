@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( ! class_exists( 'LearnDash_Shortcodes_Section_ld_quiz_complete' ) ) ) {
 	class LearnDash_Shortcodes_Section_ld_quiz_complete extends LearnDash_Shortcodes_Section {
 
@@ -96,10 +100,11 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( ! class_exists( 'Le
 
 				$this->shortcodes_option_fields['quiz_id']['required'] = 'required';
 
-				// translators: placeholders: Quiz.
+				// translators: placeholder: Quiz.
 				$this->shortcodes_option_fields['quiz_id']['help_text'] = sprintf( esc_html_x( 'Enter single %s ID.', 'placeholders: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) );
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->shortcodes_option_fields = apply_filters( 'learndash_settings_fields', $this->shortcodes_option_fields, $this->shortcodes_section_key );
 
 			parent::init_shortcodes_section_fields();

@@ -27,6 +27,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( $has_course_content ) :
 
 	$shortcode_instance = ( isset( $atts ) && ! empty( $atts ) ? $atts : array() );
@@ -40,41 +44,29 @@ if ( $has_course_content ) :
 			<div class="ld-section-heading">
 
 				<?php
-				/**
-				 * Action to add custom content before the course heading
-				 *
-				 * @since 3.0
-				 */
+				/** This action is documented in themes/ld30/templates/course.php */
 				do_action( 'learndash-course-heading-before', $course_id, $user_id );
 				?>
 
 				<h2>
 				<?php
 				printf(
-					// translators: Course Content Label
-					esc_html_x( '%s Content', 'Course Content Label', 'learndash' ),
+					// translators: placeholder: Course.
+					esc_html_x( '%s Content', 'placeholder: Course', 'learndash' ),
 					LearnDash_Custom_Label::get_label( 'course' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Method escapes output
 				);
 				?>
 				</h2>
 
 				<?php
-				/**
-				 * Action to add custom content after the course heading
-				 *
-				 * @since 3.0
-				 */
+				/** This action is documented in themes/ld30/templates/course.php */
 				do_action( 'learndash-course-heading-after', $course_id, $user_id );
 				?>
 
 				<div class="ld-item-list-actions" data-ld-expand-list="true">
 
 					<?php
-					/**
-					 * Action to add custom content after the course content progress bar
-					 *
-					 * @since 3.0
-					 */
+					/** This action is documented in themes/ld30/templates/course.php */
 					do_action( 'learndash-course-expand-before', $course_id, $user_id );
 					?>
 
@@ -88,6 +80,7 @@ if ( $has_course_content ) :
 						</div> <!--/.ld-expand-button-->
 						<?php
 						// TODO @37designs Need to test this
+						/** This filter is documented in themes/ld30/templates/course.php */
 						if ( apply_filters( 'learndash_course_steps_expand_all', false, $course_id, 'course_lessons_listing_main' ) ) :
 							?>
 							<script>
@@ -102,11 +95,7 @@ if ( $has_course_content ) :
 
 					endif;
 
-					/**
-					 * Action to add custom content after the course content expand button
-					 *
-					 * @since 3.0
-					 */
+					/** This action is documented in themes/ld30/templates/course.php */
 					do_action( 'learndash-course-expand-after', $course_id, $user_id );
 					?>
 
@@ -114,11 +103,7 @@ if ( $has_course_content ) :
 			</div> <!--/.ld-section-heading-->
 
 			<?php
-			/**
-			 * Action to add custom content before the course content listing
-			 *
-			 * @since 3.0
-			 */
+			/** This action is documented in themes/ld30/templates/course.php */
 			do_action( 'learndash-course-content-list-before', $course_id, $user_id );
 
 			/**
@@ -145,11 +130,7 @@ if ( $has_course_content ) :
 				true
 			);
 
-			/**
-			 * Action to add custom content before the course content listing
-			 *
-			 * @since 3.0
-			 */
+			/** This action is documented in themes/ld30/templates/course.php */
 			do_action( 'learndash-course-content-list-after', $course_id, $user_id );
 			?>
 

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 	
 	/**
@@ -15,7 +19,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 				<tbody>
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Hide %s title', 'Hide quiz title', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Hide %s title', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
@@ -27,26 +33,34 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('The title serves as %s heading.', 'The title serves as quiz heading.', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('The title serves as %s heading.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
 								</p>
 							</fieldset>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Hide "Restart %s" button', 'Hide "Restart quiz" button', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Hide "Restart %s" button', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x('Hide "Restart %s" button', 'Hide "Restart quiz" button', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Hide "Restart %s" button', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
 								</legend>
 								<label for="btn_restart_quiz_hidden">
 									<input type="checkbox" id="btn_restart_quiz_hidden" value="1" name="btnRestartQuizHidden" <?php echo $this->quiz->isBtnRestartQuizHidden() ? 'checked="checked"' : '' ?> >
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('Hide the "Restart %s" button in the Frontend.', 'Hide the "Restart quiz" button in the Frontend.', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Hide the "Restart %s" button in the Frontend.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -141,18 +155,24 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 					</tr>
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Protect %s Answers in Browser Cookie', 'Protect Quiz Answers in Browser Cookie', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: Quiz.
+							echo sprintf( esc_html_x('Protect %s Answers in Browser Cookie', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x('Use cookies for %s Answers', 'Use cookies for Quiz Answers', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: Quiz.
+									echo sprintf( esc_html_x('Use cookies for %s Answers', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></span>
 								</legend>
 								<label for="time_limit_cookie">
 									<input type="number" min="0" class="small-text" id="time_limit_cookie" value="<?php echo intval($this->quiz->getTimeLimitCookie()); ?>" name="timeLimitCookie"> <?php esc_html_e('Seconds', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x("0 = Don't save answers. This option will save the user's answers into a browser cookie until the %s is submitted.", 'placeholders: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: Quiz.
+									echo sprintf( esc_html_x("0 = Don't save answers. This option will save the user's answers into a browser cookie until the %s is submitted.", 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -171,7 +191,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('Statistics about right or wrong answers. Statistics will be saved by completed %s, not after every question. The statistics is only visible over administration menu. (internal statistics)', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Statistics about right or wrong answers. Statistics will be saved by completed %s, not after every question. The statistics is only visible over administration menu. (internal statistics)', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -210,7 +232,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('Enable user to view statistics for this %s on their profile.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Enable user to view statistics for this %s on their profile.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -219,13 +243,17 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Execute %s only once', 'Execute quiz only once', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Execute %s only once', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 							
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x('Execute %s only once', 'Execute quiz only once', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Execute %s only once', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
 								</legend>
 								
 								<label>
@@ -233,7 +261,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you activate this option, the user can complete the %1$s only once. Afterwards the %2$s is blocked for this user.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholders: quiz, quiz.
+									echo sprintf( esc_html_x('If you activate this option, the user can complete the %1$s only once. Afterwards the %2$s is blocked for this user.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 								
 								<div id="wpProQuiz_quiz_run_once_type" style="margin-bottom: 5px; display: none;">
@@ -267,7 +297,7 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									</div>
 									
 									<div style="margin-top: 15px;">
-										<input class="button-secondary" type="button" name="resetQuizLock" value="<?php esc_html_e('Reset the user identification', 'learndash'); ?>">
+										<input class="button-secondary" data-nonce="<?php echo wp_create_nonce( 'learndash-wpproquiz-reset-lock' ); ?>" type="button" name="resetQuizLock" value="<?php esc_html_e('Reset the user identification', 'learndash'); ?>">
 										<span id="resetLockMsg" style="display:none; background-color: rgb(255, 255, 173); border: 1px solid rgb(143, 143, 143); padding: 4px; margin-left: 5px; "><?php esc_html_e('User identification has been reset.', 'learndash'); ?></span>
 										<p class="description">
 											<?php esc_html_e('Resets user identification for all users.', 'learndash'); ?>
@@ -320,17 +350,27 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, you can choose %1$s, which user have to finish before he can start this %2$s.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholders: quiz, quiz.
+									echo sprintf( esc_html_x('If you enable this option, you can choose %1$s, which user have to finish before he can start this %2$s.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('In all selected %s statistic function have to be active. If it is not it will be activated automatically.', 'placeholders: quizzes', 'learndash'), learndash_get_custom_label_lower( 'quizzes' ) ); ?>
+									<?php 
+									// translators: placeholder: quizzes.
+									echo sprintf( esc_html_x('In all selected %s statistic function have to be active. If it is not it will be activated automatically.', 'placeholders: quizzes', 'learndash'), learndash_get_custom_label_lower( 'quizzes' ) ); ?>
 								</p>
 								<div id="prerequisiteBox" style="display: none;">
 									<table id="learndash-prerequisite-table">
 										<tr>
-											<th class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-left"><?php echo sprintf( esc_html_x('%s', 'Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></th>
+											<th class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-left"><?php 
+											echo sprintf(
+												// translators: placeholder: Quiz.
+												esc_html_x('%s', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' ) 
+											); ?></th>
 											<th class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-center"></th>
-											<th class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-right"><?php echo sprintf( esc_html_x('Prerequisites (This %s has to be finished)', 'Prerequisites (This quiz has to be finished)', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></th>
+											<th class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-right"><?php 
+											// translators: placeholder: quiz.
+											echo sprintf( esc_html_x('Prerequisites (This %s has to be finished)', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></th>
 										</tr>
 										<tr>
 											<td class="learndash-quiz-prerequisite-list learndash-quiz-prerequisite-list-left">
@@ -338,8 +378,8 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 													<?php foreach($this->quizList as $list) {
 														if(in_array($list['id'], $this->prerequisiteQuizList))
 															continue;
-														
-															echo '<option value="'.$list['id'].'" title="'.$list['name'].'">'.$list['name'].'</option>';
+
+														echo '<option value="'.$list['id'].'" title="'.$list['name'].'">'.$list['name'].'</option>';
 													} ?>
 												</select>
 											</td>
@@ -384,7 +424,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Add at the top of the quiz a question overview, which allows easy navigation. Additional questions can be marked "to review".', 'learndash'); ?>
 								</p>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('Additional %s overview will be displayed, before %s is finished.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' )); ?>
+									<?php 
+									// translators: placeholders: quiz, quiz.
+									echo sprintf( esc_html_x('Additional %1$s overview will be displayed, before %2$s is finished.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' )); ?>
 								</p>
 								
 							</fieldset>
@@ -392,19 +434,25 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 					</tr>
 					<tr class="wpProQuiz_reviewQuestionOptions" style="display: none;">
 						<th scope="row">
-							<?php echo sprintf( esc_html_x( '%s-summary', 'Quiz-summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: Quiz.
+							echo sprintf( esc_html_x( '%s-summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x( '%s-summary', 'Quiz-summary', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: Quiz.
+									echo sprintf( esc_html_x( '%s-summary', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></span>
 								</legend>
 								<label>
 									<input type="checkbox" value="1" name="quizSummaryHide" <?php $this->checked($this->quiz->isQuizSummaryHide()); ?>>
 									<?php esc_html_e('Deactivate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, no %1$s overview will be displayed, before finishing %2$s.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholders: quiz, quiz.
+									echo sprintf( esc_html_x('If you enable this option, no %1$s overview will be displayed, before finishing %2$s.', 'placeholders: quiz, quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -450,7 +498,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('for all users', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, you will be informed if a user completes this %s.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('If you enable this option, you will be informed if a user completes this %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 								<p class="description">
 									<?php esc_html_e('E-Mail settings can be edited in global settings.', 'learndash'); ?>
@@ -472,7 +522,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, an email is sent with his %s result to the user. (only registered users)', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'course' ) ); ?>
+									<?php 
+									// translators: placeholder: course.
+									echo sprintf( esc_html_x('If you enable this option, an email is sent with his %s result to the user. (only registered users)', 'placeholder: course', 'learndash'), learndash_get_custom_label_lower( 'course' ) ); ?>
 								</p>
 								<p class="description">
 									<?php esc_html_e('E-Mail settings can be edited in global settings.', 'learndash'); ?>
@@ -494,26 +546,34 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, the %s will start automatically after the page is loaded.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('If you enable this option, the %s will start automatically after the page is loaded.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Only registered users are allowed to start the %s', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Only registered users are allowed to start the %s', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x('Only registered users are allowed to start the %s', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Only registered users are allowed to start the %s', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
 								</legend>
 								<label>
 									<input type="checkbox" name="startOnlyRegisteredUser" value="1" <?php $this->checked($this->quiz->isStartOnlyRegisteredUser()); ?>>
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, only registered users allowed start the %s.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('If you enable this option, only registered users allowed start the %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -637,19 +697,25 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 					</tr>
 					<tr>
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Hide %s time - display', 'Hide quiz time - display', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Hide %s time - display', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</th>
 						<td>
 							<fieldset>
 								<legend class="screen-reader-text">
-									<span><?php echo sprintf( esc_html_x('Hide %s time - display', 'Hide quiz time - display', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
+									<span><?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Hide %s time - display', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?></span>
 								</legend>
 								<label>
 									<input type="checkbox" name="hideResultQuizTime" value="1" <?php $this->checked($this->quiz->isHideResultQuizTime()); ?>>
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('If you enable this option, the time for finishing the %s won\'t be displayed on the results page anymore.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('If you enable this option, the time for finishing the %s won\'t be displayed on the results page anymore.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -698,7 +764,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 									<?php esc_html_e('Activate', 'learndash'); ?>
 								</label>
 								<p class="description">
-									<?php echo sprintf( esc_html_x('Shows in %s, how many points are reachable for respective question.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('Shows in %s, how many points are reachable for respective question.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
 								</p>
 							</fieldset>
 						</td>
@@ -980,7 +1048,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 					</tr>
 					<tr id="AutomaticallyDisplayLeaderboard">
 						<th scope="row">
-							<?php echo sprintf( esc_html_x('Automatically display leaderboard in %s result', 'Automatically display leaderboard in quiz result', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Automatically display leaderboard in %s result', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' )); ?>
 						</th>
 						<td>
 							<div style="margin-top: 6px;">
@@ -1036,7 +1106,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 					</tr>
 					<tr>
 						<td>
-							<?php echo sprintf( esc_html_x('Displays all questions sequentially, "right" or "false" will be displayed at the end of the %s.', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+							<?php 
+							// translators: placeholder: quiz.
+							echo sprintf( esc_html_x('Displays all questions sequentially, "right" or "false" will be displayed at the end of the %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 						</td>
 						<td>
 							<?php esc_html_e('Allows to use the back button in a question.', 'learndash'); ?>
@@ -1134,18 +1206,16 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 								<?php esc_html_e('Where should the fields be displayed:', 'learndash'); ?><br>
 								<label>
 									<input type="radio" value="<?php echo WpProQuiz_Model_Quiz::QUIZ_FORM_POSITION_START; ?>" name="formShowPosition" <?php $this->checked($this->quiz->getFormShowPosition(), WpProQuiz_Model_Quiz::QUIZ_FORM_POSITION_START); ?>>
-									<?php echo sprintf( esc_html_x('On the %s startpage', 'On the quiz startpage', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
-									
-									
-									
+									<?php 
+									// translators: placeholder: quiz.
+									echo sprintf( esc_html_x('On the %s startpage', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 								</label>
 								<label>
 									<input type="radio" value="<?php echo WpProQuiz_Model_Quiz::QUIZ_FORM_POSITION_END; ?>" name="formShowPosition" <?php $this->checked($this->quiz->getFormShowPosition(), WpProQuiz_Model_Quiz::QUIZ_FORM_POSITION_END); ?> >
-									<?php echo sprintf( esc_html_x('At the end of the %s (before the %s result)', 'At the end of the quiz (before the quiz result)', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); ?>
-									
-									
-									
-									
+									<?php 
+									// translators: placeholders: quiz, quiz.
+									echo sprintf( esc_html_x('At the end of the %1$s (before the %2$s result)', 'At the end of the quiz (before the quiz result)', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), learndash_get_custom_label_lower( 'quiz' ) ); 
+									?>
 								</label>
 							</fieldset>
 						</td>
@@ -1231,7 +1301,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 			<h3 class="hndle"><?php esc_html_e('Results text', 'learndash'); ?> <?php esc_html_e('(optional)', 'learndash'); ?></h3>
 			<div class="inside">
 				<p class="description">
-					<?php echo sprintf( esc_html_x('This text will be displayed at the end of the %s (in results). (this text is optional)', 'placeholders: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
+					<?php 
+					// translators: placeholder: quiz.
+					echo sprintf( esc_html_x('This text will be displayed at the end of the %s (in results). (this text is optional)', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) ); ?>
 				</p>
 				<div style="padding-top: 10px; padding-bottom: 10px;">
 					<label for="wpProQuiz_resultGradeEnabled">
@@ -1245,7 +1317,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 						<ul style="list-style-type: square; padding: 5px; margin-left: 20px; margin-top: 0;">
 							<li><?php esc_html_e('Maximal 15 levels', 'learndash'); ?></li>
 							<li>
-								<?php echo sprintf( esc_html_x('Percentages refer to the total score of the %1$s. (Current total %2d points in %3$d questions.)', 'placeholders: quiz, question points, question count', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), $this->quiz->fetchSumQuestionPoints(), $this->quiz->fetchCountQuestions()); ?>
+								<?php 
+								// translators: placeholders: quiz, question points, question count.
+								echo sprintf( esc_html_x('Percentages refer to the total score of the %1$s. (Current total %2d points in %3$d questions.)', 'placeholders: quiz, question points, question count', 'learndash'), learndash_get_custom_label_lower( 'quiz' ), $this->quiz->fetchSumQuestionPoints(), $this->quiz->fetchCountQuestions()); ?>
 								</li>
 							<li><?php esc_html_e('Values can also be mixed up', 'learndash'); ?></li>
 							<li><?php esc_html_e('10,15% or 10.15% allowed (max. two digits after the decimal point)', 'learndash'); ?></li>
@@ -1264,7 +1338,9 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 							<li style="padding: 5px; border: 1; border: 1px dotted;">
 								<div style="margin-bottom: 5px;"><?php wp_editor($resultText['text'][$i], 'resultText_'.$i, array('textarea_rows' => 3, 'textarea_name' => 'resultTextGrade[text][]')); ?></div>
 								<div style="margin-bottom: 5px;background-color: rgb(207, 207, 207);padding: 10px;">
-									<?php esc_html_e('from:', 'learndash'); ?> <input type="text" name="resultTextGrade[prozent][]" class="small-text" value="<?php echo $resultText['prozent'][$i]?>"> <?php esc_html_e('percent', 'learndash'); ?> <?php printf(__('(Will be displayed, when result-percent is >= <span class="resultProzent">%s</span>%%)', 'learndash'), $resultText['prozent'][$i]); ?>
+									<?php esc_html_e('from:', 'learndash'); ?> <input type="text" name="resultTextGrade[prozent][]" class="small-text" value="<?php echo $resultText['prozent'][$i]?>"> <?php esc_html_e('percent', 'learndash'); ?> <?php 
+									// translators: placeholder: Result Text.
+									printf(_x('(Will be displayed, when result-percent is >= <span class="resultProzent">%s</span>%%)', 'placeholder: Result Text', 'learndash'), $resultText['prozent'][$i]); ?>
 									<input type="button" style="float: right;" class="button-primary deleteResult" value="<?php esc_html_e('Delete graduation', 'learndash'); ?>">
 									<div style="clear: right;"></div>
 									<input type="hidden" value="1" name="resultTextGrade[activ][]">
@@ -1275,7 +1351,10 @@ class WpProQuiz_View_QuizEdit extends WpProQuiz_View_View {
 							<li style="padding: 5px; border: 1; border: 1px dotted; <?php echo $i ? 'display:none;' : '' ?>">
 								<div style="margin-bottom: 5px;"><?php wp_editor('', 'resultText_'.$i, array('textarea_rows' => 3, 'textarea_name' => 'resultTextGrade[text][]')); ?></div>
 								<div style="margin-bottom: 5px;background-color: rgb(207, 207, 207);padding: 10px;">
-									<?php esc_html_e('from:', 'learndash'); ?> <input type="text" name="resultTextGrade[prozent][]" class="small-text" value="0"> <?php esc_html_e('percent', 'learndash'); ?> <?php printf(__('(Will be displayed, when result-percent is >= <span class="resultProzent">%s</span>%%)', 'learndash'), '0'); ?>
+									<?php esc_html_e('from:', 'learndash'); ?> <input type="text" name="resultTextGrade[prozent][]" class="small-text" value="0"> <?php esc_html_e('percent', 'learndash'); ?> <?php 
+									// translators: placeholder: 0.
+									printf(_x('(Will be displayed, when result-percent is >= <span class="resultProzent">%s</span>%%)', 'placeholder: 0', 'learndash'), '0'); ?>
+									
 									<input type="button" style="float: right;" class="button-primary deleteResult" value="<?php esc_html_e('Delete graduation', 'learndash'); ?>">
 									<div style="clear: right;"></div>
 									<input type="hidden" value="<?php echo $i ? '0' : '1' ?>" name="resultTextGrade[activ][]">

@@ -5,6 +5,12 @@ jQuery(document).ready(function() {
 		
 		function ld_course_registered_pager_handler( e ) {
 			e.preventDefault();
+
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+			
 			var paged = jQuery( e.currentTarget ).data('paged');
 			
 			var parent_div = jQuery( e.currentTarget ).parents('.ld_course_info' );
@@ -17,6 +23,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_course_registered_pager',
+				'nonce' : pager_nonce, 
 				'paged': paged,
 				'shortcode_atts': shortcode_atts
 			};
@@ -62,6 +69,11 @@ jQuery(document).ready(function() {
 		function ld_course_content_pager_handler( e ) {
 			e.preventDefault();
 			
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+
 			var paged = jQuery( e.currentTarget ).data('paged');
 			
 			var parent_div = jQuery( e.currentTarget ).parents('.ld_course_info' );
@@ -74,6 +86,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_course_progress_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'shortcode_atts': shortcode_atts
 			};
@@ -109,7 +122,6 @@ jQuery(document).ready(function() {
 			});
 		}	
 	}
-	
 });
 
 // Quiz Progress
@@ -120,6 +132,11 @@ jQuery(document).ready(function() {
 		
 		function ld_quiz_content_pager_handler( e ) {
 			e.preventDefault();
+			
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
 			
 			var paged = jQuery( e.currentTarget ).data('paged');
 			
@@ -133,6 +150,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_quiz_progress_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'shortcode_atts': shortcode_atts
 			};
@@ -180,6 +198,11 @@ jQuery(document).ready(function() {
 		function ld_course_list_content_pager_handler( e ) {
 			e.preventDefault();
 			
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+			
 			var parent_div = jQuery( e.currentTarget ).parents('.ld-course-list-content' );
 			if ( typeof parent_div === 'undefined')
 				return;
@@ -192,6 +215,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_course_list_shortcode_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'shortcode_atts': shortcode_atts
 			};
@@ -235,10 +259,15 @@ jQuery(document).ready(function() {
 		function ld_course_navigation_widget_pager_handler( e ) {
 			e.preventDefault();
 			
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+			
 			var parent_div = jQuery( e.currentTarget ).parents('.course_navigation' );
 			if ( typeof parent_div === 'undefined')
 				return;
-			
+						
 			var widget_data = jQuery( parent_div ).data( 'widget_instance' );
 			if ( typeof widget_data === 'undefined')
 				return;
@@ -247,6 +276,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_course_navigation_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'widget_data': widget_data
 			};
@@ -289,7 +319,12 @@ jQuery(document).ready(function() {
 		
 		function ld_course_navigation_widget_pager_handler( e ) {
 			e.preventDefault();
-						
+			
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+			
 			var parent_div = jQuery( e.currentTarget ).parents('.course_navigation' );
 			if ( typeof parent_div === 'undefined')
 				return;
@@ -302,6 +337,7 @@ jQuery(document).ready(function() {
 			
 			var post_data = {
 				'action': 'ld_course_navigation_admin_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'widget_data': widget_data
 			};
@@ -344,6 +380,11 @@ jQuery(document).ready(function () {
 		function ld_quiz_navigation_widget_pager_handler(e) {
 			e.preventDefault();
 
+			var pager_div = jQuery(e.currentTarget).parents('.learndash-pager');
+			if (typeof pager_div === 'undefined')
+				return;
+			var pager_nonce = jQuery(pager_div).data('nonce');	
+			
 			var parent_div = jQuery(e.currentTarget).parents('.quiz_navigation');
 			if (typeof parent_div === 'undefined')
 				return;
@@ -356,6 +397,7 @@ jQuery(document).ready(function () {
 
 			var post_data = {
 				'action': 'ld_quiz_navigation_admin_pager',
+				'nonce': pager_nonce,
 				'paged': paged,
 				'widget_data': widget_data
 			};

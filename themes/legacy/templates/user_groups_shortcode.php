@@ -31,7 +31,7 @@
 								<?php 
 									if ( ! empty( $group->post_content ) ) { 
 										SFWD_LMS::content_filter_control( false );
-										
+										/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 										$group_content = apply_filters('the_content', $group->post_content);
 										$group_content = str_replace(']]>', ']]&gt;', $group_content );
 										echo $group_content;
@@ -63,6 +63,7 @@
 								<span class="learndash-user-groups-item-title"><?php echo $group->post_title; ?></span>
 								<?php 
 									if ( ! empty( $group->post_content ) ) { 
+										/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_excerpt/ */
 										$group_content = apply_filters('the_excerpt', $group->post_content);
 										$group_content = str_replace(']]>', ']]&gt;', $group_content );
 										echo $group_content;

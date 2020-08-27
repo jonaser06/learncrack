@@ -114,6 +114,14 @@ if ( ( class_exists( 'LearnDash_Gutenberg_Block' ) ) && ( ! class_exists( 'Learn
 					unset( $attributes['registered_show'] );
 				}
 
+				if ( isset( $attributes['registered_show_thumbnail'] ) ) {
+					if ( true === $attributes['registered_show_thumbnail'] ) {
+						$attributes['registered_show_thumbnail'] = 'true';
+					} else {
+						$attributes['registered_show_thumbnail'] = 'false';
+					}
+				}
+
 				if ( isset( $attributes['progress_show'] ) ) {
 					if ( true === $attributes['progress_show'] ) {
 						$types[] = 'course';
@@ -192,6 +200,14 @@ if ( ( class_exists( 'LearnDash_Gutenberg_Block' ) ) && ( ! class_exists( 'Learn
 				}
 				if ( isset( $attributes['preview_user_id'] ) ) {
 					unset( $attributes['preview_user_id'] );
+				}
+
+				if ( isset( $attributes['registered_show_thumbnail'] ) ) {
+					if ( true === $attributes['registered_show_thumbnail'] ) {
+						$attributes['registered_show_thumbnail'] = 'true';
+					} else {
+						$attributes['registered_show_thumbnail'] = 'false';
+					}
 				}
 
 				if ( ! isset( $attributes['type'] ) ) {

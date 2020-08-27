@@ -45,7 +45,7 @@ if ( ( !class_exists( 'LD_REST_Courses_Controller_V1' ) ) && ( class_exists( 'LD
 						'permission_callback' => array( $this, 'create_item_permissions_check' ),
 						'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 
@@ -84,7 +84,7 @@ if ( ( !class_exists( 'LD_REST_Courses_Controller_V1' ) ) && ( class_exists( 'LD
 							),
 						),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 
@@ -99,6 +99,19 @@ if ( ( !class_exists( 'LD_REST_Courses_Controller_V1' ) ) && ( class_exists( 'LD
 			include( LEARNDASH_REST_API_DIR . '/'. $this->version.'/class-ld-rest-courses-groups-controller.php' );
 			$this->sub_controllers['class-ld-rest-courses-groups-controller'] = new LD_REST_Courses_Groups_Controller_V1();
 			$this->sub_controllers['class-ld-rest-courses-groups-controller']->register_routes();
+		}
+
+		/**
+		 * Gets sfwd-courses schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = $this->get_public_item_schema();
+
+			$schema['title'] = 'course';
+
+			return $schema;
 		}
 
 		function rest_prepare_response_filter( WP_REST_Response $response, WP_Post $post, WP_REST_Request $request ) {

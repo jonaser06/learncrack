@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Plugin_BpAchievementsV2 {
 	
 	public function __construct() {
@@ -17,6 +21,10 @@ class WpProQuiz_Plugin_BpAchievementsV2 {
 	}
 	
 	public function quizFinished() {
+
+		/**
+		 * Fires on `quizFinished` function call.
+		 */
 		do_action('wp_pro_quiz_quiz_finished');
 	}
 	
@@ -30,7 +38,8 @@ class WpProQuiz_Plugin_BpAchievementsV2 {
 			array(
 				'category' => 'Wp-Pro-Quiz',
 				'name' => 'wp_pro_quiz_quiz_finished', 
-				'description' => sprintf( esc_html_x('The user completed a %s.', 'The user completed a quiz.', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) )
+				// translators: placeholder: quiz.
+				'description' => sprintf( esc_html_x('The user completed a %s.', 'placeholder: quiz', 'learndash'), learndash_get_custom_label_lower( 'quiz' ) )
 			)
 		);
 		
@@ -52,6 +61,9 @@ class WpProQuiz_Plugin_BpAchievementsV2 {
 	}
 }
 
+/**
+ * Handles the pro quiz finished dpa action.
+ */
 function dpa_handle_action_wp_pro_quiz_quiz_finished() {
 	$func_get_args = func_get_args();
 	dpa_handle_action('wp_pro_quiz_quiz_finished', $func_get_args);

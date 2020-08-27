@@ -28,9 +28,12 @@
  * @since 3.0
  *
  * @package LearnDash\Course
- */ ?>
+ */ 
 
-<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Display lessons if they exist
  *
@@ -40,6 +43,11 @@
 
 if ( ! empty( $lessons ) || ! empty( $quizzes ) ) :
 
+	/**
+	 * Filters LearnDash Course table CSS class.
+	 *
+	 * @param string $cours_table_class CSS classes for course table.
+	 */
 	$table_class = apply_filters( 'learndash_course_table_class', 'ld-item-list-items ' . ( isset( $lesson_progression_enabled ) && $lesson_progression_enabled ? 'ld-lesson-progression' : '' ) );
 
 	/**
@@ -53,9 +61,12 @@ if ( ! empty( $lessons ) || ! empty( $quizzes ) ) :
 	<div class="<?php echo esc_attr( $table_class ); ?>" id="<?php echo esc_attr( 'ld-item-list-' . $course_id ); ?>" data-ld-expand-list="true">
 		<?php
 		/**
-		 * Action to add custom content before the course listing
+		 * Fires before the course listing.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-listing-before', $course_id, $user_id );
 
@@ -101,6 +112,13 @@ if ( ! empty( $lessons ) || ! empty( $quizzes ) ) :
 		if ( isset( $course_pager_results['pager'] ) && ! empty( $course_pager_results['pager'] ) && 0 !== absint( $course_pager_results['pager']['total_pages'] ) ) :
 			$show_course_quizzes = ( $course_pager_results['pager']['paged'] == $course_pager_results['pager']['total_pages'] ? true : false );
 		endif;
+		/**
+		 * Filters whether to show course quizzes while listing the course content
+		 *
+		 * @param boolean $show_course_quizzes Whether to show course quizzes in course listing or not.
+		 * @param int     $course_id           Course ID.
+		 * @param int     $user_id             User ID.
+		 */
 		$show_course_quizzes = apply_filters( 'learndash-show-course-quizzes', $show_course_quizzes, $course_id, $user_id );
 
 		if ( $show_course_quizzes && ! empty( $quizzes ) ) :
@@ -120,16 +138,22 @@ if ( ! empty( $lessons ) || ! empty( $quizzes ) ) :
 		endif;
 
 		/**
-		 * Action to add custom content after the course listing
+		 * Fires after the course listing.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-listing-after', $course_id, $user_id );
 
 		/**
-		 * Action to add custom content before the course pagination
+		 * Fires before the course pagination.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-pagination-before', $course_id, $user_id );
 
@@ -146,9 +170,12 @@ if ( ! empty( $lessons ) || ! empty( $quizzes ) ) :
 		endif;
 
 		/**
-		 * Action to add custom content after the course pagination
+		 * Fires after the course pagination.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-pagination-after', $course_id, $user_id );
 		?>

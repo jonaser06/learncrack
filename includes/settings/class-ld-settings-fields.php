@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 	/**
 	 * Class to create the settings field.
@@ -213,6 +217,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 			}
 
 			if ( ( isset( $field['args']['type'] ) ) && ( 'hidden' !== $field['args']['type'] ) ) {
+				/**
+				 * Filters the HTML content to be echoed before outside row settings.
+				 *
+				 * @param string $output_content Content to be echoed.
+				 * @param array  $field_arguments An array of setting field arguments.
+				 */
 				$output = apply_filters( 'learndash_settings_row_outside_before', '', $field['args'] );
 				if ( ! empty( $output ) ) {
 					echo $output;
@@ -220,6 +230,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 				?>
 				<div id="<?php echo $field['args']['id']; ?>_field" class="sfwd_input <?php echo $field_class; ?> <?php echo $field_error_class; ?>">
 					<?php
+						/**
+						 * Filters the HTML content to be echoed before inside row settings.
+						 *
+						 * @param string $output_content Content to be echoed.
+						 * @param array  $field_arguments An array of setting field arguments.
+						 */
 						$output = apply_filters( 'learndash_settings_row_inside_before', '', $field['args'] );
 					if ( ! empty( $output ) ) {
 						echo $output;
@@ -232,6 +248,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 					?>
 					<?php if ( ( ! isset( $field['args']['label_none'] ) ) || ( true !== $field['args']['label_none'] ) ) { ?>
 						<?php
+						/**
+						 * Filters the HTML content to be echoed before outside row label settings.
+						 *
+						 * @param string $output_content Content to be echoed.
+						 * @param array  $field_arguments An array of setting field arguments.
+						 */
 						$output = apply_filters( 'learndash_settings_row_label_outside_before', '', $field['args'] );
 						if ( ! empty( $output ) ) {
 							echo $output;
@@ -245,6 +267,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 							?>
 							">
 							<?php
+							/**
+							 * Filters the HTML content to be echoed before inside row label settings.
+							 *
+							 * @param string $output_content Content to be echoed.
+							 * @param array  $field_arguments An array of setting field arguments.
+							 */
 								$output = apply_filters( 'learndash_settings_row_label_inside_before', '', $field['args'] );
 							if ( ! empty( $output ) ) {
 								echo $output;
@@ -257,7 +285,7 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 								<?php } ?>
 								>
 								<?php if ( ( isset( $field['args']['help_text'] ) ) && ( ! empty( $field['args']['help_text'] ) ) ) { ?>	
-									<img alt="" src="<?php echo LEARNDASH_LMS_PLUGIN_URL; ?>assets/images/question.png" />
+									<img alt="" src="<?php echo esc_url( LEARNDASH_LMS_PLUGIN_URL ); ?>assets/images/question.png" />
 								<?php } ?> 
 								
 								<label for="<?php echo esc_attr( $field['args']['label_for'] ); ?>" class="sfwd_label">
@@ -294,6 +322,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 							}
 							?>
 							<?php
+								/**
+								 * Filters the HTML content to be echoed after inside row label settings.
+								 *
+								 * @param string $output_content Content to be echoed.
+								 * @param array  $field_arguments An array of setting field arguments.
+								 */
 								$output = apply_filters( 'learndash_settings_row_label_inside_after', '', $field['args'] );
 							if ( ! empty( $output ) ) {
 								echo $output;
@@ -301,6 +335,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 							?>
 						</span>
 							<?php
+								/**
+								 * Filters the HTML content to be echoed after outside row label settings.
+								 *
+								 * @param string $output_content Content to be echoed.
+								 * @param array  $field_arguments An array of setting field arguments.
+								 */
 								$output = apply_filters( 'learndash_settings_row_label_outside_after', '', $field['args'] );
 							if ( ! empty( $output ) ) {
 								echo $output;
@@ -308,6 +348,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 							?>
 					<?php } ?>
 					<?php
+						/**
+						 * Filters the HTML content to be echoed before outside row input settings.
+						 *
+						 * @param string $output_content Content to be echoed.
+						 * @param array  $field_arguments An array of setting field arguments.
+						 */
 						$output = apply_filters( 'learndash_settings_row_input_outside_before', '', $field['args'] );
 					if ( ! empty( $output ) ) {
 						echo $output;
@@ -321,6 +367,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 						?>
 						">
 						<?php
+							/**
+							 * Filters the HTML content to be echoed before outside row label settings.
+							 *
+							 * @param string $output_content Content to be echoed.
+							 * @param array  $field_arguments An array of setting field arguments.
+							 */
 							$output = apply_filters( 'learndash_settings_row_input_inside_before', '', $field['args'] );
 						if ( ! empty( $output ) ) {
 							echo $output;
@@ -333,7 +385,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 							</div>
 							<?php
 						}
-
+						/**
+						 * Filters the HTML content to be echoed after inside row input settings.
+						 *
+						 * @param string $output_content Content to be echoed.
+						 * @param array  $field_arguments An array of setting field arguments.
+						 */
 						$output = apply_filters( 'learndash_settings_row_input_inside_after', '', $field['args'] );
 						if ( ! empty( $output ) ) {
 							echo $output;
@@ -341,6 +398,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 						?>
 					</span>
 					<?php
+						/**
+						 * Filters the HTML content to be echoed after outside row input settings.
+						 *
+						 * @param string $output_content Content to be echoed.
+						 * @param array  $field_arguments An array of setting field arguments.
+						 */
 						$output = apply_filters( 'learndash_settings_row_input_outside_after', '<p class="ld-clear"></p>', $field['args'] );
 					if ( ! empty( $output ) ) {
 						echo $output;
@@ -353,6 +416,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 					?>
 					
 					<?php
+					/**
+					 * Filters the HTML content to be echoed after inside row settings.
+					 *
+					 * @param string $output_content Content to be echoed.
+					 * @param array  $field_arguments An array of setting field arguments.
+					 */
 					$output = apply_filters( 'learndash_settings_row_inside_after', '', $field['args'] );
 					if ( ! empty( $output ) ) {
 						echo $output;
@@ -360,6 +429,12 @@ if ( ! class_exists( 'LearnDash_Settings_Fields' ) ) {
 					?>
 				</div>
 				<?php
+				/**
+				 * Filters the HTML content to be echoed after outside row settings.
+				 *
+				 * @param string $output_content Content to be echoed.
+				 * @param array  $field_arguments An array of setting field arguments.
+				 */
 				$output = apply_filters( 'learndash_settings_row_outside_after', '', $field['args'] );
 				if ( ! empty( $output ) ) {
 					echo $output;

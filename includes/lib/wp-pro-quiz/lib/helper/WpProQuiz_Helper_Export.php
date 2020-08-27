@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Helper_Export {
 	
 	const WPPROQUIZ_EXPORT_VERSION = 4;
@@ -25,7 +29,51 @@ class WpProQuiz_Helper_Export {
 			$export['post_meta'][ $master->getId() ] = $this->getPostMeta( $master );
 		}
 
-		return $code.base64_encode( serialize( $export ) );
+		if ( ( defined( 'LEARNDASH_QUIZ_EXPORT_LEGACY' ) ) && ( true === LEARNDASH_QUIZ_EXPORT_LEGACY ) ) {
+			return $code.base64_encode( serialize( $export ) );
+		} else {
+			if ( ( isset( $export['master'] ) ) && ( ! empty( $export['master'] ) ) ) {
+				foreach ( $export['master'] as $q_idx => $quiz ) {
+					if ( is_a( $quiz, 'WpProQuiz_Model_Quiz' ) ) {
+						$export['master'][ $q_idx ] = $quiz->get_object_as_array();
+					}
+				}
+			}
+
+			if ( ( isset( $export['question'] ) ) && ( ! empty( $export['question'] ) ) ) {
+				foreach ( $export['question'] as $quiz_id => $question_set ) {
+					if ( ! empty( $question_set ) ) {
+						foreach ( $question_set as $question_id => $question ) {
+							if ( is_a( $question, 'WpProQuiz_Model_Question' ) ) {
+								$question = $question->get_object_as_array();
+								if ( ( isset( $question['_answerData'] ) ) && ( ! empty( $question['_answerData'] ) ) ) {
+									foreach ( $question['_answerData'] as $a_idx => $answer ) {
+										if ( is_a( $answer, 'WpProQuiz_Model_AnswerTypes' ) ) {
+											$question['_answerData'][ $a_idx ] = $answer->get_object_as_array();
+										}
+									}
+								}
+								$export['question'][ $quiz_id ][ $question_id ] = $question;
+							}
+						}
+					}
+				}
+			}
+
+			if ( ( isset( $export['forms'] ) ) && ( ! empty( $export['forms'] ) ) ) {
+				foreach ( $export['forms'] as $quiz_id => $form_set ) {
+					if ( ! empty( $form_set ) ) {
+						foreach ( $form_set as $form_id => $form ) {
+							if ( is_a( $form, 'WpProQuiz_Model_Form' ) ) {
+								$export['forms'][ $quiz_id ][ $form_id ] = $form->get_object_as_array();
+							}
+						}
+					}
+				}
+			}
+
+			return $code.base64_encode( wp_json_encode( $export ) );
+		}
 	}
 
 	private function getQuizMaster( $ids = array() ) {
@@ -62,6 +110,13 @@ class WpProQuiz_Helper_Export {
 			$quiz_post_id = $quiz_pro->getPostId();
 			if ( ! empty( $quiz_post_id ) ) {
 				$post_export_keys = array( 'post_title', 'post_content' );
+
+				/**
+				 * Filters list of post keys to be exported.
+				 *
+				 * @param array $post_export_keys An array of post export keys.
+				 * @param int   $quiz_post_id     Quiz post ID.
+				 */
 				$post_export_keys = apply_filters( 'learndash_quiz_export_post_keys', $post_export_keys, $quiz_post_id );
 				if ( ! empty( $post_export_keys ) ) {
 					$quiz_post = get_post( $quiz_post_id, ARRAY_A );
@@ -82,13 +137,28 @@ class WpProQuiz_Helper_Export {
 			$quiz_post_id = $quiz_pro->getPostId();
 			if ( ! empty( $quiz_post_id ) ) {
 				$post_meta_export_keys = array( '_' . get_post_type( $quiz_post_id ), '_viewProfileStatistics', '_timeLimitCookie' );
+
+				/**
+				 * Filters quiz post meta keys to be imported.
+				 *
+				 * @param array $post_meta_keys An array of quiz post meta keys for export.
+				 * @param int   $quiz_post_id   Quiz post ID.
+				 */
 				$post_meta_export_keys = apply_filters( 'learndash_quiz_export_post_meta_keys', $post_meta_export_keys, $quiz_post_id );
 
 				$all_post_meta = get_post_meta( $quiz_post_id );
 				if ( ! empty( $all_post_meta ) ) {
-					foreach( $all_post_meta as $_key => $_data ) {
+					foreach ( $all_post_meta as $_key => $_data ) {
 						if ( ! in_array( $_key, $post_meta_export_keys ) ) {
 							unset( $all_post_meta[ $_key ] );
+						} else {
+							if ( is_array( $_data ) ) {
+								foreach( $_data as $_idx => $_d ) {
+									$all_post_meta[ $_key ][$_idx] = maybe_unserialize( $_d );
+								}
+							} else {
+								$all_post_meta[ $_key ] = maybe_unserialize( $_data );
+							}
 						}
 					}
 				}

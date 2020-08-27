@@ -1,5 +1,20 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( post_password_required() ) {
+	return;
+}
+?>
 <div class="ld-focus-comments">
 	<?php
+	/**
+	 * Fires before the comments in focus mode.
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
+	 */
 	do_action( 'learndash-focus-content-comments-before', $course_id, $user_id );
 
 	$learndash_comment_count = wp_count_comments( get_the_id() );
@@ -58,6 +73,12 @@
 		</div>
 	</div>
 	<?php
+	/**
+	 * Fires after the comments in focus mode.
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
+	 */
 	do_action( 'learndash-focus-content-comments-after', $course_id, $user_id );
 	if ( ! empty( $count ) && 0 === absint( $count->approved ) ) :
 		?>
@@ -71,6 +92,11 @@
 	?>
 	<div class="ld-focus-comments__form-container<?php echo esc_attr( $learndash_comment_form_state ); ?>" id="ld-comments-form">
 		<?php
+		/**
+		 * Filters Focus mode comment arguments.
+		 *
+		 * @param array $comment_arguments Focus mode comment form arguments to be used in comments_open function.
+		 */
 		$args = apply_filters(
 			'learndash_focus_mode_comment_form_args',
 			array(
@@ -82,6 +108,12 @@
 		?>
 	</div>
 	<?php
+	/**
+	 * Fires after the comment form in focus mode.
+	 *
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
+	 */
 	do_action( 'learndash-focus-content-comment-form-after', $course_id, $user_id );
 	?>
 </div> <!--/ld-focus-comments-->

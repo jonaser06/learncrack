@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_LockMapper extends WpProQuiz_Model_Mapper {
 
 	protected $_table;

@@ -34,8 +34,11 @@
  *
  * @package LearnDash\Quiz
  */
-?>
-<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 	return;
 }
@@ -43,9 +46,13 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 <div class="<?php echo esc_attr( learndash_the_wrapper_class() ); ?>">
 <?php
 	/**
-	 * Action to add custom content before the quiz content starts
+	 * Fires before the quiz content starts.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $quiz_id Quiz ID.
+	 * @param int $course_id Course ID.
+	 * @param int $user_id   User ID.
 	 */
 	do_action( 'learndash-quiz-before', $quiz_post->ID, $course_id, $user_id );
 
@@ -66,9 +73,13 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 		if ( is_a( $last_incomplete_step, 'WP_Post' ) ) {
 
 			/**
-			 * Action to add custom content before the quiz progression
+			 * Fires before the quiz progression.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-progression-before', $quiz_post->ID, $course_id, $user_id );
 
@@ -84,9 +95,13 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 				);
 
 			/**
-			 * Action to add custom content after the quiz progress
+			 * Fires after the quiz progress.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-progression-after', $quiz_post->ID, $course_id, $user_id );
 
@@ -114,18 +129,26 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 		if ( $attempts_left ) :
 
 			/**
-			 * Action to add custom content before the actual quiz content (not WP_Editor content)
+			 * Fires before the actual quiz content (not WP_Editor content).
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-actual-content-before', $quiz_post->ID, $course_id, $user_id );
 
 			echo $quiz_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Post content
 
 			/**
-			 * Action to add custom content after the actual quiz content (not WP_Editor content)
+			 * Fires after the actual quiz content (not WP_Editor content).
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-actual-content-after', $quiz_post->ID, $course_id, $user_id );
 
@@ -136,9 +159,13 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 			 */
 
 			/**
-			 * Action to add custom content before the quiz attempts alert
+			 * Fires before the quiz attempts alert.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-attempts-alert-before', $quiz_post->ID, $course_id, $user_id );
 
@@ -158,9 +185,13 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 			);
 
 			/**
-			 * Action to add custom content after the quiz attempts alert
+			 * Fires after the quiz attempts alert.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-attempts-alert-after', $quiz_post->ID, $course_id, $user_id );
 
@@ -168,12 +199,16 @@ if ( ( ! isset( $quiz_post ) ) || ( ! is_a( $quiz_post, 'WP_Post' ) ) ) {
 
 	endif;
 
-	/**
-	 * Action to add custom content before the quiz content starts
-	 *
-	 * @since 3.0
-	 */
-	do_action( 'learndash-quiz-after', $quiz_post->ID, $course_id, $user_id );
-	?>
+/**
+ * Fires before the quiz content starts.
+ *
+ * @since 3.0.0
+ *
+ * @param int $quiz_id   Quiz ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ */
+do_action( 'learndash-quiz-after', $quiz_post->ID, $course_id, $user_id );
+?>
 
 </div> <!--/.learndash-wrapper-->

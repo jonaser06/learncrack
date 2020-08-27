@@ -6,6 +6,10 @@
  * @subpackage Add-on Updates
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Import_Export' ) ) {
 	/**
 	 * Class to create Addons list table.

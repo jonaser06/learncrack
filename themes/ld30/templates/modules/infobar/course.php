@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Displays the infobar in course context
  *
@@ -42,9 +46,13 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 
 		<?php
 		/**
-		 * Action to add custom content inside the ld-course-status infobox before the progress bar
+		 * Fires inside the breadcrumbs (before).
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-access-progress-before', get_post_type(), $course_id, $user_id );
 
@@ -59,18 +67,26 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 		);
 
 		/**
-		 * Action to add custom content inside the ld-course-status infobox after the progress bar
+		 * Fires inside the breadcrumbs after the progress bar.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-access-progress-after', get_post_type(), $course_id, $user_id );
 
 		learndash_status_bubble( $course_status );
 
 		/**
-		 * Action to add custom content inside the ld-course-status infobox after the access status
+		 * Fires inside the breadcrumbs after the status.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-access-status-after', get_post_type(), $course_id, $user_id );
 		?>
@@ -83,40 +99,75 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 
 		<?php
 		/**
-		 * Action to add custom content inside the un-enrolled ld-course-status infobox before the status
+		 * Fires inside the un-enrolled course infobox before the status.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-noaccess-status-before', get_post_type(), $course_id, $user_id );
 		?>
 
 		<div class="ld-course-status-segment ld-course-status-seg-status">
 
-			<?php do_action( 'learndash-course-infobar-status-cell-before', get_post_type(), $course_id, $user_id ); ?>
+			<?php
+			/**
+			 * Fires before the course infobar status cell.
+			 *
+			 * @param string|false $post_type Post type slug.
+			 * @param int          $course_id Course ID.
+			 * @param int          $user_id   User ID.
+			 */
+			do_action( 'learndash-course-infobar-status-cell-before', get_post_type(), $course_id, $user_id );
+			?>
 
-			<span class="ld-course-status-label">Estado actual<?php //echo esc_html__( 'Current Status', 'learndash' ); ?></span>
+			<span class="ld-course-status-label"><?php echo esc_html__( 'Current Status', 'learndash' ); ?></span>
 			<div class="ld-course-status-content">
-				<span class="ld-status ld-status-waiting ld-tertiary-background" data-ld-tooltip="Inscríbase en este curso para obtener acceso<?php //esc_attr_e( 'Enroll in this course to get access', 'learndash' ); ?>">No Inscrito<?php //esc_html_e( 'Not Enrolled', 'learndash' ); ?></span>
+				<span class="ld-status ld-status-waiting ld-tertiary-background" data-ld-tooltip="<?php esc_attr_e( 'Enroll in this course to get access', 'learndash' ); ?>"><?php esc_html_e( 'Not Enrolled', 'learndash' ); ?></span>
 			</div>
 
-			<?php do_action( 'learndash-course-infobar-status-cell-after', get_post_type(), $course_id, $user_id ); ?>
+			<?php
+			/**
+			 * Fires after the course infobar status cell.
+			 *
+			 * @param string|false $post_type Post type slug.
+			 * @param int          $course_id Course ID.
+			 * @param int          $user_id   User ID.
+			 */
+			do_action( 'learndash-course-infobar-status-cell-after', get_post_type(), $course_id, $user_id );
+			?>
 
 		</div> <!--/.ld-course-status-segment-->
 
 		<?php
 		/**
-		 * Action to add custom content inside the un-enrolled ld-course-status infobox before the price
+		 * Fires inside the un-enrolled course infobox before the price.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-noaccess-price-before', get_post_type(), $course_id, $user_id );
 		?>
 
 		<div class="ld-course-status-segment ld-course-status-seg-price">
 
-			<?php do_action( 'learndash-course-infobar-price-cell-before', get_post_type(), $course_id, $user_id ); ?>
+			<?php
+			/**
+			 * Fires before the course infobar price cell.
+			 *
+			 * @param string|false $post_type Post type slug.
+			 * @param int          $course_id Course ID.
+			 * @param int          $user_id   User ID.
+			 */
+			do_action( 'learndash-course-infobar-price-cell-before', get_post_type(), $course_id, $user_id );
+			?>
 
-			<span class="ld-course-status-label">Precio<?php //echo esc_html__( 'Price', 'learndash' ); ?></span>
+			<span class="ld-course-status-label"><?php echo esc_html__( 'Price', 'learndash' ); ?></span>
 
 			<div class="ld-course-status-content">
 				<span class="ld-course-status-price">
@@ -127,6 +178,11 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 							endif;
 						echo wp_kses_post( $course_pricing['price'] );
 						else :
+								/**
+								 * Filters label to be displayed when there is no price set for a course or it is closed.
+								 *
+								 * @param string $label The label displayed when there is no price.
+								 */
 								$label = apply_filters( 'learndash_no_price_price_label', ( 'closed' === $course_pricing['type'] ? __( 'Closed', 'learndash' ) : __( 'Free', 'learndash' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Late escaped on output
 								echo esc_html( $label );
 						endif;
@@ -147,18 +203,36 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 				</span>
 			</div>
 
-			<?php do_action( 'learndash-course-infobar-price-cell-after', get_post_type(), $course_id, $user_id ); ?>
+			<?php
+			/**
+			 * Fires after the infobar price cell.
+			 *
+			 * @param string|false $post_type Post type slug.
+			 * @param int          $course_id Course ID.
+			 * @param int          $user_id   User ID.
+			 */
+			do_action( 'learndash-course-infobar-price-cell-after', get_post_type(), $course_id, $user_id );
+			?>
 
 		</div> <!--/.ld-course-status-segment-->
 
 		<?php
 		/**
-		 * Action to add custom content inside the un-enrolled ld-course-status infobox before the action
+		 * Fires inside the un-enrolled course infobox before the action.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-noaccess-action-before', get_post_type(), $course_id, $user_id );
 
+		/**
+		 * Filters infobar course status segment CSS class.
+		 *
+		 * @param string $segment_class The List of course segment CSS class.
+		 */
 		$course_status_class = apply_filters(
 			'ld-course-status-segment-class',
 			'ld-course-status-segment ld-course-status-seg-action status-' .
@@ -167,19 +241,35 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 		?>
 
 		<div class="<?php echo esc_attr( $course_status_class ); ?>">
-			<span class="ld-course-status-label">Empezar<?php //echo esc_html_e( 'Get Started', 'learndash' ); ?></span>
+			<span class="ld-course-status-label"><?php echo esc_html_e( 'Get Started', 'learndash' ); ?></span>
 			<div class="ld-course-status-content">
 				<div class="ld-course-status-action">
 					<?php
+						/**
+						 * Fires before the course infobar action cell.
+						 *
+						 * @param string|false $post_type Post type slug.
+						 * @param int          $course_id Course ID.
+						 * @param int          $user_id   User ID.
+						 */
 						do_action( 'learndash-course-infobar-action-cell-before', get_post_type(), $course_id, $user_id );
 
 						$login_model = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Theme_LD30', 'login_mode_enabled' );
 
+						/** This filter is documented in themes/ld30/includes/shortcode.php */
 						$login_url = apply_filters( 'learndash_login_url', ( 'yes' === $login_model ? '#login' : wp_login_url( get_permalink() ) ) );
 
 					switch ( $course_pricing['type'] ) {
 						case ( 'open' ):
 						case ( 'free' ):
+
+							/**
+							 * Filters whether to show login modal.
+							 *
+							 * @param boolean $show_login_modal Whether to show login modal.
+							 * @param int     $course_id        Course ID.
+							 * @param int     $user_id          User ID.
+							 */
 							if ( apply_filters( 'learndash_login_modal', true, $course_id, $user_id ) && ! is_user_logged_in() ) :
 								echo '<a class="ld-button" href="' . esc_url( $login_url ) . '">' . esc_html__( 'Login to Enroll', 'learndash' ) . '</a></span>';
 								else :
@@ -191,6 +281,8 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 							// Price (Free / Price)
 							$ld_payment_buttons = learndash_payment_buttons( $post );
 							echo $ld_payment_buttons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Outputs Button HTML
+
+							/** This filter is documented in themes/ld30/templates/modules/infobar/course.php */
 							if ( apply_filters( 'learndash_login_modal', true, $course_id, $user_id ) && ! is_user_logged_in() ) :
 								echo '<span class="ld-text">';
 								if ( ! empty( $ld_payment_buttons ) ) {
@@ -209,7 +301,14 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 							break;
 					}
 
-						do_action( 'learndash-course-infobar-action-cell-after', get_post_type(), $course_id, $user_id );
+					/**
+					 * Fires after the course infobar action cell.
+					 *
+					 * @param string|false $post_type Post type slug.
+					 * @param int          $course_id Course ID.
+					 * @param int          $user_id   User ID.
+					 */
+					do_action( 'learndash-course-infobar-action-cell-after', get_post_type(), $course_id, $user_id );
 					?>
 				</div>
 			</div>
@@ -217,9 +316,13 @@ if ( is_user_logged_in() && isset( $has_access ) && $has_access ) :
 
 		<?php
 		/**
-		 * Action to add custom content inside the un-enrolled ld-course-status infobox after the price
+		 * Fires inside the un-enrolled course infobox after the price
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param string|false $post_type Post type slug.
+		 * @param int          $course_id Course ID.
+		 * @param int          $user_id   User ID.
 		 */
 		do_action( 'learndash-course-infobar-noaccess-price-after', get_post_type(), $course_id, $user_id );
 		?>

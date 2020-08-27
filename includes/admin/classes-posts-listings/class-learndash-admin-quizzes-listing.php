@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'Learndash_Admin_Quizzes_Listing' ) ) ) {
 	/**
 	 * Class for LearnDash Quizzes Listing Pages.
@@ -35,49 +39,37 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 
 			$this->post_type_selectors = array(
 				'course_id' => array(
-					'query_args'       => array(
+					'query_args'     => array(
 						'post_type' => learndash_get_post_type_slug( 'course' ),
 					),
-					'query_arg'        => 'course_id',
-					'selected'         => 0,
-					'field_name'       => 'course_id',
-					'field_id'         => 'course_id',
-					'show_all_value'   => '',
-					'show_all_label'   => sprintf(
+					'query_arg'      => 'course_id',
+					'selected'       => 0,
+					'field_name'     => 'course_id',
+					'field_id'       => 'course_id',
+					'show_all_value' => '',
+					'show_all_label' => sprintf(
 						// translators: placeholder: Courses.
 						esc_html_x( 'Show All %s', 'placeholder: Courses', 'learndash' ),
 						LearnDash_Custom_Label::get_label( 'courses' )
 					),
-					'lazy_load'        => true,
-					//'show_empty_value' => 'empty',
-					//'show_empty_label' => sprintf(
-					//	// translators: placeholder: Courses.
-					//	esc_html_x( '-- No %s --', 'placeholder: Courses', 'learndash' ),
-					//	LearnDash_Custom_Label::get_label( 'courses' )
-					//),
+					'lazy_load'      => true,
 				),
 
 				'lesson_id' => array(
-					'query_args'       => array(
+					'query_args'     => array(
 						'post_type' => learndash_get_post_type_slug( 'lesson' ),
 					),
-					'query_arg'        => 'lesson_id',
-					'selected'         => 0,
-					'field_name'       => 'lesson_id',
-					'field_id'         => 'lesson_id',
-					'show_all_value'   => '',
-					'show_all_label'   => sprintf(
+					'query_arg'      => 'lesson_id',
+					'selected'       => 0,
+					'field_name'     => 'lesson_id',
+					'field_id'       => 'lesson_id',
+					'show_all_value' => '',
+					'show_all_label' => sprintf(
 						// translators: placeholder: Lessons.
 						esc_html_x( 'Show All %s', 'placeholder: Lessons', 'learndash' ),
 						LearnDash_Custom_Label::get_label( 'lessons' )
 					),
-					'lazy_load'        => false,
-					//'show_empty_value' => 'empty',
-					/*'show_empty_label' => sprintf(
-						// translators: placeholder: Lessons.
-						esc_html_x( '-- No %s --', 'placeholder: Lessons', 'learndash' ),
-						LearnDash_Custom_Label::get_label( 'lessons' )
-					),*/
+					'lazy_load'      => false,
 				),
 			);
 			parent::on_load_edit();
@@ -99,8 +91,28 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 		public function post_row_actions( $row_actions = array(), $quiz_post = null ) {
 			global $typenow, $post;
 
-			if ( ( $typenow === $this->post_type ) && ( 'yes' === LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'enabled' ) ) && ( ! isset( $row_actions['ld-course-builder'] ) ) ) {
-				if ( ( 'yes' === LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Quizzes_Builder', 'enabled' ) ) && ( ! isset( $row_actions['ld-quiz-builder'] ) ) ) {
+			if ( $typenow === $this->post_type ) {
+				// Set the Primary Course for the post.
+				if ( LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Courses_Builder', 'shared_steps' ) == 'yes' ) {
+					$course_id = learndash_get_primary_course_for_step( $post->ID );
+					if ( empty( $course_id ) ) {
+						$post_courses = learndash_get_courses_for_step( $post->ID );
+						if ( ( isset( $post_courses['secondary'] ) ) && ( ! empty( $post_courses['secondary'] ) ) ) {
+							foreach ( $post_courses['secondary'] as $course_id => $course_title ) {
+								learndash_set_primary_course_for_step( $post->ID, $course_id );
+								break;
+							}
+						}
+					}
+				}
+
+				if ( ( 'yes' === LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Quizzes_Builder', 'enabled' ) ) && ( current_user_can( 'edit_post', $quiz_post->ID ) ) && ( ! isset( $row_actions['ld-quiz-builder'] ) ) ) {
+					/**
+					 * Filters whether to show quiz builder row actions or not.
+					 *
+					 * @param boolean      $show_row_actions Whether to show row actions.
+					 * @param WP_Post|null $course_post      Quiz post object.
+					 */
 					if ( apply_filters( 'learndash_show_quiz_builder_row_actions', true, $quiz_post ) === true ) {
 						$quiz_label = sprintf(
 							// translators: placeholder: Quiz.
@@ -163,7 +175,7 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 						);
 					}
 
-					if ( ( ! isset( $row_actions['statistics'] ) ) || ( empty( $row_actions['statistics'] ) ) ) {
+					if ( ( current_user_can( 'wpProQuiz_show_statistics' ) ) && ( ( ! isset( $row_actions['statistics'] ) ) || ( empty( $row_actions['statistics'] ) ) ) ) {
 						$statistics_link = add_query_arg(
 							array(
 								'page'       => 'ldAdvQuiz',
@@ -189,7 +201,7 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 						);
 					}
 
-					if ( ( ! isset( $row_actions['leaderboard'] ) ) || ( empty( $row_actions['leaderboard'] ) ) ) {
+					if ( ( current_user_can( 'wpProQuiz_toplist_edit' ) ) && ( ( ! isset( $row_actions['leaderboard'] ) ) || ( empty( $row_actions['leaderboard'] ) ) ) ) {
 						$leaderboard_link = add_query_arg(
 							array(
 								'page'       => 'ldAdvQuiz',
@@ -215,11 +227,11 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 						);
 					}
 
-					if ( ( current_user_can('wpProQuiz_export') ) && ( ! isset( $row_actions['export'] ) ) || ( empty( $row_actions['export'] ) ) ) {
+					if ( ( current_user_can( 'wpProQuiz_export' ) ) && ( ( ! isset( $row_actions['export'] ) ) || ( empty( $row_actions['export'] ) ) ) ) {
 						$export_link = add_query_arg(
 							array(
-								'page'       => 'ldAdvQuiz',
-								'quiz_id'    => $post->ID,
+								'page'    => 'ldAdvQuiz',
+								'quiz_id' => $post->ID,
 							),
 							admin_url( 'admin.php' )
 						);
@@ -244,9 +256,9 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 		}
 
 		/**
-		 * Filter the selector filters. 
+		 * Filter the selector filters.
 		 *
-		 * @param array $query_args Query Args for Selector.
+		 * @param array  $query_args Query Args for Selector.
 		 * @param string $post_type Post Type slug for selector.
 		 */
 		public function filter_quiz_lesson_selector( $query_args = array(), $post_type = '' ) {
@@ -255,13 +267,13 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 			// Check that the selector post type matches for out listing post type.
 			if ( $post_type === $this->post_type ) {
 				if ( isset( $query_args['post_type'] ) ) {
-					if ( ( ( is_string( $query_args['post_type'] ) ) && ( learndash_get_post_type_slug( 'lesson' ) === $query_args['post_type'] ) ) || ( ( is_array( $query_args['post_type'] ) ) && ( in_array( learndash_get_post_type_slug( 'lesson' ), $query_args['post_type'] ) ) ) ) {
+					if ( ( ( is_string( $query_args['post_type'] ) ) && ( learndash_get_post_type_slug( 'lesson' ) === $query_args['post_type'] ) ) || ( ( is_array( $query_args['post_type'] ) ) && ( in_array( learndash_get_post_type_slug( 'lesson' ), $query_args['post_type'], true ) ) ) ) {
 
 						if ( ( isset( $_GET['course_id'] ) ) && ( ! empty( $_GET['course_id'] ) ) ) {
 							$lessons_items = $sfwd_lms->select_a_lesson_or_topic( absint( $_GET['course_id'] ), false, false );
 							if ( ! empty( $lessons_items ) ) {
 								$query_args['post__in'] = array_keys( $lessons_items );
-								$query_args['orderby'] = 'post__in';
+								$query_args['orderby']  = 'post__in';
 							} else {
 								$query_args['post__in'] = array( 0 );
 							}
@@ -280,16 +292,16 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 
 			// Check that the selector post type matches for out listing post type.
 			if ( $post_type === $this->post_type ) {
-				if ( ( ( is_string( $query_args['post_type'] ) ) && ( learndash_get_post_type_slug( 'lesson' ) === $query_args['post_type'] ) ) || ( ( is_array( $query_args['post_type'] ) ) && ( in_array( learndash_get_post_type_slug( 'lesson' ), $query_args['post_type'] ) ) ) ) {
+				if ( ( ( is_string( $query_args['post_type'] ) ) && ( learndash_get_post_type_slug( 'lesson' ) === $query_args['post_type'] ) ) || ( ( is_array( $query_args['post_type'] ) ) && ( in_array( learndash_get_post_type_slug( 'lesson' ), $query_args['post_type'], true ) ) ) ) {
 					if ( ( isset( $_GET['course_id'] ) ) && ( ! empty( $_GET['course_id'] ) ) ) {
 						$lessons_topics = learndash_get_topic_list( $post->ID, absint( $_GET['course_id'] ) );
 						if ( ! empty( $lessons_topics ) ) {
 							foreach ( $lessons_topics as $topic ) {
 								$selected = '';
-								if ( ( isset( $_GET['lesson_id'] ) ) && ( ! empty( $_GET['lesson_id']) ) ) {
+								if ( ( isset( $_GET['lesson_id'] ) ) && ( ! empty( $_GET['lesson_id'] ) ) ) {
 									$selected = selected( absint( $_GET['lesson_id'] ), $topic->ID, false );
 								}
-								echo '<option value="' . $topic->ID . '" ' . $selected . '>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $topic->post_title . '</option>';
+								echo '<option value="' . absint( $topic->ID ) . '" ' . $selected . '>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . apply_filters( 'the_title', $topic->post_title, $topic->ID ) . '</option>';
 							}
 						}
 					}

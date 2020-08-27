@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Quiz_Results_Options' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -393,6 +397,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();
@@ -555,6 +560,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 							<div class="expand-arrow expand-arrow-<?php echo esc_attr( $message_arrow_direction ); ?>">
 								<svg width="11" height="8" viewBox="0 0 14 8" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l6 6 6-6" stroke="#0073aa" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 								</div>
+
 								<?php if ( true === $message_delete_enabled ) { ?>
 									<input type="button" value="<?php esc_html_e( 'Delete graduation', 'learndash' ); ?>" class="deleteResult">
 								<?php } ?>

@@ -37,8 +37,10 @@ const {
 registerBlockType(
     'learndash/ld-course-info',
     {
+		// translators: placeholder: Course.
 		title: sprintf(_x('LearnDash %s Info [ld_course_info]', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course')),
-		description: sprintf(_x('This block shows the %s and progress for the user.', 'placeholders: courses', 'learndash'), ldlms_get_custom_label('course') ),
+		// translators: placeholder: Courses.
+		description: sprintf(_x('This block shows the %s and progress for the user.', 'placeholders: Courses', 'learndash'), ldlms_get_custom_label('course') ),
 		icon: 'analytics',
 		category: 'learndash-blocks',
 		example: {
@@ -139,16 +141,19 @@ registerBlockType(
 					/>
 
 					<ToggleControl
+						// translators: placeholder: Courses.
 						label={sprintf(_x('Show Registered %s', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses') ) }
 						checked={!!registered_show}
 						onChange={registered_show => setAttributes({ registered_show })}
 					/>
 					<ToggleControl
+						// translators: placeholder: Course.
 						label={sprintf(_x('Show %s Progess', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
 						checked={!!progress_show}
 						onChange={progress_show => setAttributes({ progress_show })}
 					/>
 					<ToggleControl
+						// translators: placeholder: Quiz.
 						label={sprintf(_x('Show %s Attempts', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz'))}
 						checked={!!quiz_show}
 						onChange={quiz_show => setAttributes({ quiz_show })}
@@ -160,6 +165,7 @@ registerBlockType(
 			if ( registered_show === true ) {
 				panelbody_registered = (
 					<PanelBody
+						// translators: placeholder: Courses.
 						title={sprintf(_x('Registered %s', 'placeholder: Courses', 'learndash'), ldlms_get_custom_label('courses') ) }
 						initialOpen={false}
 					>
@@ -170,6 +176,7 @@ registerBlockType(
 						/>
 						<TextControl
 							label={__('per page', 'learndash')}
+							// translators: placeholder: default per page.
 							help={sprintf(_x('Leave empty for default (%d) or 0 to show all items.', 'placeholder: default per page', 'learndash'), ldlms_get_per_page('per_page'))}
 							value={registered_num || ''}
 							min={0}
@@ -224,11 +231,13 @@ registerBlockType(
 			if (progress_show === true) {
 				panelbody_progress = (
 					<PanelBody
+						// translators: placeholder: Course.
 						title={sprintf(_x('%s Progress', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
 						initialOpen={false}
 					>
 						<TextControl
 							label={__('per page', 'learndash')}
+							// translators: placeholder: default per page.
 							help={sprintf(_x('Leave empty for default (%d) or 0 to show all items.', 'placeholder: default per page', 'learndash'), ldlms_get_per_page('progress_num' ) ) }
 							value={progress_num || ''}
 							min={0}
@@ -283,11 +292,13 @@ registerBlockType(
 			if ( quiz_show === true ) {
 				panelbody_quiz = (
 					<PanelBody
+						// translators: placeholder: Quiz.
 						title={sprintf(_x('%s Attempts', 'placeholder: Quiz', 'learndash'), ldlms_get_custom_label('quiz') ) }
 						initialOpen={false}
 					>
 						<TextControl
 							label={__('per page', 'learndash')}
+							// translators: placeholder: default per page.
 							help={sprintf(_x('Leave empty for default (%d) or 0 to show all items.', 'placeholder: default per page', 'learndash'), ldlms_get_per_page('quiz_num') ) }
 							value={quiz_num || ''}
 							min={0}

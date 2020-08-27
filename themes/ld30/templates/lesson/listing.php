@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Displays a lesson content (topics and quizzes)
  *
@@ -26,21 +30,38 @@ $table_class     = 'ld-table-list ld-topic-list'
 					. ( ! $has_pagination ? ' ld-no-pagination' : '' );
 
 /**
- * Action to add custom content before topic list
+ * Fires before the topic list.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $lesson_id Lesson ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user_id ); ?>
 
-<div class="<?php echo esc_attr( apply_filters( 'ld-lesson-table-class', $table_class ) ); ?>" id="<?php echo esc_attr( 'ld-expand-' . $lesson['post']->ID ); ?>">
+<div class="
+			<?php
+			/**
+			 * Filters lesson listing table CSS class.
+			 *
+			 * @param string $table_class Lesson table CSS class list.
+			 */
+			echo esc_attr( apply_filters( 'ld-lesson-table-class', $table_class ) ); 
+			?>
+			" id="<?php echo esc_attr( 'ld-expand-' . $lesson['post']->ID ); ?>">
 
 	<div class="ld-table-list-header ld-primary-background">
 
 		<?php
 		/**
-		 * Action to add custom content before topic listing header
+		 * Fires before the topic listing header.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-topic-list-heading-before', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -59,15 +80,29 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 		<div class="ld-table-list-lesson-details">
 			<?php
 			/**
-			 * Action to add custom content before the lesson progress stats
+			 * Fires before the lesson progress stats.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-topic-list-progress-before', $lesson['post']->ID, $course_id, $user_id );
 			?>
 
 			<?php if ( $lesson_progress ) : ?>
-				<?php if ( true === (bool) apply_filters( 'learndash_show_lesson_list_progress', true, $lesson['post']->ID, $course_id, $user_id ) ) { ?>
+				<?php
+				/**
+				 * Filters whether to show lesson progress in lesson listing.
+				 *
+				 * @param boolean $show_progress Whether to show lesson progress.
+				 * @param int     $lesson_id     Lesson ID.
+				 * @param int     $course_id     Course ID
+				 * @param int     $user_id       User ID
+				 */
+				if ( true === (bool) apply_filters( 'learndash_show_lesson_list_progress', true, $lesson['post']->ID, $course_id, $user_id ) ) {
+					?>
 					<span class="ld-lesson-list-progress">
 					<?php
 					echo sprintf(
@@ -78,7 +113,17 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 					?>
 					</span>
 				<?php } ?>
-				<?php if ( true === (bool) apply_filters( 'learndash_show_lesson_list_steps', true, $lesson['post']->ID, $course_id, $user_id ) ) { ?>
+				<?php
+				/**
+				 * Filters whether to show lesson steps in lesson listing.
+				 *
+				 * @param boolean $show_steps Whether to show lesson steps.
+				 * @param int     $lesson_id  Lesson ID.
+				 * @param int     $course_id  Course ID
+				 * @param int     $user_id    User ID
+				 */
+				if ( true === (bool) apply_filters( 'learndash_show_lesson_list_steps', true, $lesson['post']->ID, $course_id, $user_id ) ) {
+					?>
 					<span class="ld-lesson-list-steps">
 					<?php
 					echo sprintf(
@@ -94,9 +139,13 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 
 			<?php
 			/**
-			 * Action to add custom content after the lesson progress stats
+			 * Fires after the lesson progress stats.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-topic-list-progress-after', $lesson['post']->ID, $course_id, $user_id );
 			?>
@@ -112,9 +161,13 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 
 		<?php
 		/**
-		 * Action to add custom content after topic listing header
+		 * Fires after topic listing header.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-topic-list-heading-after', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -142,6 +195,7 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 		if ( isset( $course_pager_results[ $lesson['post']->ID ]['pager'] ) && ! empty( $course_pager_results[ $lesson['post']->ID ]['pager'] ) ) :
 			$show_lesson_quizzes = ( $course_pager_results[ $lesson['post']->ID ]['pager']['paged'] == $course_pager_results[ $lesson['post']->ID ]['pager']['total_pages'] ? true : false );
 		endif;
+		/** This filter is documented in themes/ld30/includes/helpers.php */
 		$show_lesson_quizzes = apply_filters( 'learndash-show-lesson-quizzes', $show_lesson_quizzes, $lesson['post']->ID, $course_id, $user_id );
 
 
@@ -167,9 +221,13 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 	<div class="ld-table-list-footer">
 		<?php
 		/**
-		 * Action to add custom content before the course pagination
+		 * Fires before the course pagination.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-lesson-pagination-before', $lesson['post']->ID, $course_id, $user_id );
 
@@ -189,9 +247,13 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 		}
 
 		/**
-		 * Action to add custom content after the course pagination
+		 * Fires after the lesson pagination.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $lesson_id Lesson ID.
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-lesson-pagination-after', $lesson['post']->ID, $course_id, $user_id );
 		?>
@@ -201,8 +263,12 @@ do_action( 'learndash-topic-list-before', $lesson['post']->ID, $course_id, $user
 
 <?php
 /**
- * Action to add custom content after topic list
+ * Fires after topic list.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $lesson_id Lesson ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-topic-list-after', $lesson['post']->ID, $course_id, $user_id ); ?>

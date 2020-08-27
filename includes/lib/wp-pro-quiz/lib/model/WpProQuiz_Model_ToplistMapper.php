@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_ToplistMapper extends WpProQuiz_Model_Mapper {
 	
 	public function countFree($quizId, $name, $email, $ip, $clearTime = null) {
@@ -66,12 +70,42 @@ class WpProQuiz_Model_ToplistMapper extends WpProQuiz_Model_Mapper {
 	}
 	
 	public function fetch($quizId, $limit, $sort, $start = 0) {
-		$s = '';
-		$r = array();
-		
-		$start = (int)$start;
-		
-		switch ($sort) {
+		return $this->fetchWithArgs(
+			array(
+				'quizId' => $quizId,
+				'limit'  => $limit,
+				'sort'   => $sort,
+				'start'  => $start,
+			)
+		);
+	}
+	public function fetchWithArgs( $args = array() ) {
+		$s     = '';
+		$r     = array();
+		$where = '';
+
+		$default_args = array(
+			'quizId' => 0,
+			'quiz'   => 0,
+			'limit'  => '',
+			'sort'   => '',
+			'start'  => 0,
+		);
+
+		$args = wp_parse_args( $args, $default_args );
+
+		$start = absint( $args['start'] );
+
+		if ( empty( $args['quiz'] ) ) {
+			if ( isset( $_GET['post_id'] ) ) {
+				$post_id = absint( $_GET['post_id'] );
+				if ( ! empty( $post_id ) ) {
+					$args['quiz'] = $post_id;
+				}
+			}
+		}
+
+		switch ( $args['sort'] ) {
 			case WpProQuiz_Model_Quiz::QUIZ_TOPLIST_SORT_BEST:
 				$s = 'ORDER BY result DESC';
 				break;
@@ -83,24 +117,21 @@ class WpProQuiz_Model_ToplistMapper extends WpProQuiz_Model_Mapper {
 				$s = 'ORDER BY date ASC';
 				break;
 		}
-		
+
+		$where = apply_filters( 'learndash_fetch_quiz_toplist_history_where', $where, $args );
+
 		$results = $this->_wpdb->get_results(
-				$this->_wpdb->prepare(
-						'SELECT
-								*
-							FROM
-								'. $this->_tableToplist.'
-							WHERE
-								quiz_id = %d
-							'.$s.'
-							LIMIT %d, %d'							
-						, $quizId, $start, $limit),
-				ARRAY_A);
-		
-		foreach($results as $row) {
-			$r[] = new WpProQuiz_Model_Toplist($row);				
+			$this->_wpdb->prepare(
+				'SELECT * FROM ' . $this->_tableToplist . ' WHERE quiz_id = %d ' . $where . ' ' . $s . ' LIMIT %d, %d',
+				$args['quizId'], $args['start'], $args['limit']
+			),
+			ARRAY_A
+		);
+
+		foreach ( $results as $row ) {
+			$r[] = new WpProQuiz_Model_Toplist( $row );
 		}
-		
+
 		return $r;
 	}
 	

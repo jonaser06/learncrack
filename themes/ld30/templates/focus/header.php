@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 	<head>
@@ -6,17 +11,31 @@
 		<link rel="profile" href="http://gmpg.org/xfn/11">
 		<?php
 		wp_head();
+		/**
+		 * Fires in the head tag in focus mode.
+		 */
 		do_action( 'learndash-focus-head' );
 		?>
 	</head>
 	<body <?php body_class(); ?>>
 
 		<div class="<?php echo esc_attr( learndash_the_wrapper_class() ); ?>">
-			<div class="ld-focus">
+			<?php
+				/**
+				 * Filter Focus Mode sidebar collpases.
+				 *
+				 * @since 3.0.0
+				 *
+				 * @param bool false Wether to collapse Focus Mode sidebar. Default false.
+				 */
+			?>
+			<div class="ld-focus <?php echo esc_attr( apply_filters( 'learndash_focus_mode_collapse_sidebar', false ) ? 'ld-focus-sidebar-collapsed ld-focus-sidebar-filtered' : '' ); ?>">
 				<?php
 				/**
-				 * Action to add custom content to the start of the focus template
+				 * Fires at the start of the focus template.
 				 *
-				 * @since 3.0
+				 * @since 3.0.0
+				 *
+				 * @param int $course_id Course ID.
 				 */
 				do_action( 'learndash-focus-template-start', $course_id ); ?>

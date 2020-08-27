@@ -16,21 +16,53 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Action to add custom content before the infobar
+ * Fires before the infobar.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-infobar-before', get_post_type(), $course_id, $user_id );
+/**
+ * Fires before the infobar for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-infobar-before', $course_id, $user_id ); ?>
 
 <?php
 /**
- * Action to add custom content inside the infobar (before)
+ * Fires inside the infobar (before).
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-infobar-inside-before', get_post_type(), $course_id, $user_id );
+
+/**
+ * Fires inside the infobar (before) for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-infobar-inside-before', $course_id, $user_id );
 
 switch ( $context ) {
@@ -125,24 +157,76 @@ switch ( $context ) {
 		<?php
 		break;
 
+	case 'quiz':
+		if ( get_post_type() === learndash_get_post_type_slug( 'quiz' ) ) {
+			?>
+			<div class="ld-quiz-status">
+				<div class="ld-breadcrumbs">
+					<?php
+					learndash_get_template_part(
+						'modules/breadcrumbs.php',
+						array(
+							'context'   => 'quiz',
+							'user_id'   => $user_id,
+							'course_id' => $course_id,
+						),
+						true
+					);
+					?>
+				</div> <!--/.ld-breadcrumbs-->
+			</div>
+			<?php
+		}
+		break;
+
 	default:
 		// Fail silently
 		break;
 }
 /**
- * Action to add custom content inside the infobar (after)
+ * Fires inside the infobar (after).
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-infobar-inside-after', get_post_type(), $course_id, $user_id );
+
+/**
+ * Fires inside the infobar (after) for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-infobar-inside-after', $course_id, $user_id );
 ?>
 
 <?php
 /**
- * Action to add custom content after the infobar
+ * Fires after the infobar.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
  */
 do_action( 'learndash-infobar-after', get_post_type(), $course_id, $user_id );
+
+/**
+ * Fires after the infobar for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param string|false $post_type Post type slug.
+ * @param int          $course_id Course ID.
+ * @param int          $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-infobar-after', $course_id, $user_id );

@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class WpProQuiz_View_QuizOverall extends WpProQuiz_View_View {
 	
@@ -102,7 +105,7 @@ class WpProQuiz_View_QuizOverall extends WpProQuiz_View_View {
 								<?php if ( current_user_can( 'wpProQuiz_edit_quiz' ) )  { ?>
 									<div class="row-actions">								
 										<span>
-											<a href="<?php echo get_edit_post_link( $quiz_post->ID ) ?>"><?php esc_html_e( 'edit', 'learndash' ); ?></a> 
+											<a href="<?php echo esc_url( get_edit_post_link( $quiz_post->ID ) ); ?>"><?php esc_html_e( 'edit', 'learndash' ); ?></a> 
 										</span> 
 									</div>
 								<?php } ?>
@@ -140,12 +143,14 @@ class WpProQuiz_View_QuizOverall extends WpProQuiz_View_View {
 		</tbody>
 	</table>
 	<?php
+		$total_quizzes = 0;
 		if ( is_a( $quiz_query_results, 'WP_Query' ) ) {
 			$pager_results = array(
 				'paged'       => $quiz_page,
 				'total_items' => absint( $quiz_query_results->found_posts ),
 				'total_pages' => absint( $quiz_query_results->max_num_pages ),
 			);
+			$total_quizzes = absint( $quiz_query_results->found_posts );
 
 			echo SFWD_LMS::get_template( 
 				'learndash_pager.php',
@@ -162,7 +167,7 @@ class WpProQuiz_View_QuizOverall extends WpProQuiz_View_View {
 	<p>
 		<?php  if(current_user_can('wpProQuiz_import')) { ?>
 		<a class="button-secondary wpProQuiz_import" href="#"><?php esc_html_e('Import', 'learndash'); ?></a>
-		<?php } if(current_user_can('wpProQuiz_export') && count($this->quiz)) { ?>
+		<?php } if(current_user_can('wpProQuiz_export') && $total_quizzes ) { ?>
 		<a class="button-secondary wpProQuiz_export" href="#"><?php esc_html_e('Export', 'learndash'); ?></a>
 		<?php } ?>
 	</p>
@@ -192,7 +197,9 @@ class WpProQuiz_View_QuizOverall extends WpProQuiz_View_View {
 				$memoryLimit = (int)(ini_get('memory_limit'));
 				$uploadMB = min($maxUpload, $maxPost, $memoryLimit);
 			?>
-				<input type="file" name="import" accept=".wpq,.xml" required="required"> <?php printf(__('Maximal %d MiB', 'learndash'), $uploadMB); ?>
+				<input type="file" name="import" accept=".wpq,.xml" required="required"> <?php 
+				// translators: placeholder: Upload Mb.
+				printf( esc_html_x('Maximal %d MiB', 'placeholder: Upload Mb', 'learndash'), $uploadMB); ?>
 			</div>
 			<input class="button-primary" name="exportStart" id="exportStart" value="<?php esc_html_e('Start import', 'learndash'); ?>" type="submit">
 		</form>

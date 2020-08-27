@@ -3,7 +3,7 @@
  * Plugin Name: LearnDash LMS
  * Plugin URI: http://www.learndash.com
  * Description: LearnDash LMS Plugin - Turn your WordPress site into a learning management system.
- * Version: 3.1.7
+ * Version: 3.2.2
  * Author: LearnDash
  * Author URI: http://www.learndash.com
  * Text Domain: learndash
@@ -13,10 +13,15 @@
  *
  * @package LearnDash
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * LearnDash Version Constant
  */
-define( 'LEARNDASH_VERSION', '3.1.7' );
+define( 'LEARNDASH_VERSION', '3.2.2' );
 define( 'LEARNDASH_SETTINGS_DB_VERSION', '2.5' );
 define( 'LEARNDASH_SETTINGS_TRIGGER_UPGRADE_VERSION', '2.5' );
 define( 'LEARNDASH_LMS_TEXT_DOMAIN', 'learndash' );
@@ -93,6 +98,14 @@ if ( ! defined( 'LEARNDASH_REST_API_ENABLED' ) ) {
 }
 
 /**
+ * Block access to default WordPress CPT routes.
+ * @since 3.2.0
+ */
+if ( ! defined( 'LEARNDASH_BLOCK_WORDPRESS_CPT_ROUTES' ) ) {
+	define( 'LEARNDASH_BLOCK_WORDPRESS_CPT_ROUTES', true );
+}
+
+/**
  * Added to support Lesson/Topic Video Progression
  * @since 2.4.5.
  */
@@ -132,20 +145,41 @@ if ( ! defined( 'LEARNDASH_TRANSLATIONS' ) ) {
 	define( 'LEARNDASH_TRANSLATIONS', true );
 }
 
-/**
- * Added to support Add-on Update logic
- * @since 2.5.5.
- */
-if ( ! defined( 'LEARNDASH_ADDONS_UPDATER' ) ) {
-	define( 'LEARNDASH_ADDONS_UPDATER', true );
-}
-
 if ( ! defined( 'LEARNDASH_HTTP_REMOTE_GET_TIMEOUT' ) ) {
 	define( 'LEARNDASH_HTTP_REMOTE_GET_TIMEOUT', 15 );
 }
 
+/**
+ * The timeout (seconds) for the POST request.
+ */
 if ( ! defined( 'LEARNDASH_HTTP_REMOTE_POST_TIMEOUT' ) ) {
 	define( 'LEARNDASH_HTTP_REMOTE_POST_TIMEOUT', 15 );
+}
+/**
+ * The timeout (seconds) for BitBucket Readme download_url() request.
+ *
+ * @since 3.1.8
+ */
+if ( ! defined( 'LEARNDASH_HTTP_BITBUCKET_README_DOWNLOAD_TIMEOUT' ) ) {
+	define( 'LEARNDASH_HTTP_BITBUCKET_README_DOWNLOAD_TIMEOUT', 15 );
+}
+
+/**
+ * Set the number of consecutive errors before update attemps abort
+ *
+ * @since 3.1.8
+ */
+if ( defined( 'LEARNDASH_REPO_ERROR_THRESHOLD_COUNT' ) ) {
+	define( 'LEARNDASH_REPO_ERROR_THRESHOLD_COUNT', 3 );
+}
+
+/**
+ * Set the time (seconds) after abort before restarting tries.
+ *
+ * @since 3.1.8
+ */
+if ( defined( 'LEARNDASH_REPO_ERROR_THRESHOLD_TIME' ) ) {
+	define( 'LEARNDASH_REPO_ERROR_THRESHOLD_TIME', 2*60*60 );
 }
 
 if ( ! defined( 'LEARNDASH_LMS_DEFAULT_QUESTION_POINTS' ) ) {
@@ -192,6 +226,26 @@ if ( ! defined( 'LEARNDASH_LEGACY_THEME' ) ) {
 	define( 'LEARNDASH_LEGACY_THEME', 'legacy' );
 }
 
+if ( ! defined( 'LEARNDASH_DEFAULT_COURSE_PRICE_TYPE' ) ) {
+	define( 'LEARNDASH_DEFAULT_COURSE_PRICE_TYPE', 'open' );
+}
+if ( ! defined( 'LEARNDASH_DEFAULT_COURSE_ORDER' ) ) {
+	define( 'LEARNDASH_DEFAULT_COURSE_ORDER', 'ASC' );
+}
+if ( ! defined( 'LEARNDASH_DEFAULT_COURSE_ORDERBY' ) ) {
+	define( 'LEARNDASH_DEFAULT_COURSE_ORDERBY', 'date' );
+}
+
+if ( ! defined( 'LEARNDASH_DEFAULT_GROUP_PRICE_TYPE' ) ) {
+	define( 'LEARNDASH_DEFAULT_GROUP_PRICE_TYPE', 'closed' );
+}
+if ( ! defined( 'LEARNDASH_DEFAULT_GROUP_ORDER' ) ) {
+	define( 'LEARNDASH_DEFAULT_GROUP_ORDER', 'ASC' );
+}
+if ( ! defined( 'LEARNDASH_DEFAULT_GROUP_ORDERBY' ) ) {
+	define( 'LEARNDASH_DEFAULT_GROUP_ORDERBY', 'date' );
+}
+
 if ( ! defined( 'LEARNDASH_QUIZ_RESULT_MESSAGE_MAX' ) ) {
 	define( 'LEARNDASH_QUIZ_RESULT_MESSAGE_MAX', 15 );
 }
@@ -199,6 +253,15 @@ if ( ! defined( 'LEARNDASH_QUIZ_RESULT_MESSAGE_MAX' ) ) {
 if ( ! defined( 'LEARNDASH_ADMIN_POPUP_STYLE' ) ) {
 	define( 'LEARNDASH_ADMIN_POPUP_STYLE', 'jQuery-dialog' );
 }
+
+/**
+ * Use the User's registration for the Group enrollment time if newer
+ * then the course enrollment. Default true.
+ */
+if ( ! defined( 'LEARNDASH_GROUP_ENROLLED_COURSE_FROM_USER_REGISTRATION' ) ) {
+	define( 'LEARNDASH_GROUP_ENROLLED_COURSE_FROM_USER_REGISTRATION', true );
+}
+
 
 /**
  * Load the select JS library.
@@ -236,6 +299,14 @@ if ( ! defined( 'LEARNDASH_SHOW_MARK_INCOMPLETE' ) ) {
 }
 
 /**
+ * Will filter search on front-end.
+ * @since 3.17
+ */
+if ( ! defined( 'LEARNDASH_FILTER_SEARCH' ) ) {
+	define( 'LEARNDASH_FILTER_SEARCH', true );
+}
+
+/**
  * LearnDash Database utility class.
  */
 if ( ! defined( 'LEARNDASH_LMS_DATABASE_PREFIX_SUB' ) ) {
@@ -243,6 +314,53 @@ if ( ! defined( 'LEARNDASH_LMS_DATABASE_PREFIX_SUB' ) ) {
 }
 if ( ! defined( 'LEARNDASH_PROQUIZ_DATABASE_PREFIX_SUB_DEFAULT' ) ) {
 	define( 'LEARNDASH_PROQUIZ_DATABASE_PREFIX_SUB_DEFAULT', 'wp_' );
+}
+
+/**
+ * Controls if we should perform update and license checkes.
+ *
+ * @since 3.1.8
+ */
+if ( ! defined( 'LEARNDASH_UPDATES_ENABLED' ) ) {
+	define( 'LEARNDASH_UPDATES_ENABLED', true );
+}
+
+/**
+ * Added to support Add-on Update logic
+ * @since 2.5.5.
+ */
+if ( ! defined( 'LEARNDASH_ADDONS_UPDATER' ) ) {
+	if ( true === LEARNDASH_UPDATES_ENABLED ) {
+		define( 'LEARNDASH_ADDONS_UPDATER', true );
+	} else {
+		define( 'LEARNDASH_ADDONS_UPDATER', false );
+	}
+}
+
+if ( ( true === LEARNDASH_ADDONS_UPDATER ) && ( true === LEARNDASH_UPDATES_ENABLED ) ) {
+	require_once dirname( __FILE__ ) . '/includes/class-ld-addons-updater.php';
+} else {
+	/**
+	 * Added a dummy class if/when auto_update is disabled.
+	 * To prevent fatal errors.
+	 */
+	if ( ! class_exists( 'LearnDash_Addon_Updater' ) ) {
+		class LearnDash_Addon_Updater {
+			protected static $instance = null;
+
+			public static function get_instance() {
+				if ( ! isset( static::$instance ) ) {
+					static::$instance = new static();
+				}
+
+				return static::$instance;
+			}
+
+			public function __call( $name, $arguments ) {
+				return;
+			}
+		}
+	}
 }
 
 require_once dirname( __FILE__ ) . '/includes/class-ldlms-db.php';
@@ -274,6 +392,13 @@ require_once dirname( __FILE__ ) . '/includes/class-ld-lms.php';
 require_once dirname( __FILE__ ) . '/includes/class-ld-cpt.php';
 
 /**
+ * Search
+ */
+if ( ( defined( 'LEARNDASH_FILTER_SEARCH' ) ) && ( LEARNDASH_FILTER_SEARCH === true ) ) {
+	require_once dirname( __FILE__ ) . '/includes/class-ld-search.php';
+}
+
+/**
  * Register CPT's and Taxonomies
  */
 require_once dirname( __FILE__ ) . '/includes/class-ld-cpt-instance.php';
@@ -284,9 +409,9 @@ require_once dirname( __FILE__ ) . '/includes/class-ld-cpt-instance.php';
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/class-learndash-admin-menus-tabs.php';
 
 /**
- * Registers widget for displaying a list of lessons for a course and tracks lesson progress.
+ * Widget loader.
  */
-require_once dirname( __FILE__ ) . '/includes/class-ld-cpt-widget.php';
+require_once dirname( __FILE__ ) . '/includes/widgets/widgets-loader.php';
 
 /**
  * Course functions
@@ -302,11 +427,6 @@ require_once dirname( __FILE__ ) . '/includes/course/ld-course-navigation.php';
  * Course progress functions
  */
 require_once dirname( __FILE__ ) . '/includes/course/ld-course-progress.php';
-
-/**
- * Course, lesson, topic, quiz list shortcodes and helper functions
- */
-require_once dirname( __FILE__ ) . '/includes/course/ld-course-list-shortcode.php';
 
 /**
  * Course info and navigation widgets
@@ -332,11 +452,6 @@ require_once dirname( __FILE__ ) . '/includes/quiz/ld-quiz-functions.php';
  * Implements WP Pro Quiz
  */
 require_once dirname( __FILE__ ) . '/includes/quiz/ld-quiz-pro.php';
-
-/**
- * Shortcodes for displaying Quiz and Course info
- */
-require_once dirname( __FILE__ ) . '/includes/quiz/ld-quiz-info-shortcode.php';
 
 /**
  * Quiz migration functions
@@ -367,6 +482,11 @@ require_once dirname( __FILE__ ) . '/includes/ld-assignment-uploads.php';
  * Group functions
  */
 require_once dirname( __FILE__ ) . '/includes/ld-groups.php';
+
+/**
+ * Group Membership functions
+ */
+require_once dirname( __FILE__ ) . '/includes/group/ld-groups-membership.php';
 
 /**
  * User functions
@@ -456,8 +576,39 @@ require_once dirname( __FILE__ ) . '/includes/ld-autoupdate.php';
 /**
  * Addon Updater API
  */
-if ( ( defined( 'LEARNDASH_ADDONS_UPDATER' ) ) && ( LEARNDASH_ADDONS_UPDATER === true ) ) {
+/**
+ * Controls if we should perform update and license checkes.
+ *
+ * @since 3.2.0
+ */
+if ( ! defined( 'LEARNDASH_UPDATES_ENABLED' ) ) {
+	define( 'LEARNDASH_UPDATES_ENABLED', true );
+}
+
+if ( ( true === LEARNDASH_ADDONS_UPDATER ) && ( true === LEARNDASH_UPDATES_ENABLED ) ) {
 	require_once dirname( __FILE__ ) . '/includes/class-ld-addons-updater.php';
+} else {
+	/**
+	 * Added a dummy class if/when auto_update is disabled.
+	 * To prevent fatal errors.
+	 */
+	if ( ! class_exists( 'LearnDash_Addon_Updater' ) ) {
+		class LearnDash_Addon_Updater {
+			protected static $instance = null;
+
+			public static function get_instance() {
+				if ( ! isset( static::$instance ) ) {
+					static::$instance = new static();
+				}
+
+				return static::$instance;
+			}
+
+			public function __call( $name, $arguments ) {
+				return;
+			}
+		}
+	}
 }
 
 /**
@@ -540,28 +691,13 @@ $learndash_taxonomies = array(
 	'ld_quiz_tag',
 	'ld_question_category',
 	'ld_question_tag',
+	'ld_group_category',
+	'ld_group_tag',
 );
 
 $learndash_pages = array(
 	'group_admin_page',
 	'learndash-lms-reports',
-);
-
-$learndash_course_statuses = array(
-	'not_started' => esc_html__( 'Not Started', 'learndash' ),
-	'in_progress' => esc_html__( 'In Progress', 'learndash' ),
-	'complete'    => esc_html__( 'Completed', 'learndash' ),
-);
-
-$learndash_question_types = array(
-	'single'             => esc_html__( 'Single choice', 'learndash' ),
-	'multiple'           => esc_html__( 'Multiple choice', 'learndash' ),
-	'free_answer'        => esc_html__( '"Free" choice', 'learndash' ),
-	'sort_answer'        => esc_html__( '"Sorting" choice', 'learndash' ),
-	'matrix_sort_answer' => esc_html__( '"Matrix Sorting" choice', 'learndash' ),
-	'cloze_answer'       => esc_html__( 'Fill in the blank', 'learndash' ),
-	'assessment_answer'  => esc_html__( 'Assessment', 'learndash' ),
-	'essay'              => esc_html__( 'Essay / Open Answer', 'learndash' ),
 );
 
 // This is a global variable which is set in any of the shortcode handler functions.

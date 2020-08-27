@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="ld-table-list ld-quiz-list">
 	<div class="ld-table-list-header ld-primary-background">
 		<div class="ld-table-list-title">
@@ -5,6 +10,12 @@
 		</div> <!--/.ld-table-list-title-->
 		<div class="ld-table-list-columns">
 		<?php
+
+		/**
+		 * Filters user profile quiz list columns.
+		 *
+		 * @param array $quiz_columns An array of quiz list column details array. Column details array can have keys for id and label.
+		 */
 		$columns = apply_filters(
 			'learndash-profile-quiz-list-columns',
 			array(

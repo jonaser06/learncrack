@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_FrontToplist extends WpProQuiz_View_View {
 	
 	public function show() {
@@ -7,8 +11,10 @@ class WpProQuiz_View_FrontToplist extends WpProQuiz_View_View {
 	<?php if(!$this->inQuiz) { ?>
 	<h2><?php esc_html_e('Leaderboard', 'learndash'); ?>: <?php echo $this->quiz->getName(); ?></h2>
 	<?php } ?>
-	<table class="wpProQuiz_toplistTable">
-		<caption><?php printf(__('maximum of %s points', 'learndash'), '<span class="wpProQuiz_max_points">'. $this->points .'</span>'); ?></caption>
+	<table class="wpProQuiz_toplistTable" data-nonce="<?php echo wp_create_nonce( 'learndash-wpproquiz-toplist' ); ?>">
+		<caption><?php 
+		// translators: placeholder: Quiz Max Points.
+		printf(esc_html_x('maximum of %s points', 'placeholder: Quiz Max Points', 'learndash'), '<span class="wpProQuiz_max_points">'. $this->points .'</span>'); ?></caption>
 		<thead>
 			<tr>
 				<th class="col-pos"><?php esc_html_e('Pos.', 'learndash'); ?></th>

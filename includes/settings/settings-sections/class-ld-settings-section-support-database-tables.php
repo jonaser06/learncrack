@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Support_Database_Tables' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -19,6 +23,8 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 		 */
 		protected $settings_set = array();
 
+		protected $admin_notice_tables = array();
+
 		/**
 		 * Protected constructor for class
 		 */
@@ -29,7 +35,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 			$this->setting_option_key = 'ld_database_tables';
 
 			// This is the HTML form field prefix used.
-			//$this->setting_field_prefix = 'learndash_settings_paypal';
+			// $this->setting_field_prefix = 'learndash_settings_paypal';
 
 			// Used within the Settings API to uniquely identify this section.
 			$this->settings_section_key = 'settings_support_ld_database_tables';
@@ -40,6 +46,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 			add_filter( 'learndash_support_sections_init', array( $this, 'learndash_support_sections_init' ) );
 			add_action( 'learndash_section_fields_before', array( $this, 'show_support_section' ), 30, 2 );
 
+			add_action( 'admin_notices', array( $this, 'admin_notice_upgrade_notice' ) );
 			parent::__construct();
 		}
 
@@ -51,16 +58,16 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 
 			/************************************************************************************************
 			 * Learndash Database Tables
-			 ************************************************************************************************/
+			 */
 			if ( ! isset( $support_sections[ $this->setting_option_key ] ) ) {
 
-				$this->settings_set           = array();
-				
+				$this->settings_set = array();
+
 				$this->settings_set['header'] = array(
 					'html' => $this->settings_section_label,
 					'text' => $this->settings_section_label,
 				);
-				
+
 				$this->settings_set['columns'] = array(
 					'label' => array(
 						'html'  => esc_html__( 'Table Name', 'learndash' ),
@@ -75,8 +82,13 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				);
 
 				$this->settings_set['desc'] = '<p>' . esc_html__( 'When the LearnDash plugin or related add-ons are activated they will create the following tables. If the tables are not present try reactivating the plugin. If the table still do not show check the DB_USER defined in your wp-config.php and ensure it has the proper permissions to create tables. Check with your host for help.', 'learndash' ) . '</p>';
-				$grants               = learndash_get_db_user_grants();
-				if ( ! empty( $grants ) ) {
+
+				if ( isset( $_GET['ld_debug'] ) ) {
+					$grants = learndash_get_db_user_grants();
+					if ( ! is_array( $grants ) ) {
+						$grants = array();
+					}
+
 					if ( ( array_search( 'ALL PRIVILEGES', $grants ) === false ) && ( array_search( 'CREATE', $grants ) === false ) ) {
 						$this->settings_set['desc'] .= '<p style="color: red">' . esc_html__( 'The DB_USER defined in your wp-config.php does not have CREATE permission.', 'learndash' ) . '</p>';
 					}
@@ -85,34 +97,89 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				$this->settings_set['settings'] = array();
 
 				$this->db_tables = LDLMS_DB::get_tables();
+				/**
+				 * Filters list of database tables for admin support section.
+				 *
+				 * @param array $db_tables An array of Database tables.
+				 */
 				$this->db_tables = apply_filters( 'learndash_support_db_tables', $this->db_tables );
 				if ( ! empty( $this->db_tables ) ) {
-					sort( $this->db_tables );
+					//ksort( $this->db_tables );
 					$this->db_tables = array_unique( $this->db_tables );
 
-					foreach ( $this->db_tables as $db_table ) {
+					foreach ( $this->db_tables as $db_key => $db_table ) {
 						$this->settings_set['settings'][ $db_table ] = array(
 							'label' => $db_table,
 						);
 
-						if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $db_table . "'" ) == $db_table ) {
-							if ( true === apply_filters( 'learndash_support_db_tables_rows', true ) ) {
-								$table_rows = $wpdb->get_var( "SELECT table_rows from information_schema.tables WHERE table_schema = '" . DB_NAME . "' AND table_name = '" . $db_table . "'" );
-								$rows_str = ' - rows(' . $table_rows . ')';
-							} else {
-								$rows_str = '';
+						$table_status_info = LDLMS_DB::get_table_status_info( $db_key );
+						if ( is_array( $table_status_info ) ) {
+							$rows_str      = '';
+							$rows_html_str = '';
+
+							if ( isset( $table_status_info['rows_count'] ) ) {
+								if ( ! empty( $rows_str ) ) {
+									$rows_str      .= ' ';
+								}
+								$rows_str      .= 'rows(' . absint( $table_status_info['rows_count'] ) . ')';
+							}
+
+							if ( isset( $table_status_info['engine'] ) ) {
+								if ( ! empty( $rows_str ) ) {
+									$rows_str      .= ' ';
+								}
+								$rows_str      .= esc_attr( $table_status_info['engine'] );
+							}
+
+							if ( isset( $table_status_info['collation'] ) ) {
+								if ( ! empty( $rows_str ) ) {
+									$rows_str      .= ' ';
+								}
+								$rows_str      .= esc_attr( $table_status_info['collation'] );
+							}
+
+							if ( ! empty( $rows_str ) ) {
+								$rows_str = ' - ' . $rows_str;
 							}
 
 							$this->settings_set['settings'][ $db_table ]['value']      = 'Yes' . $rows_str;
 							$this->settings_set['settings'][ $db_table ]['value_html'] = '<span style="color: green">' . esc_html__( 'Yes', 'learndash' ) . '</span>' . $rows_str;
+
+							/**
+							 * Check the AUTO_INCREMENT index attribute.
+							 *
+							 * @since 3.1.8
+							 */
+							$valid_index = LDLMS_DB::check_table_primary_index( $db_key );
+							if ( false === $valid_index ) {
+								$this->admin_notice_tables[] = $db_table;
+
+								if ( ! empty( $this->settings_set['settings'][ $db_table ]['value'] ) ) {
+									$this->settings_set['settings'][ $db_table ]['value'] .= ' ';
+								}
+								$this->settings_set['settings'][ $db_table ]['value'] .= 'AUTO_INCREMENT missing' . ' - (X)';
+
+								if ( ! empty( $this->settings_set['settings'][ $db_table ]['value_html'] ) ) {
+									$this->settings_set['settings'][ $db_table ]['value_html'] .= ' ';
+								}
+								$this->settings_set['settings'][ $db_table ]['value_html'] .= '<span style="color: red">' . esc_html__( 'AUTO_INCREMENT missing', 'learndash' ) . '</span>';
+							}
 						} else {
 							$this->settings_set['settings'][ $db_table ]['value']      = 'No' . ' - (X)';
 							$this->settings_set['settings'][ $db_table ]['value_html'] = '<span style="color: red">' . esc_html__( 'No', 'learndash' ) . '</span>';
 						}
 					}
 				}
+				/**
+				 * Filters LearnDash admin support section settings.
+				 *
+				 * @param array  $settings An array of support section setting details.
+				 * @param string $context  The context where the setting is shown like ld_settings, server_settings, wp_settings, ld_templates,
+				 * ld_database_tables, wp_active_theme, wp_active_plugins, etc.
+				 */
 				$this->system_info['ld_database_tables'] = apply_filters( 'learndash_support_section', $this->settings_set, 'ld_database_tables' );
-					
+
+				/** This filter is documented in includes/settings/settings-sections/class-ld-settings-section-support-database-tables.php */
 				$support_sections[ $this->setting_option_key ] = apply_filters( 'learndash_support_section', $this->settings_set, $this->setting_option_key );
 			}
 
@@ -125,6 +192,23 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				if ( $support_page_instance ) {
 					$support_page_instance->show_support_section( $this->setting_option_key );
 				}
+			}
+		}
+
+		/**
+		 * Support for admin notice header for "Upgrade Notice Admin" header
+		 * from readme.txt.
+		 *
+		 * @since 3.1.4
+		 */
+		public function admin_notice_upgrade_notice() {
+			static $notices_shown = array();
+
+			if ( ( isset( $this->admin_notice_tables ) ) && ( ! empty( $this->admin_notice_tables ) ) ) {
+				?><div class="notice notice-error notice-alt is-dismissible ld-support-database-notice"><?php
+					echo wpautop( wp_kses_post( 'IMPORTANT: The following database tables are missing AUTO_INCREMENT on the primary index. This means data cannot be written to these tables. Please try reactivating LearnDash ASAP.<br />' . implode( ', ', $this->admin_notice_tables )
+					) );
+				?></div><?php
 			}
 		}
 

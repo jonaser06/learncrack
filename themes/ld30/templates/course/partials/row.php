@@ -1,16 +1,28 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * @var [type]
  */
 $course       = get_post( $course_id );
 $course_link  = get_permalink( $course_id );
+/**
+ * Filters course list shortcode course CSS class. Used to add CSS class to the wrapper of each course item
+ *
+ * @param string $course_class Course item CSS class
+ */
 $course_class = apply_filters( 'learndash-course-list-shortcode-course-class', '' ); ?>
 
 <?php
 /**
- * Action to add custom content before the course row
+ * Fires before the course row.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-course-row-before', $course_id, $user_id );
 ?>
@@ -20,49 +32,64 @@ do_action( 'learndash-course-row-before', $course_id, $user_id );
 
 		<?php
 		/**
-		 * Action to add custom content before the course row status
+		 * Fires before the course row status.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-row-status-before', $course_id, $user_id );
 		?>
 
 		<?php
 		/**
-		 * Action to add custom content before the course row link
+		 * Fires before the course row link.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-row-link-before', $course_id, $user_id );
 		?>
 
-		<a href="<?php echo esc_attr( $course_link ); ?>">
+		<a href="<?php echo esc_url( $course_link ); ?>">
 			<?php echo wp_kses_post( $course->post_title ); ?>
 		</a>
 
 		<?php
 		/**
-		 * Action to add custom content before the course row certificate
+		 * Fires before the course row certificate.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-row-certificate-before', $course_id, $user_id );
 		?>
 
 		<?php
 		/**
-		 * Action to add custom content before the course row link
+		 * Fires before the course row link.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-row-expand-before', $course_id, $user_id );
 		?>
 
 		<?php
 		/**
-		 * Action to add custom content before the course row link
+		 * Fires after the course row link.
 		 *
-		 * @since 3.0
+		 * @since 3.0.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
 		 */
 		do_action( 'learndash-course-row-expand-after', $course_id, $user_id );
 		?>

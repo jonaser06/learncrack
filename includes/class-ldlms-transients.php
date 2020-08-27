@@ -30,11 +30,17 @@ if ( ! class_exists( 'LDLMS_Transients' ) ) {
 		 * @since 3.1
 		 *
 		 * @param string $transient_key The transient key to retreive.
-		  * @return mixed $transient_data the retreived transient data or false if expired.
+		 * @return mixed $transient_data the retreived transient data or false if expired.
 		 */
 		public static function get( $transient_key = '' ) {
 			$transient_data = false;
 
+			/**
+			 * Filters whether the transients are disabled or not.
+			 *
+			 * @param boolean $transients_disabled Whether the transients are disabled or not.
+			 * @param string  $transient_key       Transient Key.
+			 */
 			if ( ( ! empty( $transient_key ) ) && ( ! apply_filters( 'learndash_transients_disabled', LEARNDASH_TRANSIENTS_DISABLED, $transient_key ) ) ) {
 				$transient_data = get_transient( $transient_key );
 			}
@@ -52,12 +58,14 @@ if ( ! class_exists( 'LDLMS_Transients' ) ) {
 		 * @param integer $transient_expire Expiration time for transient.
 		 */
 		public static function set( $transient_key = '', $transient_data = '', $transient_expire = MINUTE_IN_SECONDS ) {
+			/** This filter is documented in includes/class-ld-transients.php */
 			if ( ( ! empty( $transient_key ) ) && ( ! apply_filters( 'learndash_transients_disabled', LEARNDASH_TRANSIENTS_DISABLED, $transient_key ) ) ) {
 				return set_transient( $transient_key, $transient_data, $transient_expire );
-			} 
+			}
 		}
 
 		public static function purge_all() {
+			/** This filter is documented in includes/class-ld-transients.php */
 			if ( ! apply_filters( 'learndash_transients_disabled', LEARNDASH_TRANSIENTS_DISABLED, 'learndash_all_purge' ) ) {
 				global $wpdb;
 

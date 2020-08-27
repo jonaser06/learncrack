@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $course      = get_post( $course_id );
 $course_link = get_permalink( $course_id );
 
@@ -17,6 +21,11 @@ if ( absint( $progress['percentage'] ) > 0 && 100 !== absint( $progress['percent
 	$status = 'progress';
 }
 
+/**
+ * Filters shortcode course row CSS class.
+ *
+ * @param string $course_row_class List of the course row CSS classes
+ */
 $course_class = apply_filters(
 	'learndash-course-row-class',
 	'ld-item-list-item ld-item-list-item-course ld-expandable ' . ( 100 === absint( $progress['percentage'] ) ? 'learndash-complete' : 'learndash-incomplete' ),
@@ -76,6 +85,11 @@ $course_class = apply_filters(
 			<div class="ld-item-contents">
 
 				<?php
+				/**
+				 * Filters Whether to show profiles quizzes.
+				 *
+				 * @param boolean $show_quizzes Whether to show profile quizzes.
+				 */
 				if ( ! empty( $quiz_attempts[ $course_id ] ) && isset( $shortcode_atts['show_quizzes'] ) && true === (bool) $shortcode_atts['show_quizzes'] && apply_filters( 'learndash_show_profile_quizzes', $shortcode_atts['show_quizzes'] ) ) :
 
 					learndash_get_template_part(

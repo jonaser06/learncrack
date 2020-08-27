@@ -8,6 +8,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDash_Settings_Page_Overview' ) ) ) {
 	/**
 	 * Class to create the settings page.
@@ -117,6 +121,8 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 		 * @since 3.0.0
 		 */
 		public function get_admin_page_title() {
+
+			/** This filter is documented in includes/settings/class-ld-settings-pages.php */
 			return apply_filters( 'learndash_admin_page_title', '<h1>' . $this->settings_page_title . '</h1>' );
 		}
 
@@ -266,25 +272,9 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 					$license = get_option( 'nss_plugin_license_sfwd_lms' );
 					$email   = get_option( 'nss_plugin_license_email_sfwd_lms' );
 
-					// Make sure there are values.
-					if ( empty( $license ) || empty( $email ) ) {
-						?>
-						<p class="notice notice-error">
-							<?php
-							echo sprintf(
-								// translators: placeholder: Link to purchase LearnDash.
-								esc_html_x( 'Please enter your email and a valid license or %s a license now.', 'placeholder: link to purchase LearnDash', 'learndash' ),
-								"<a href='http://www.learndash.com/' target='_blank' rel='noreferrer noopener'>" . esc_html__( 'buy', 'learndash' ) . '</a>'
-							);
-							?>
-						</p>
-						<?php
-					}
-
 					// Check the license.
 					if ( ! empty( $license ) && ! empty( $email ) ) {
-						$license_status = !is_learndash_license_valid
-();
+						$license_status = is_learndash_license_valid();
 
 						if ( ! $license_status ) {
 							// Clear just to be sure.
@@ -306,8 +296,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 								// Then re-update the licens using new utility function.
 								// Plus this provides simpler true/false boolean.
-								$license_status = !is_learndash_license_valid
-();
+								$license_status = is_learndash_license_valid();
 							}
 						}
 
@@ -362,8 +351,13 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 							<div class="ld-bootcamp__widget--body">
 								<div class="ld-bootcamp__accordion" role="tablist">
-									<div class="ld-bootcamp__accordion--single <?php echo !is_learndash_license_valid
-() ? '-completed' : ''; ?>">
+									<?php
+										$ld_license_completed = is_learndash_license_valid() ? '-completed' : '';
+										if ( ! learndash_updates_enabled() ) {
+											$ld_license_completed = '-completed';
+										}
+									?>
+									<div class="ld-bootcamp__accordion--single <?php echo $ld_license_completed; ?>">
 										<h3>
 											<span class="ld-bootcamp__mark-complete--toggle-indicator" aria-hidden="true"></span>
 											<button class="ld-bootcamp__accordion--toggle" type="button" aria-selected="false" aria-expanded="false" aria-controls="ld-bootcamp__accordion--content-1" role="tab">
@@ -393,18 +387,14 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 												<div class="ld-bootcamp__license">
 													<form method="post" action="">
 													<?php
-													if ( ! !is_learndash_license_valid
-() ) :
-														?>
-														<p class="notice notice-error is-dismissible">
-														<?php
-														echo sprintf(
-															// translators: placeholder: Link to purchase LearnDash.
-															esc_html_x( 'Please enter your email and a valid license or %s a license now.', 'placeholder: link to purchase LearnDash', 'learndash' ),
-															"<a href='http://www.learndash.com/' target='_blank' rel='noreferrer noopener'>" . esc_html__( 'buy', 'learndash' ) . '</a>'
-														);
-														?>
-														</p>
+													if ( is_learndash_license_valid() ) :
+														if ( learndash_get_license_show_notice() ) {
+															?>
+															<p class="<?php echo learndash_get_license_class( 'notice notice-error is-dismissible learndash-license-is-dismissible' ); ?>" <?php echo learndash_get_license_data_attrs(); ?>>
+															<?php echo learndash_get_license_message(); ?>
+															</p>
+															<?php
+														} ?>
 													<?php else : ?>
 														<p class="notice notice-success is-dismissible"><?php esc_html_e( 'Your license is valid.', 'learndash' ); ?></p>
 														<?php
@@ -686,7 +676,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 											<p>
 											<?php
 											echo sprintf(
-												// translatord: placeholders: Courses, courses.
+												// translators: placeholders: Courses, courses.
 												esc_html_x( 'If you are selling your %1$s then you have many options available to you! In the first video we demonstrate how you can quickly start accepting payments with PayPal and Stripe. In the second video we will show you how to sell %2$s using the popular WordPress shopping cart WooCommerce.', 'placeholders: Courses, courses', 'learndash' ),
 												LearnDash_Custom_Label::get_label( 'courses' ),
 												learndash_get_custom_label_lower( 'courses' )
@@ -1041,7 +1031,11 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 											<ul>
 												<li><a href="https://www.learndash.com/support/docs/core/shortcodes-blocks/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Shortcodes', 'learndash' ); ?></a></li>
 												<li><a href="https://www.learndash.com/support/docs/reporting/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Reporting', 'learndash' ); ?></a></li>
-												<li><a href="https://www.learndash.com/support/docs/users-groups/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Users & Groups', 'learndash' ); ?></a></li>
+												<li><a href="https://www.learndash.com/support/docs/users-groups/" target="_blank" rel="noopener noreferrer"><?php sprintf(
+													// translators: placeholder: Groups.
+													esc_html_x( 'Users & %s', 'placeholder: Groups', 'learndash' ),
+													learndash_get_custom_label( 'groups' )
+												); ?></a></li>
 												<li><a href="https://www.learndash.com/support/docs/add-ons/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Add-ons', 'learndash' ); ?></a></li>
 											</ul>
 										</div>

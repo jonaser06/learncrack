@@ -14,6 +14,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $post_links = '';
 $i          = 0;
 if ( ! empty( $prerequisite_posts_all ) ) {

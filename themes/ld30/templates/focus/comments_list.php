@@ -1,5 +1,22 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'learndash_focus_mode_comments_list' ) ) {
+	/**
+	 * Prints the focus mode comments list output.
+	 *
+	 * Used as a callback by `wp_list_comments()` for displaying the comments.
+	 *
+	 * @global WP_Roles   $wp_roles WordPress role management object.
+	 * @global WP_Post    $post     Global post object.
+	 * @global WP_Comment $comment  Global comment object.
+	 *
+	 * @param WP_Comment $comment The comment object.
+	 * @param array      $args    An array of comment arguments.
+	 * @param int        $depth   The depth of the comment.
+	 */
 	function learndash_focus_mode_comments_list( $comment, $args, $depth ) {
 		global $wp_roles;
 		global $post;
@@ -77,6 +94,11 @@ if ( ! function_exists( 'learndash_focus_mode_comments_list' ) ) {
 	}
 }
 if ( ! isset( $_GET['replytocom'] ) ) {
+	/**
+	 * Filters Focus mode comment list arguments.
+	 *
+	 * @param array $comment_list_args Comment List arguments to be used in wp_list_comments arguments.
+	 */
 	$args = apply_filters(
 		'learndash_focus_mode_list_comments_args',
 		array(

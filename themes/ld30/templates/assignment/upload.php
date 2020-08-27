@@ -15,6 +15,9 @@
  * @package LearnDash\Lesson
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Identify the max upload file size. Compares the server enviornment limit to what's configured through LD
@@ -36,7 +39,7 @@ if ( isset( $post_settings['assignment_upload_limit_size'] ) && ! empty( $post_s
  */
 
 $upload_message = sprintf(
-	// translators: placeholder: PHP file upload size
+	// translators: placeholder: PHP file upload size.
 	esc_html_x( 'Maximum upload file size: %s', 'placeholder: PHP file upload size', 'learndash' ),
 	$php_max_upload
 );
@@ -68,12 +71,26 @@ if ( isset( $post_settings['assignment_upload_limit_count'] ) ) {
 	}
 }
 
+/**
+ * Fires before the assignment uploads.
+ *
+ * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+ * @param int $course_id           Course ID.
+ * @param int $user_id             User ID.
+ */
 do_action( 'learndash-assignment-uploads-before', $course_step_post->ID, $course_id, $user_id ); ?>
 
 <div class="ld-file-upload">
 
 	<div class="ld-file-upload-heading">
 		<?php
+		/**
+		 * Fires before the assignment upload heading.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
 		do_action( 'learndash-assignment-uploads-heading-before', $course_step_post->ID, $course_id, $user_id );
 
 		esc_html_e( 'Upload Assignment', 'learndash' );
@@ -82,6 +99,14 @@ do_action( 'learndash-assignment-uploads-before', $course_step_post->ID, $course
 		<span><?php echo esc_html( '(' . $upload_message . ')' ); ?></span>
 
 		<?php
+
+		/**
+		 * Fires after the assignment uploads.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
 		do_action( 'learndash-assignment-uploads-heading-after', $course_step_post->ID, $course_id, $user_id );
 		?>
 	</div>
@@ -95,7 +120,16 @@ do_action( 'learndash-assignment-uploads-before', $course_step_post->ID, $course
 			<span><?php echo esc_html_e( 'No file selected', 'learndash' ); ?></span>
 		</label>
 
-		<?php do_action( 'learndash-assignment-uploads-form', $course_step_post->ID, $course_id, $user_id ); ?>
+		<?php
+		/**
+		 * Fires inside the assignment upload form.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
+		do_action( 'learndash-assignment-uploads-form', $course_step_post->ID, $course_id, $user_id ); 
+		?>
 
 		<input class="ld-button" type="submit" value="<?php esc_html_e( 'Upload', 'learndash' ); ?>" name="submit" id="uploadfile_btn" onClick="this.form.submit(); this.disabled=true;;" disabled="true">
 
@@ -107,14 +141,27 @@ do_action( 'learndash-assignment-uploads-before', $course_step_post->ID, $course
 	</form>
 
 	<div class="ld-file-upload-message">
-		<?php do_action( 'learndash-assignment-uploads-message', $course_step_post->ID, $course_id, $user_id ); ?>
+		<?php
+		/**
+		 * Fires inside assignment upload message wrapper.
+		 *
+		 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+		 * @param int $course_id           Course ID.
+		 * @param int $user_id             User ID.
+		 */
+		do_action( 'learndash-assignment-uploads-message', $course_step_post->ID, $course_id, $user_id );
+		?>
 	</div>
 
 	<?php
 	/**
-	 * Action to add custom content after the assignments upload message
+	 * Fires after the assignments upload message.
 	 *
-	 * @since 3.0
+	 * @since 3.0.0
+	 *
+	 * @param int $course_step_post_id Post ID for the Lesson/Topic being shown.
+	 * @param int $course_id           Course ID.
+	 * @param int $user_id             User ID.
 	 */
 	do_action( 'learndash-assignment-uploads-message-after', $course_step_post->ID, $course_id, $user_id );
 	?>

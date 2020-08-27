@@ -7,6 +7,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Permalinks_Taxonomies' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -47,6 +51,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 		 * Function to hook into WP admin init action.
 		 */
 		public function admin_init() {
+			/** This filter is documented in includes/settings/class-ld-settings-pages.php */
 			do_action( 'learndash_settings_page_init', $this->settings_page_id );
 		}
 
@@ -91,6 +96,8 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					'ld_topic_tag'       => 'topic-tag',
 					'ld_quiz_category'   => 'quiz-category',
 					'ld_quiz_tag'        => 'quiz-tag',
+					'ld_group_category'  => 'group-category',
+					'ld_group_tag'       => 'group-tag',
 				)
 			);
 		}
@@ -223,6 +230,36 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				);
 			}
 
+			// Group Taxonomies.
+			$groups_taxonomies = $sfwd_lms->get_post_args_section( 'groups', 'taxonomies' );
+			if ( ( isset( $groups_taxonomies['ld_group_category'] ) ) && ( true === $groups_taxonomies['ld_group_category']['public'] ) ) {
+				$this->setting_option_fields['ld_group_category'] = array(
+					'name'  => 'ld_group_category',
+					'type'  => 'text',
+					'label' => sprintf(
+						// translators: placeholder: Group.
+						_x( '%s Category base', 'placeholder: Group', 'learndash' ),
+						LearnDash_Custom_Label::get_label( 'group' )
+					),
+					'value' => $this->setting_option_values['ld_group_category'],
+					'class' => 'regular-text',
+				);
+			}
+
+			if ( ( isset( $groups_taxonomies['ld_group_tag'] ) ) && ( true === $groups_taxonomies['ld_group_tag']['public'] ) ) {
+				$this->setting_option_fields['ld_group_tag'] = array(
+					'name'  => 'ld_group_tag',
+					'type'  => 'text',
+					'label' => sprintf(
+						// translators: placeholder: Group.
+						_x( '%s Tag base', 'placeholder: Group', 'learndash' ),
+						LearnDash_Custom_Label::get_label( 'group' )
+					),
+					'value' => $this->setting_option_values['ld_group_tag'],
+					'class' => 'regular-text',
+				);
+			}
+
 			if ( ! empty( $this->setting_option_fields ) ) {
 				$this->setting_option_fields['nonce'] = array(
 					'name'  => 'nonce',
@@ -233,6 +270,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				);
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();
@@ -247,7 +285,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 
 					$post_fields = $_POST[ $this->setting_field_prefix ];
 
-					foreach ( array( 'course', 'lesson', 'topic', 'quiz' ) as $slug ) {
+					foreach ( array( 'course', 'lesson', 'topic', 'quiz', 'group' ) as $slug ) {
 
 						if ( ( isset( $post_fields[ 'ld_' . $slug . '_category' ] ) ) && ( ! empty( $post_fields[ 'ld_' . $slug . '_category' ] ) ) ) {
 							$this->setting_option_values[ 'ld_' . $slug . '_category' ] = $this->esc_url( $post_fields[ 'ld_' . $slug . '_category' ] );

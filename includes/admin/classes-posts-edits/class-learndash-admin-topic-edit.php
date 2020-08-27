@@ -6,6 +6,10 @@
  * @subpackage Admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learndash_Admin_Topic_Edit' ) ) ) {
 	/**
 	 * Class for LearnDash Admin Topic Edit.
@@ -29,7 +33,7 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 			if ( $this->post_type_check() ) {
 				require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-display-content.php';
 				require_once LEARNDASH_LMS_PLUGIN_DIR . '/includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php';
-				
+
 				parent::on_load();
 			}
 		}
@@ -48,6 +52,13 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 			if ( ! parent::save_post( $post_id, $post, $update ) ) {
 				return false;
+			}
+
+			if ( isset( $_POST['ld-course-primary-set'] ) ) {
+				$course_primary = absint( $_POST['ld-course-primary-set'] );
+				if ( ! empty( $course_primary ) ) {
+					learndash_set_primary_course_for_step( $post_id, $course_primary );
+				}
 			}
 
 			if ( ! empty( $this->_metaboxes ) ) {

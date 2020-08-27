@@ -13,6 +13,11 @@
  *  @version	2.0.5
  *  @license	http://opensource.org/licenses/gpl-3.0.html
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class IpnListener {
 	
 	/**

@@ -113,7 +113,7 @@ if ( ( !class_exists( 'LD_REST_Users_Course_Progress_Controller_V1' ) ) && ( cla
 
 			if ( ( !empty( $user_course_ids ) ) && ( learndash_is_group_leader_user() ) ) {
 				$gl_groups_corses = learndash_get_group_leader_groups_courses( get_current_user_id() );
-				error_log('gl_groups_corses<pre>'. print_r($gl_groups_corses, true) .'</pre>');
+				//error_log('gl_groups_corses<pre>'. print_r($gl_groups_corses, true) .'</pre>');
 
 				if ( !empty( $gl_groups_corses ) ) {
 					$user_course_ids = array_intersect( $gl_groups_corses, $user_course_ids );
@@ -224,7 +224,7 @@ if ( ( !class_exists( 'LD_REST_Users_Course_Progress_Controller_V1' ) ) && ( cla
 				$args['fields'] = 'ids';
 				
 				/**
-				 * Filters the query arguments for a request.
+				 * Filters the query arguments for user course progress REST request.
 				 *
 				 * Enables adding extra arguments or setting defaults for a post collection request.
 				 *
@@ -232,8 +232,8 @@ if ( ( !class_exists( 'LD_REST_Users_Course_Progress_Controller_V1' ) ) && ( cla
 				 *
 				 * @link https://developer.wordpress.org/reference/classes/wp_query/
 				 *
-				 * @param array           $args    Key value array of query var to query value.
-				 * @param WP_REST_Request $request The request used.
+				 * @param array           $args    An array of query arguments for getting users course progress.
+				 * @param WP_REST_Request $request The REST request object.
 				 */
 				$args       = apply_filters( "learndash_rest_users_course_progress_query", $args, $request );
 				$query_args = $this->prepare_items_query( $args, $request );
@@ -263,11 +263,11 @@ if ( ( !class_exists( 'LD_REST_Users_Course_Progress_Controller_V1' ) ) && ( cla
 						);
 					}
 				}
-				error_log('query_args<pre>'. print_r($query_args, true) .'</pre>');
+				//error_log('query_args<pre>'. print_r($query_args, true) .'</pre>');
 				
 				$posts_query  = new WP_Query();
 				$query_result = $posts_query->query( $query_args );
-				error_log('query_result<pre>'. print_r($query_result, true) .'</pre>');
+				//error_log('query_result<pre>'. print_r($query_result, true) .'</pre>');
 				
 				
 				// Allow access to all password protected posts if the context is edit.

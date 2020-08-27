@@ -52,7 +52,7 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 				$this->template_redirect = $args['template_redirect'];
 			}
 
-			SFWD_CPT_Instance::$instances[ $post_type ] =& $this;
+			self::$instances[ $post_type ] =& $this;
 
 			if ( empty( $name ) ) {
 				$name = ! empty( $options_page_title ) ? $options_page_title : $post_name . esc_html__( ' Options', 'learndash' );
@@ -225,10 +225,10 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 				return $content;
 			}
 
-			$post         = get_post( get_the_id() );
-			$current_user = wp_get_current_user();
-			$post_type    = '';
-			$user_wrapper = true;
+			$post            = get_post( get_the_id() );
+			$current_user    = wp_get_current_user();
+			$post_type       = '';
+			$user_wrapper    = true;
 			$template_called = array();
 
 			if ( get_query_var( 'post_type' ) ) {
@@ -246,6 +246,7 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 			 * @since 3.1.7
 			 *
 			 * @param boolean $run_filter true.
+			 * @param int     $post_id    Current Post ID.
 			 * @return boolean True to process template. Anything else to abort.
 			 */
 			if ( ! apply_filters( 'learndash_template_preprocess_filter', true, get_the_id() ) ) {
@@ -255,8 +256,10 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 			/**
 			 * Remove the hook into the WP 'the_content' filter once we are in our handler. This
 			 * will allow other templates to call the 'the_content' filter without causing recusion.
+			 *
 			 * @since 3.1
-			 * @var boolean true Default true to remove the filter. Return false to not remove.
+			 *
+			 * @param boolean true Default true to remove the filter. Return false to not remove.
 			 */
 			if ( apply_filters( 'learndash_remove_template_content_filter', false ) ) {
 				remove_filter( 'the_content', array( $this, 'template_content' ), LEARNDASH_FILTER_PRIORITY_THE_CONTENT );
@@ -291,426 +294,472 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 				if ( ! isset( $course_meta['sfwd-courses_course_disable_content_table'] ) ) {
 					$course_meta['sfwd-courses_course_disable_content_table'] = false;
 				}
-				//learndash_transition_course_shared_steps( $course_id );
 			}
 
-			if ( $logged_in ) {
-				if ( learndash_is_admin_user( $user_id ) ) {
-					$bypass_course_limits_admin_users = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Section_General_Admin_User', 'bypass_course_limits_admin_users' );
-					if ( 'yes' === $bypass_course_limits_admin_users ) {
-						$bypass_course_limits_admin_users = true;
-					} else {
-						$bypass_course_limits_admin_users = false;
-					}
-				} else {
-					$bypass_course_limits_admin_users = false;
-				}
+			$bypass_course_limits_admin_users = learndash_can_user_bypass( $user_id, 'learndash_prerequities_bypass', $course_id, $post );
 
-				// For logged in users to allow an override filter.
-				$bypass_course_limits_admin_users = apply_filters( 'learndash_prerequities_bypass', $bypass_course_limits_admin_users, $user_id, $course_id, $post );
+			// For logged in users to allow an override filter.
+			/** This filter is documented in themes/ld30/includes/helpers.php */
+			$bypass_course_limits_admin_users = apply_filters( 'learndash_prerequities_bypass', $bypass_course_limits_admin_users, $user_id, $course_id, $post );
 
-			} else {
-				$bypass_course_limits_admin_users = true;
-			}
-
-			if ( ! empty( $wp->query_vars['name'] ) ) {
-				// single.
-				if ( ( $logged_in ) && ( ! is_course_prerequities_completed( $course_id ) ) && ( ! $bypass_course_limits_admin_users ) ) {
-					if ( 'sfwd-courses' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'course' );
-					} elseif ( 'sfwd-lessons' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'lesson' );
-					} elseif ( 'sfwd-quiz' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'quiz' );
-					} else {
-						$content_type = strtolower( $this->post_name );
-					}
-
-					$course_pre = learndash_get_course_prerequisites( $course_id );
-					if ( ! empty( $course_pre ) ) {
-						foreach ( $course_pre as $c_id => $c_status ) {
-							break;
+			if ( in_array( $post->post_type, learndash_get_post_types( 'course' ), true ) ) {
+				if ( ! empty( $wp->query_vars['name'] ) ) {
+					// single.
+					if ( ( $logged_in ) && ( ! learndash_is_course_prerequities_completed( $course_id ) ) && ( ! $bypass_course_limits_admin_users ) ) {
+						if ( 'sfwd-courses' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'course' );
+						} elseif ( 'sfwd-lessons' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'lesson' );
+						} elseif ( 'sfwd-quiz' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'quiz' );
+						} else {
+							$content_type = strtolower( $this->post_name );
 						}
+
+						$course_pre = learndash_get_course_prerequisites( $course_id );
+						if ( ! empty( $course_pre ) ) {
+							foreach ( $course_pre as $c_id => $c_status ) {
+								break;
+							}
+
+							$level = ob_get_level();
+							ob_start();
+							SFWD_LMS::get_template(
+								'learndash_course_prerequisites_message',
+								array(
+									'current_post'      => $post,
+									// We need to support the 'prerequisite_post' element since modifued templates may suse it.
+									'prerequisite_post' => get_post( $c_id ),
+									'prerequisite_posts_all' => $course_pre,
+									'content_type'      => $content_type,
+									'course_settings'   => $course_settings,
+								),
+								true
+							);
+							$content = learndash_ob_get_clean( $level );
+						}
+					} elseif ( ( $logged_in ) && ( ! learndash_check_user_course_points_access( $course_id, $user_id ) ) && ( ! $bypass_course_limits_admin_users ) ) {
+
+						if ( 'sfwd-courses' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'course' );
+						} elseif ( 'sfwd-lessons' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'lesson' );
+						} elseif ( 'sfwd-quiz' === $this->post_type ) {
+							$content_type = learndash_get_custom_label_lower( 'quiz' );
+						} else {
+							$content_type = strtolower( $this->post_name );
+						}
+
+						$course_access_points = learndash_get_course_points_access( $course_id );
+						$user_course_points   = learndash_get_user_course_points( $user_id );
 
 						$level = ob_get_level();
 						ob_start();
 						SFWD_LMS::get_template(
-							'learndash_course_prerequisites_message',
+							'learndash_course_points_access_message',
 							array(
-								'current_post'           => $post,
-								// We need to support the 'prerequisite_post' element since modifued templates may suse it.
-								'prerequisite_post'      => get_post( $c_id ),
-								'prerequisite_posts_all' => $course_pre,
-								'content_type'           => $content_type,
-								'course_settings'        => $course_settings,
-							), true
+								'current_post'         => $post,
+								'content_type'         => $content_type,
+								'course_access_points' => $course_access_points,
+								'user_course_points'   => $user_course_points,
+								'course_settings'      => $course_settings,
+							),
+							true
 						);
 						$content = learndash_ob_get_clean( $level );
-					}
-				} elseif ( ( $logged_in ) && ( ! learndash_check_user_course_points_access( $course_id, $user_id ) ) && ( ! $bypass_course_limits_admin_users ) ) {
 
-					if ( 'sfwd-courses' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'course' );
-					} elseif ( 'sfwd-lessons' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'lesson' );
-					} elseif ( 'sfwd-quiz' === $this->post_type ) {
-						$content_type = learndash_get_custom_label_lower( 'quiz' );
 					} else {
-						$content_type = strtolower( $this->post_name );
-					}
+						if ( 'sfwd-courses' === $this->post_type ) {
 
-					$course_access_points = learndash_get_course_points_access( $course_id );
-					$user_course_points   = learndash_get_user_course_points( $user_id );
+							$courses_prefix = $this->get_prefix();
+							$prefix_len     = strlen( $courses_prefix );
 
-					$level = ob_get_level();
-					ob_start();
-					SFWD_LMS::get_template(
-						'learndash_course_points_access_message',
-						array(
-							'current_post' => $post,
-							'content_type' => $content_type,
-							'course_access_points' => $course_access_points,
-							'user_course_points' => $user_course_points,
-							'course_settings' => $course_settings,
-						),
-						true
-					);
-					$content = learndash_ob_get_clean( $level );
-
-				} else {
-					if ( 'sfwd-courses' === $this->post_type ) {
-
-						$courses_prefix = $this->get_prefix();
-						$prefix_len     = strlen( $courses_prefix );
-
-						$materials = '';
-						if ( ! isset( $course_settings['course_materials_enabled'] ) ) {
-							$course_settings['course_materials_enabled'] = '';
-							if ( ( isset( $course_settings['course_materials'] ) ) && ( ! empty( $course_settings['course_materials'] ) ) ) {
-								$course_settings['course_materials_enabled'] = 'on';
-							}
-						}
-
-						if ( ( 'on' === $course_settings['course_materials_enabled'] ) && ( ! empty( $course_settings['course_materials'] ) ) ) {
-							$materials = wp_specialchars_decode( $course_settings['course_materials'], ENT_QUOTES );
-							if ( ! empty( $materials ) ) {
-								$materials = do_shortcode( $materials );
-								$materials = wpautop( $materials );
-							}
-						}
-						
-						learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
-
-						$lessons = learndash_get_course_lessons_list( $course_id );
-
-						// For now no paginiation on the course quizzes. Can't think of a scenario where there will be more
-						// than the pager count.
-						$quizzes = learndash_get_course_quiz_list( $course );
-
-						$has_course_content = ( ! empty( $lessons ) || ! empty( $quizzes ) );
-
-						$lesson_topics = array();
-
-						$has_topics = false;
-
-						if ( ! empty( $lessons ) ) {
-							foreach ( $lessons as $lesson ) {
-								$lesson_topics[ $lesson['post']->ID ] = learndash_topic_dots( $lesson['post']->ID, false, 'array', null, $course_id );
-								if ( ! empty( $lesson_topics[ $lesson['post']->ID ] ) ) {
-									$has_topics = true;
-		
-									$topic_pager_args = array(
-										'course_id' => $course_id,
-										'lesson_id' => $lesson['post']->ID 
-									);
-									$lesson_topics[ $lesson['post']->ID ] = learndash_process_lesson_topics_pager( $lesson_topics[ $lesson['post']->ID ], $topic_pager_args );
+							$materials = '';
+							if ( ! isset( $course_settings['course_materials_enabled'] ) ) {
+								$course_settings['course_materials_enabled'] = '';
+								if ( ( isset( $course_settings['course_materials'] ) ) && ( ! empty( $course_settings['course_materials'] ) ) ) {
+									$course_settings['course_materials_enabled'] = 'on';
 								}
 							}
-						}
 
-						//include_once __DIR__ . '/vendor/paypal/enhanced-paypal-shortcodes.php';
-						require_once( LEARNDASH_LMS_LIBRARY_DIR . '/paypal/enhanced-paypal-shortcodes.php' );
-						
-						$level = ob_get_level();
-						ob_start();
-						$template_file = SFWD_LMS::get_template( 'course', null, null, true );
-						if ( ! empty( $template_file ) ) {
-							include $template_file;
-						}
-						$content = learndash_ob_get_clean( $level );
-
-					} elseif ( 'sfwd-quiz' === $this->post_type ) {
-						learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
-
-						$quiz_pro_id = get_post_meta( $post->ID, 'quiz_pro_id', true );
-						$quiz_pro_id = absint( $quiz_pro_id );
-						if ( empty( $quiz_pro_id ) ) {
-							if ( isset( $quiz_settings['quiz_pro'] ) ) {
-								$quiz_settings['quiz_pro'] = absint( $quiz_settings['quiz_pro'] );
-								if ( ! empty( $quiz_settings['quiz_pro'] ) ) {
-									$quiz_pro_id = $quiz_settings['quiz_pro'];
+							if ( ( 'on' === $course_settings['course_materials_enabled'] ) && ( ! empty( $course_settings['course_materials'] ) ) ) {
+								$materials = wp_specialchars_decode( $course_settings['course_materials'], ENT_QUOTES );
+								if ( ! empty( $materials ) ) {
+									$materials = do_shortcode( $materials );
+									$materials = wpautop( $materials );
 								}
 							}
-						}
 
-						$content = wptexturize(
-							//do_shortcode( '[ld_quiz quiz_id="' . $post->ID . '" course_id="' . absint( $course_id ) . '" quiz_pro_id="' . absint( $quiz_pro_id ) . '"]' )
-							learndash_quiz_shortcode(
-								array(
-									'quiz_id'     => $post->ID,
-									'course_id'   => absint( $course_id ),
-									'quiz_pro_id' => absint( $quiz_pro_id ),
-								),
-								$content,
-								true
-							)
-						);
-						$user_wrapper = false;
+							learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
 
-					} elseif ( 'sfwd-lessons' === $this->post_type ) {
-						learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
+							$lessons = learndash_get_course_lessons_list( $course_id );
 
-						$show_content = false;
-						if ( $lesson_progression_enabled ) {
+							// For now no paginiation on the course quizzes. Can't think of a scenario where there will be more
+							// than the pager count.
+							$quizzes = learndash_get_course_quiz_list( $course );
 
-							if ( ( learndash_is_admin_user( $user_id ) ) && ( $bypass_course_limits_admin_users ) ) {
+							$has_course_content = ( ! empty( $lessons ) || ! empty( $quizzes ) );
+
+							$lesson_topics = array();
+
+							$has_topics = false;
+
+							if ( ! empty( $lessons ) ) {
+								foreach ( $lessons as $lesson ) {
+									$lesson_topics[ $lesson['post']->ID ] = learndash_topic_dots( $lesson['post']->ID, false, 'array', null, $course_id );
+									if ( ! empty( $lesson_topics[ $lesson['post']->ID ] ) ) {
+										$has_topics = true;
+
+										$topic_pager_args                     = array(
+											'course_id' => $course_id,
+											'lesson_id' => $lesson['post']->ID,
+										);
+										$lesson_topics[ $lesson['post']->ID ] = learndash_process_lesson_topics_pager( $lesson_topics[ $lesson['post']->ID ], $topic_pager_args );
+									}
+								}
+							}
+
+							require_once LEARNDASH_LMS_LIBRARY_DIR . '/paypal/enhanced-paypal-shortcodes.php';
+
+							$level = ob_get_level();
+							ob_start();
+							$template_file = SFWD_LMS::get_template( 'course', null, null, true );
+							if ( ! empty( $template_file ) ) {
+								include $template_file;
+							}
+							$content = learndash_ob_get_clean( $level );
+
+						} elseif ( 'sfwd-quiz' === $this->post_type ) {
+							learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
+
+							$quiz_pro_id = get_post_meta( $post->ID, 'quiz_pro_id', true );
+							$quiz_pro_id = absint( $quiz_pro_id );
+							if ( empty( $quiz_pro_id ) ) {
+								if ( isset( $quiz_settings['quiz_pro'] ) ) {
+									$quiz_settings['quiz_pro'] = absint( $quiz_settings['quiz_pro'] );
+									if ( ! empty( $quiz_settings['quiz_pro'] ) ) {
+										$quiz_pro_id = $quiz_settings['quiz_pro'];
+									}
+								}
+							}
+
+							$content = wptexturize(
+								// do_shortcode( '[ld_quiz quiz_id="' . $post->ID . '" course_id="' . absint( $course_id ) . '" quiz_pro_id="' . absint( $quiz_pro_id ) . '"]' )
+								learndash_quiz_shortcode(
+									array(
+										'quiz_id'     => $post->ID,
+										'course_id'   => absint( $course_id ),
+										'quiz_pro_id' => absint( $quiz_pro_id ),
+									),
+									$content,
+									true
+								)
+							);
+							$user_wrapper = false;
+
+						} elseif ( 'sfwd-lessons' === $this->post_type ) {
+							learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
+
+							$show_content = false;
+							if ( $lesson_progression_enabled ) {
+
+								if ( ( learndash_is_admin_user( $user_id ) ) && ( $bypass_course_limits_admin_users ) ) {
+									$previous_lesson_completed = true;
+									remove_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
+								} else {
+									/**
+									 * Filter to override previous step completed.
+									 *
+									 * @param bool $previous_step_completed True if previous step completed.
+									 * @param int  $step_id                 Step Post ID.
+									 * @param int  $user_id                 User ID.
+									 */
+									$previous_lesson_completed = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $post ), $post->ID, $user_id );
+								}
+								$show_content = $previous_lesson_completed;
+
+							} else {
+								$show_content              = true;
 								$previous_lesson_completed = true;
-								remove_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
+							}
+
+							$lesson_settings = learndash_get_setting( $post );
+							$quizzes         = learndash_get_lesson_quiz_list( $post, null, $course_id );
+							$quizids         = array();
+
+							if ( ! empty( $quizzes ) ) {
+								foreach ( $quizzes as $quiz ) {
+									$quizids[ $quiz['post']->ID ] = $quiz['post']->ID;
+								}
+							}
+
+							if ( $lesson_progression_enabled && ! $previous_lesson_completed ) {
+								add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 );
+							}
+
+							$topics = learndash_topic_dots( $post->ID, false, 'array', null, $course_id );
+							if ( ! empty( $topics ) ) {
+								$topic_pager_args = array(
+									'course_id' => $course_id,
+									'lesson_id' => $post->ID,
+								);
+								$topics           = learndash_process_lesson_topics_pager( $topics, $topic_pager_args );
+							}
+
+							if ( ! empty( $quizids ) ) {
+								$all_quizzes_completed = ! learndash_is_quiz_notcomplete( null, $quizids, false, $course_id );
 							} else {
-								$previous_lesson_completed = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $post ), $post->ID, $user_id );
-							}
-							$show_content = $previous_lesson_completed;
-
-						} else {
-							$show_content              = true;
-							$previous_lesson_completed = true;
-						}
-
-						$lesson_settings = learndash_get_setting( $post );
-						$quizzes         = learndash_get_lesson_quiz_list( $post, null, $course_id );
-						$quizids         = array();
-
-						if ( ! empty( $quizzes ) ) {
-							foreach ( $quizzes as $quiz ) {
-								$quizids[ $quiz['post']->ID ] = $quiz['post']->ID;
-							}
-						}
-
-						if ( $lesson_progression_enabled && ! $previous_lesson_completed ) {
-							add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 );
-						}
-
-						$topics = learndash_topic_dots( $post->ID, false, 'array', null, $course_id );
-						if ( ! empty( $topics ) ) {
-							$topic_pager_args = array(
-								'course_id' => $course_id,
-								'lesson_id' => $post->ID 
-							);
-							$topics = learndash_process_lesson_topics_pager( $topics, $topic_pager_args );
-						}
-
-						if ( ! empty( $quizids ) ) {
-							$all_quizzes_completed = ! learndash_is_quiz_notcomplete( null, $quizids, false, $course_id );
-						} else {
-							$all_quizzes_completed = true;
-						}
-
-						if ( $show_content ) {
-
-							$materials = '';
-							if ( ! isset( $lesson_settings['lesson_materials_enabled'] ) ) {
-								$lesson_settings['lesson_materials_enabled'] = '';
-								if ( ( isset( $lesson_settings['lesson_materials'] ) ) && ( ! empty( $lesson_settings['lesson_materials'] ) ) ) {
-									$lesson_settings['lesson_materials_enabled'] = 'on';
-								}
+								$all_quizzes_completed = true;
 							}
 
-							if ( ( 'on' === $lesson_settings['lesson_materials_enabled'] ) && ( ! empty( $lesson_settings['lesson_materials'] ) ) ) {
-								$materials = wp_specialchars_decode( $lesson_settings['lesson_materials'], ENT_QUOTES );
-								if ( ! empty( $materials ) ) {
-									$materials = do_shortcode( $materials );
-									$materials = wpautop( $materials );
-								}
-							}
-
-							// We insert the Course started record before the Lesson.
-							$course_args = array(
-								'course_id'        => $course_id,
-								'user_id'          => $current_user->ID,
-								'post_id'          => $course_id,
-								'activity_type'    => 'course',
-								'activity_status'  => false,
-								'activity_started' => time(),
-								'activity_meta'    => array(
-									'steps_total'     => learndash_get_course_steps_count( $course_id ),
-									'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
-									'steps_last_id'   => $post->ID,
-								),
-							);
-
-							$course_activity = learndash_get_user_activity( $course_args );
-							if ( ( ! $course_activity ) || ( empty( $course_activity->activity_started ) ) ) {
-								learndash_update_user_activity( $course_args );
-							}
-
-							$lesson_args     = array(
-								'course_id'        => $course_id,
-								'user_id'          => $current_user->ID,
-								'post_id'          => $post->ID,
-								'activity_type'    => 'lesson',
-								'activity_status'  => false,
-								'activity_started' => time(),
-								'activity_meta'    => array(
-									'steps_total'     => learndash_get_course_steps_count( $course_id ),
-									'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
-								),
-							);
-							$lesson_activity = learndash_get_user_activity( $lesson_args );
-							if ( ( ! $lesson_activity ) || ( empty( $lesson_activity->activity_started ) ) ) {
-								learndash_update_user_activity( $lesson_args );
-							}
-						}
-
-						// Added logic for Lesson Videos.
-						if ( ( defined( 'LEARNDASH_LESSON_VIDEO' ) ) && ( true === LEARNDASH_LESSON_VIDEO ) ) {
 							if ( $show_content ) {
-								$ld_course_videos = Learndash_Course_Video::get_instance();
-								$content          = $ld_course_videos->add_video_to_content( $content, $post, $lesson_settings );
+
+								$materials = '';
+								if ( ! isset( $lesson_settings['lesson_materials_enabled'] ) ) {
+									$lesson_settings['lesson_materials_enabled'] = '';
+									if ( ( isset( $lesson_settings['lesson_materials'] ) ) && ( ! empty( $lesson_settings['lesson_materials'] ) ) ) {
+										$lesson_settings['lesson_materials_enabled'] = 'on';
+									}
+								}
+
+								if ( ( 'on' === $lesson_settings['lesson_materials_enabled'] ) && ( ! empty( $lesson_settings['lesson_materials'] ) ) ) {
+									$materials = wp_specialchars_decode( $lesson_settings['lesson_materials'], ENT_QUOTES );
+									if ( ! empty( $materials ) ) {
+										$materials = do_shortcode( $materials );
+										$materials = wpautop( $materials );
+									}
+								}
+
+								// We insert the Course started record before the Lesson.
+								$course_args = array(
+									'course_id'        => $course_id,
+									'user_id'          => $current_user->ID,
+									'post_id'          => $course_id,
+									'activity_type'    => 'course',
+									'activity_status'  => false,
+									'activity_started' => time(),
+									'activity_meta'    => array(
+										'steps_total'     => learndash_get_course_steps_count( $course_id ),
+										'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
+										'steps_last_id'   => $post->ID,
+									),
+								);
+
+								$course_activity = learndash_get_user_activity( $course_args );
+								if ( ( ! $course_activity ) || ( empty( $course_activity->activity_started ) ) ) {
+									learndash_update_user_activity( $course_args );
+								}
+
+								$lesson_args     = array(
+									'course_id'        => $course_id,
+									'user_id'          => $current_user->ID,
+									'post_id'          => $post->ID,
+									'activity_type'    => 'lesson',
+									'activity_status'  => false,
+									'activity_started' => time(),
+									'activity_meta'    => array(
+										'steps_total'     => learndash_get_course_steps_count( $course_id ),
+										'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
+									),
+								);
+								$lesson_activity = learndash_get_user_activity( $lesson_args );
+								if ( ( ! $lesson_activity ) || ( empty( $lesson_activity->activity_started ) ) ) {
+									learndash_update_user_activity( $lesson_args );
+								}
 							}
-						}
 
-						$level = ob_get_level();
-						ob_start();
-						$template_file = SFWD_LMS::get_template( 'lesson', null, null, true );
-						if ( ! empty( $template_file ) ) {
-							include $template_file;
-						}
-						$content = learndash_ob_get_clean( $level );
+							// Added logic for Lesson Videos.
+							if ( ( defined( 'LEARNDASH_LESSON_VIDEO' ) ) && ( true === LEARNDASH_LESSON_VIDEO ) ) {
+								if ( $show_content ) {
+									$ld_course_videos = Learndash_Course_Video::get_instance();
+									$content          = $ld_course_videos->add_video_to_content( $content, $post, $lesson_settings );
+								}
+							}
 
-					} elseif ( 'sfwd-topic' === $this->post_type ) {
-						learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
+							$level = ob_get_level();
+							ob_start();
+							$template_file = SFWD_LMS::get_template( 'lesson', null, null, true );
+							if ( ! empty( $template_file ) ) {
+								include $template_file;
+							}
+							$content = learndash_ob_get_clean( $level );
 
-						$course_id = learndash_get_course_id( $post );
-						$lesson_id = learndash_course_get_single_parent_step( $course_id, $post->ID );
+						} elseif ( 'sfwd-topic' === $this->post_type ) {
+							learndash_check_convert_settings_to_single( $post->ID, $this->post_type );
 
-						if ( $lesson_progression_enabled ) {
-							$lesson_post               = get_post( $lesson_id );
-							$previous_topic_completed  = is_previous_complete( $post );
-							$previous_lesson_completed = is_previous_complete( $lesson_post );
+							$course_id = learndash_get_course_id( $post );
+							$lesson_id = learndash_course_get_single_parent_step( $course_id, $post->ID );
 
-							if ( ( learndash_is_admin_user( $user_id ) ) && ( $bypass_course_limits_admin_users ) ) {
-								$previous_lesson_completed = $previous_topic_completed = true;
-								remove_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
+							if ( $lesson_progression_enabled ) {
+								$lesson_post               = get_post( $lesson_id );
+								$previous_topic_completed  = is_previous_complete( $post );
+								$previous_lesson_completed = is_previous_complete( $lesson_post );
+
+								if ( ( learndash_is_admin_user( $user_id ) ) && ( $bypass_course_limits_admin_users ) ) {
+									$previous_lesson_completed = true;
+									$previous_topic_completed  = true;
+									remove_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
+								} else {
+									/** This filter is documented in includes/class-ld-cpt-instance.php */
+									$previous_topic_completed  = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $post ), $post->ID, $user_id );
+									/** This filter is documented in includes/class-ld-cpt-instance.php */
+									$previous_lesson_completed = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $lesson_post ), $lesson_post->ID, $user_id );
+								}
+								$show_content = ( $previous_topic_completed && $previous_lesson_completed );
+
 							} else {
-
-								$previous_topic_completed  = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $post ), $post->ID, $user_id );
-								$previous_lesson_completed = apply_filters( 'learndash_previous_step_completed', is_previous_complete( $lesson_post ), $lesson_post->ID, $user_id );
+								$previous_topic_completed  = true;
+								$previous_lesson_completed = true;
+								$show_content              = true;
 							}
-							$show_content = ( $previous_topic_completed && $previous_lesson_completed );
 
-						} else {
-							$previous_topic_completed  = true;
-							$previous_lesson_completed = true;
-							$show_content              = true;
-						}
+							$quizzes = learndash_get_lesson_quiz_list( $post, null, $course_id );
+							$quizids = array();
 
-						$quizzes = learndash_get_lesson_quiz_list( $post, null, $course_id );
-						$quizids = array();
-
-						if ( ! empty( $quizzes ) ) {
-							foreach ( $quizzes as $quiz ) {
-								$quizids[ $quiz['post']->ID ] = $quiz['post']->ID;
-							}
-						}
-
-						if ( $lesson_progression_enabled && ( ! $previous_topic_completed || ! $previous_lesson_completed ) ) {
-							add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 );
-						}
-
-						if ( ! empty( $quizids ) ) {
-							$all_quizzes_completed = ! learndash_is_quiz_notcomplete( null, $quizids, false, $course_id );
-						} else {
-							$all_quizzes_completed = true;
-						}
-
-						$topics = learndash_topic_dots( $lesson_id, false, 'array', null, $course_id );
-
-						if ( $show_content ) {
-							$topic_settings = learndash_get_setting( $post );
-							$materials = '';
-							if ( ! isset( $topic_settings['topic_materials_enabled'] ) ) {
-								$topic_settings['topic_materials_enabled'] = '';
-								if ( ( isset( $topic_settings['topic_materials'] ) ) && ( ! empty( $topic_settings['topic_materials'] ) ) ) {
-									$topic_settings['topic_materials_enabled'] = 'on';
+							if ( ! empty( $quizzes ) ) {
+								foreach ( $quizzes as $quiz ) {
+									$quizids[ $quiz['post']->ID ] = $quiz['post']->ID;
 								}
 							}
 
-							if ( ( 'on' === $topic_settings['topic_materials_enabled'] ) && ( ! empty( $topic_settings['topic_materials'] ) ) ) {
-								$materials = wp_specialchars_decode( $topic_settings['topic_materials'], ENT_QUOTES );
-								if ( ! empty( $materials ) ) {
-									$materials = do_shortcode( $materials );
-									$materials = wpautop( $materials );
-								}
+							if ( $lesson_progression_enabled && ( ! $previous_topic_completed || ! $previous_lesson_completed ) ) {
+								add_filter( 'comments_array', 'learndash_remove_comments', 1, 2 );
 							}
 
-							// We insert the Course started record before the Topic.
-							$course_args     = array(
-								'course_id'        => $course_id,
-								'user_id'          => $current_user->ID,
-								'post_id'          => $course_id,
-								'activity_type'    => 'course',
-								'activity_status'  => false,
-								'activity_started' => time(),
-								'activity_meta'    => array(
-									'steps_total'     => learndash_get_course_steps_count( $course_id ),
-									'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
-									'steps_last_id'   => $post->ID,
-								),
-							);
-							$course_activity = learndash_get_user_activity( $course_args );
-							if ( ( ! $course_activity ) || ( empty( $course_activity->activity_started ) ) ) {
-								learndash_update_user_activity( $course_args );
+							if ( ! empty( $quizids ) ) {
+								$all_quizzes_completed = ! learndash_is_quiz_notcomplete( null, $quizids, false, $course_id );
+							} else {
+								$all_quizzes_completed = true;
 							}
 
-							$topic_args     = array(
-								'course_id'        => $course_id,
-								'user_id'          => $current_user->ID,
-								'post_id'          => $post->ID,
-								'activity_type'    => 'topic',
-								'activity_status'  => false,
-								'activity_started' => time(),
-								'activity_meta'    => array(
-									'steps_total'     => learndash_get_course_steps_count( $course_id ),
-									'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
-								),
-							);
-							$topic_activity = learndash_get_user_activity( $topic_args );
-							if ( ( ! $topic_activity ) || ( empty( $topic_activity->activity_started ) ) ) {
-								learndash_update_user_activity( $topic_args );
-							}
-						}
-						// $topic_settings = learndash_get_setting( $post );
-						// Added logic for Lesson Videos
-						if ( ( defined( 'LEARNDASH_LESSON_VIDEO' ) ) && ( true === LEARNDASH_LESSON_VIDEO ) ) {
+							$topics = learndash_topic_dots( $lesson_id, false, 'array', null, $course_id );
+
 							if ( $show_content ) {
-								$ld_course_videos = Learndash_Course_Video::get_instance();
-								$content          = $ld_course_videos->add_video_to_content( $content, $post, $topic_settings );
+								$topic_settings = learndash_get_setting( $post );
+								$materials      = '';
+								if ( ! isset( $topic_settings['topic_materials_enabled'] ) ) {
+									$topic_settings['topic_materials_enabled'] = '';
+									if ( ( isset( $topic_settings['topic_materials'] ) ) && ( ! empty( $topic_settings['topic_materials'] ) ) ) {
+										$topic_settings['topic_materials_enabled'] = 'on';
+									}
+								}
+
+								if ( ( 'on' === $topic_settings['topic_materials_enabled'] ) && ( ! empty( $topic_settings['topic_materials'] ) ) ) {
+									$materials = wp_specialchars_decode( $topic_settings['topic_materials'], ENT_QUOTES );
+									if ( ! empty( $materials ) ) {
+										$materials = do_shortcode( $materials );
+										$materials = wpautop( $materials );
+									}
+								}
+
+								// We insert the Course started record before the Topic.
+								$course_args     = array(
+									'course_id'        => $course_id,
+									'user_id'          => $current_user->ID,
+									'post_id'          => $course_id,
+									'activity_type'    => 'course',
+									'activity_status'  => false,
+									'activity_started' => time(),
+									'activity_meta'    => array(
+										'steps_total'     => learndash_get_course_steps_count( $course_id ),
+										'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
+										'steps_last_id'   => $post->ID,
+									),
+								);
+								$course_activity = learndash_get_user_activity( $course_args );
+								if ( ( ! $course_activity ) || ( empty( $course_activity->activity_started ) ) ) {
+									learndash_update_user_activity( $course_args );
+								}
+
+								$topic_args     = array(
+									'course_id'        => $course_id,
+									'user_id'          => $current_user->ID,
+									'post_id'          => $post->ID,
+									'activity_type'    => 'topic',
+									'activity_status'  => false,
+									'activity_started' => time(),
+									'activity_meta'    => array(
+										'steps_total'     => learndash_get_course_steps_count( $course_id ),
+										'steps_completed' => learndash_course_get_completed_steps( $current_user->ID, $course_id ),
+									),
+								);
+								$topic_activity = learndash_get_user_activity( $topic_args );
+								if ( ( ! $topic_activity ) || ( empty( $topic_activity->activity_started ) ) ) {
+									learndash_update_user_activity( $topic_args );
+								}
 							}
-						}
+							// $topic_settings = learndash_get_setting( $post );
+							// Added logic for Lesson Videos
+							if ( ( defined( 'LEARNDASH_LESSON_VIDEO' ) ) && ( true === LEARNDASH_LESSON_VIDEO ) ) {
+								if ( $show_content ) {
+									$ld_course_videos = Learndash_Course_Video::get_instance();
+									$content          = $ld_course_videos->add_video_to_content( $content, $post, $topic_settings );
+								}
+							}
 
-						$level = ob_get_level();
-						ob_start();
-						$template_file = SFWD_LMS::get_template( 'topic', null, null, true );
-						if ( ! empty( $template_file ) ) {
-							include $template_file;
-						}
-						$content = learndash_ob_get_clean( $level );
+							$level = ob_get_level();
+							ob_start();
+							$template_file = SFWD_LMS::get_template( 'topic', null, null, true );
+							if ( ! empty( $template_file ) ) {
+								include $template_file;
+							}
+							$content = learndash_ob_get_clean( $level );
 
-					} else {
-						// archive.
-						$content = $this->get_archive_content( $content );
+						} else {
+							// archive.
+							$content = $this->get_archive_content( $content );
+						}
 					}
 				}
+			} elseif ( learndash_get_post_type_slug( 'group' ) === $post->post_type ) {
+				$group_id = $post->ID;
+				$group    = $post;
+
+				if ( learndash_is_user_in_group( $user_id, $group_id ) ) {
+					$has_access   = true;
+					$group_status = learndash_get_user_group_status( $group_id, $user_id );
+				} else {
+					$has_access   = false;
+					$group_status = '';
+				}
+
+				$user_has_access = $has_access ? 'user_has_access' : 'user_has_no_access';
+
+				$group_certficate_link = '';
+				if ( $has_access ) {
+					$group_certficate_link = learndash_get_group_certificate_link( $group_id, $user_id );
+				}
+
+				$group_settings = learndash_get_setting( $post );
+				if ( ! is_array( $group_settings ) ) {
+					$group_settings = array();
+				}
+				$materials = '';
+				if ( ! isset( $group_settings['group_materials_enabled'] ) ) {
+					$group_settings['group_materials_enabled'] = '';
+					if ( ( isset( $group_settings['group_materials'] ) ) && ( ! empty( $group_settings['group_materials'] ) ) ) {
+						$group_settings['group_materials_enabled'] = 'on';
+					}
+				}
+
+				if ( ( 'on' === $group_settings['group_materials_enabled'] ) && ( ! empty( $group_settings['group_materials'] ) ) ) {
+					$materials = wp_specialchars_decode( $group_settings['group_materials'], ENT_QUOTES );
+					if ( ! empty( $materials ) ) {
+						$materials = do_shortcode( $materials );
+						$materials = wpautop( $materials );
+					}
+				}
+
+				$group_courses     = learndash_get_group_courses_list( $group_id );
+				$has_group_content = ( ( is_array( $group_courses ) ) && ( ! empty( $group_courses ) ) );
+
+				$level = ob_get_level();
+				ob_start();
+				$template_file = SFWD_LMS::get_template( 'group', null, null, true );
+				if ( ! empty( $template_file ) ) {
+					include $template_file;
+				}
+				$content = learndash_ob_get_clean( $level );
 			}
 
 			// Added this defined wrap in v2.1.8 as it was effecting <pre></pre>, <code></code> and other formatting of the content.
@@ -729,13 +778,14 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 			 *
 			 * @since 2.1.0
 			 *
-			 * @param  string  $content
+			 * @param string $content Post Content.
+			 * @param object $post    WP_Post Post Object.
 			 */
 			$content = apply_filters( 'learndash_content', $content, $post );
 			if ( true === $user_wrapper ) {
 				$content = '<div class="learndash learndash_post_' . $this->post_type . ' ' . $user_has_access . '"  id="learndash_post_' . $post->ID . '">' . $content . '</div>';
-			} 
-			
+			}
+
 			return $content;
 
 		} // end template_content()
@@ -787,8 +837,6 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 					 * @link https://codex.wordpress.org/Function_Reference/do_robots
 					 */
 					do_action( 'do_robots' );
-				//} elseif ( is_feed() ) {
-				//	do_feed();
 				} elseif ( is_trackback() ) {
 					include ABSPATH . 'wp-trackback.php';
 				} elseif ( ! empty( $wp->query_vars['name'] ) ) {
@@ -796,6 +844,63 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 					if ( ( 'sfwd-quiz' === $post_type ) || ( 'sfwd-lessons' === $post_type ) || ( 'sfwd-topic' === $post_type ) ) {
 						global $post;
 						sfwd_lms_access_redirect( $post->ID );
+					}
+				}
+			}
+
+			if ( ( 'groups' === $this->post_type ) && ( 'sfwd-certificates' === $post_type ) ) {
+				if ( is_user_logged_in() ) {
+					if ( ( isset( $_GET['group_id'] ) ) && ( ! empty( $_GET['group_id'] ) ) ) {
+						$group_id = absint( $_GET['group_id'] );
+
+						if ( ( ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) && ( ( isset( $_GET['user'] ) ) && ( ! empty( $_GET['user'] ) ) ) ) {
+							$cert_user_id = absint( $_GET['user'] );
+						} else {
+							$cert_user_id = get_current_user_id();
+						}
+
+						$view_user_id = get_current_user_id();
+
+						if ( ( isset( $_GET['cert-nonce'] ) ) && ( ! empty( $_GET['cert-nonce'] ) ) ) {
+							if ( wp_verify_nonce( esc_attr( $_GET['cert-nonce'] ), $group_id . $cert_user_id . $view_user_id ) ) {
+
+								$group_status = learndash_get_user_group_status( $group_id, $cert_user_id, true );
+								if ( 'completed' === $group_status ) {
+									if ( ( ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) && ( intval( $cert_user_id ) !== intval( $view_user_id ) ) ) {
+										wp_set_current_user( $cert_user_id );
+									}
+
+									if ( has_action( 'learndash_tcpdf_init' ) ) {
+										/**
+										 * Fires on tcpdf initialization.
+										 *
+										 * @since 3.2.0
+										 *
+										 * @param int $cert_id      Certificate Post ID.
+										 * @param int $cert_user_id User ID.
+										 * @param int post-id       Related Course, Quiz post ID.
+										 */
+										do_action(
+											'learndash_tcpdf_init',
+											array(
+												'cert_id' => $post->ID,
+												'user_id' => $cert_user_id,
+												'post_id' => $group_id,
+											)
+										);
+									} else {
+										require_once __DIR__ . '/ld-convert-post-pdf.php';
+										learndash_certificate_post_shortcode(
+											array(
+												'cert_id' => $post->ID,
+												'user_id' => $cert_user_id,
+												'post_id' => $group_id,
+											)
+										);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -826,11 +931,26 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 										wp_set_current_user( $cert_user_id );
 									}
 
-									/**
-									 * Include library to generate PDF
-									 */
-									require_once __DIR__ . '/ld-convert-post-pdf.php';
-									post2pdf_conv_post_to_pdf();
+									/** This filter is documented in includes/class-ld-cpt-instance.php */
+									if ( has_action( 'learndash_tcpdf_init' ) ) {
+										do_action(
+											'learndash_tcpdf_init',
+											array(
+												'cert_id' => $post->ID,
+												'user_id' => $cert_user_id,
+												'post_id' => $course_id,
+											)
+										);
+									} else {
+										require_once __DIR__ . '/ld-convert-post-pdf.php';
+										learndash_certificate_post_shortcode(
+											array(
+												'cert_id' => $post->ID,
+												'user_id' => $cert_user_id,
+												'post_id' => $course_id,
+											)
+										);
+									}
 									die();
 								}
 							}
@@ -875,16 +995,15 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 					if ( ! empty( $cert_post ) && ( intval( $cert_post ) == intval( $post->ID ) ) ) {
 
 						if ( ( isset( $_GET['cert-nonce'] ) ) && ( ! empty( $_GET['cert-nonce'] ) ) && ( wp_verify_nonce( $_GET['cert-nonce'], $quiz_id . $cert_user_id . $view_user_id ) ) ) {
-							$time              = isset( $_GET['time'] ) ? intval( $_GET['time'] ) : -1;
-							$quizinfo          = get_user_meta( $cert_user_id, '_sfwd-quizzes', true );
-							$selected_quizinfo = $selected_quizinfo2 = null;
+							$time               = isset( $_GET['time'] ) ? intval( $_GET['time'] ) : -1;
+							$quizinfo           = get_user_meta( $cert_user_id, '_sfwd-quizzes', true );
+							$selected_quizinfo  = null;
+							$selected_quizinfo2 = null;
 
 							if ( ! empty( $quizinfo ) ) {
 								foreach ( $quizinfo as $quiz_i ) {
 
-									if ( 
-										( ( isset( $quiz_i['time'] ) ) && intval( $quiz_i['time'] ) == intval( $time ) ) 
-										&& ( intval( $quiz_i['quiz'] ) === intval( $quiz_id ) ) ) {
+									if ( ( ( isset( $quiz_i['time'] ) ) && intval( $quiz_i['time'] ) == intval( $time ) ) && ( intval( $quiz_i['quiz'] ) === intval( $quiz_id ) ) ) {
 										$selected_quizinfo = $quiz_i;
 										break;
 									}
@@ -911,15 +1030,33 @@ if ( ! class_exists( 'SFWD_CPT_Instance' ) ) {
 							wp_set_current_user( $cert_user_id );
 						}
 
-						/**
-						 * Include library to generate PDF
-						 */
-						require_once __DIR__ . '/ld-convert-post-pdf.php';
-						post2pdf_conv_post_to_pdf();
+						if ( has_action( 'learndash_tcpdf_init' ) ) {
+							/** This filter is documented in includes/class-ld-cpt-instance.php */
+							do_action(
+								'learndash_tcpdf_init',
+								array(
+									'cert_id' => $cert_id,
+									'user_id' => $cert_user_id,
+									'post_id' => $selected_quizinfo['quiz'],
+								)
+							);
+						} else {
+							/**
+							 * Include library to generate PDF
+							 */
+							require_once __DIR__ . '/ld-convert-post-pdf.php';
+							learndash_certificate_post_shortcode(
+								array(
+									'cert_id' => $cert_id,
+									'user_id' => $cert_user_id,
+									'post_id' => $selected_quizinfo['quiz'],
+								)
+							);
+						}
 						die();
 					} else {
-						esc_html_e( 'Access to certificate page is disallowed.', 'learndash' );
-						die();
+						//esc_html_e( 'Access to certificate page is disallowed.', 'learndash' );
+						//die();
 					}
 				}
 			}

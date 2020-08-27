@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_Import extends WpProQuiz_View_View {
 	
 	public function show() {
@@ -34,12 +38,7 @@ class WpProQuiz_View_Import extends WpProQuiz_View_View {
 			<?php
 				$edit_link = '';
 				if ( $this->import_post_id ) {
-					$edit_link = '<a href="'. get_edit_post_link( $this->import_post_id ) .'">' . 
-					sprintf( 
-						// translators: placeholder: Quiz Title.
-						esc_html_x('%s', 'placeholder: Quiz Title', 'learndash'),
-						get_the_title( $this->import_post_id )
-					) . '</a>';
+					$edit_link = '<a href="'. get_edit_post_link( $this->import_post_id ) .'">' . get_the_title( $this->import_post_id ) . '</a>';
 				}
 			
 				echo wpautop( 
@@ -52,24 +51,15 @@ class WpProQuiz_View_Import extends WpProQuiz_View_View {
 			?>
 		</div>
 	</div>
-	<?php
-	/*
-		echo wpautop( '<a href="'. admin_url( 'admin.php?page=ldAdvQuiz' ) .'">' . 
-			sprintf(
-				// translators: placeholder: Quiz.
-				esc_html_x( 'Return to %s Import/Export.', 'placeholder: Quiz', 'learndash' ), 
-				LearnDash_Custom_Label::get_label( 'quiz' )
-			) . '</a>'
-		); 
-	*/		
-		?>
 	<?php } else { ?>
 	<form method="post">
 		<table class="wp-list-table widefat">
 			<thead>
 				<tr>
 					<th scope="col" width="30px"></th>
-					<th scope="col" width="40%"><?php echo sprintf( esc_html_x('%s name', 'Quiz name', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></th>
+					<th scope="col" width="40%"><?php 
+					// translators: placeholder: Quiz.
+					echo sprintf( esc_html_x('%s name', 'placeholder: Quiz', 'learndash'), LearnDash_Custom_Label::get_label( 'quiz' )); ?></th>
 					<th scope="col"><?php esc_html_e('Questions', 'learndash'); ?></th>
 				</tr>
 			</thead>

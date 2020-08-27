@@ -1,11 +1,22 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Extra sanity check that this lesson has quizzes
 if ( ! empty( $quizzes ) ) :
 
 	/**
-	 * Action to add custom content before topic list
+	 * Fires before the quiz list.
 	 *
-	 * @since 3.0
+	 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+	 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int|false $post_id   Post ID.
+	 * @param int       $course_id Course ID.
+	 * @param int       $user_id   User ID.
 	 */
 	do_action( 'learndash-' . $context . '-quiz-list-before', get_the_ID(), $course_id, $user_id );
 	$is_sample = false;
@@ -20,9 +31,16 @@ if ( ! empty( $quizzes ) ) :
 		<div class="ld-table-list-header ld-primary-background">
 			<?php
 			/**
-			 * Action to add custom content before quiz listing header
+			 * Fires before the quiz listing header.
 			 *
-			 * @since 3.0
+			 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+			 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param int|false $post_id   Post ID.
+			 * @param int       $course_id Course ID.
+			 * @param int       $user_id   User ID.
 			 */
 			do_action( 'learndash-' . $context . '-quiz-list-heading-before', get_the_ID(), $course_id, $user_id );
 			?>
@@ -31,9 +49,16 @@ if ( ! empty( $quizzes ) ) :
 
 			<?php
 			/**
-			 * Action to add custom content before the lesson progress stats
+			 * Fires before the lesson progress stats.
 			 *
-			 * @since 3.0
+			 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+			 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param int|false $post_id   Post ID.
+			 * @param int       $course_id Course ID.
+			 * @param int       $user_id   User ID.
 			 */
 			do_action( 'learndash-' . $context . '-quiz-list-progress-before', get_the_ID(), $course_id, $user_id );
 			?>
@@ -51,18 +76,32 @@ if ( ! empty( $quizzes ) ) :
 
 				<?php
 				/**
-				 * Action to add custom content after the lesson progress stats
+				 * Fires after the lesson progress stats.
 				 *
-				 * @since 3.0
+				 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+				 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+				 *
+				 * @param int|false $post_id Post ID.
+				 * @param int       $course_id Course ID.
+				 * @param int       $user_id   User ID.
+				 *
+				 * @since 3.0.0
 				 */
 				do_action( 'learndash-' . $context . '-quiz-list-progress-after', get_the_ID(), $course_id, $user_id );
 				?>
 
 				<?php
 				/**
-				 * Action to add custom content after topic listing header
+				 * Fires after the topic listing header.
 				 *
-				 * @since 3.0
+				 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+				 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+				 *
+				 * @param int|false $post_id Post ID.
+				 * @param int       $course_id Course ID.
+				 * @param int       $user_id   User ID.
+				 *
+				 * @since 3.0.0
 				 */
 				do_action( 'learndash-' . $context . '-quiz-list-heading-after', get_the_ID(), $course_id, $user_id );
 				?>
@@ -96,9 +135,16 @@ if ( ! empty( $quizzes ) ) :
 
 	<?php
 	/**
-	 * Action to add custom content after topic list
+	 * Fires after the quiz list.
 	 *
-	 * @since 3.0
+	 * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+	 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+	 *
+	 * @param int|false $post_id   Post ID.
+	 * @param int       $course_id Course ID.
+	 * @param int       $user_id   User ID.
+	 *
+	 * @since 3.0.0
 	 */
 	do_action( 'learndash-' . $context . '-quiz-list-after', get_the_ID(), $course_id, $user_id );
 	?>

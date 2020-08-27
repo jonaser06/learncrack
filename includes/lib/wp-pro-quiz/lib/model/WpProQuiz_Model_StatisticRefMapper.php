@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_StatisticRefMapper extends WpProQuiz_Model_Mapper {
 	
 	public function fetchAll($quizId, $userId, $testId = 0) {
@@ -333,11 +337,35 @@ class WpProQuiz_Model_StatisticRefMapper extends WpProQuiz_Model_Mapper {
 		return $r;
 	}
 	
-	public function fetchHistory($quizId, $page, $limit, $users = -1, $startTime = 0, $endTime = 0) {
-		$where = '';
+	public function fetchHistory($quizId = 0, $page = 1, $limit = '', $users = -1, $startTime = 0, $endTime = 0 ) {
+		return $this->fetchHistoryWithArgs(
+			array(
+				'quizId'    => $quizId,
+				'page'      => $page,
+				'limit'     => $limit,
+				'users'     => $users,
+				'startTime' => $startTime,
+				'endTime'   => $endTime,
+			)
+		);
+	}
+
+	public function fetchHistoryWithArgs( $args = array() ) {
+		$where     = '';
 		$timeWhere = '';
-		
-		switch ($users) {
+
+		$default_args = array(
+			'quizId'    => 0,
+			'quiz'      => 0,
+			'page'      => 0,
+			'limit'     => '',
+			'users'     => -1,
+			'startTime' => 0,
+			'endTime'   => 0,
+		);
+		$args = wp_parse_args( $args, $default_args );
+
+		switch ( $args['users'] ) {
 			case -3: //only anonym
 				$where = 'AND user_id = 0';
 				break;
@@ -348,19 +376,31 @@ class WpProQuiz_Model_StatisticRefMapper extends WpProQuiz_Model_Mapper {
 				$where = '';
 				break;
 			default:
-				$where = 'AND user_id = '.(int)$users;
+				$where = 'AND user_id = '.(int)$args['users'];
 				break;
 		}
 		
-		if($startTime)
-			$timeWhere = 'AND create_time >= '.(int)$startTime;
+		if($args['startTime'])
+			$timeWhere = 'AND create_time >= '.(int)$args['startTime'];
 		
-		if($endTime)
-			$timeWhere .= ' AND create_time <= '.(int)$endTime;
+		if($args['endTime'])
+			$timeWhere .= ' AND create_time <= '.(int)$args['endTime'];
 		
+		$where = $where . ' ' . $timeWhere;
+
+		/**
+		 * Filter Quiz Statistics History Where clause.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param striing $where Where clause.
+		 * @param array   $args  Query args.
+		 */
+		$where = apply_filters( 'learndash_fetch_quiz_statistic_history_where', $where, $args );
+
 		$result = $this->_wpdb->get_results(
-				$this->_wpdb->prepare('
-				SELECT
+			$this->_wpdb->prepare(
+				'SELECT
 					u.`user_login`, u.`display_name`, u.ID AS user_id,
 					sf.*,
 					SUM(s.correct_count) AS correct_count,
@@ -373,15 +413,15 @@ class WpProQuiz_Model_StatisticRefMapper extends WpProQuiz_Model_Mapper {
 					LEFT JOIN '.$this->_wpdb->users.' AS u ON(u.ID = sf.user_id)
 					INNER JOIN '.$this->_tableQuestion.' AS q ON(q.id = s.question_id)
 				WHERE
-					sf.quiz_id = %d AND sf.is_old = 0 '.$where.' '.$timeWhere.'
+					sf.quiz_id = %d AND sf.is_old = 0 ' . $where . '
 				GROUP BY
 					sf.statistic_ref_id
 				ORDER BY
 					sf.create_time DESC
 				LIMIT
 					%d, %d
-			', $quizId, $page, $limit),
-				ARRAY_A
+			', $args['quizId'], $args['page'], $args['limit'] ),
+			ARRAY_A
 		);
 		
 		$r = array();
@@ -480,54 +520,89 @@ class WpProQuiz_Model_StatisticRefMapper extends WpProQuiz_Model_Mapper {
 	}
 	
 	public function fetchStatisticOverview($quizId, $onlyCompleded, $start, $limit) {
-		$a = array();
+		return $this->fetchStatisticOverview(
+			array(
+				'quizId' => $quizId,
+				'onlyCompleded'  => $onlyCompleded,
+				'start'  => $start,
+				'limit'  => $limit,
+			)
+		);
+	}
 
-		$results = $this->_wpdb->get_results(
-			$this->_wpdb->prepare(
-					'(
-						SELECT
-							u.`user_login`, u.`display_name`, u.ID AS user_id,
-							SUM(s.`correct_count`) as correct_count,
-							SUM(s.`incorrect_count`) as incorrect_count,
-							SUM(s.`hint_count`) as hint_count,
-							SUM(s.`points`) as points,
-							AVG(s.question_time) as question_time,
-							SUM(q.points * (s.correct_count + s.incorrect_count)) AS g_points
-						FROM
-							'.$this->_wpdb->users.' AS u
-							'.($onlyCompleded ? 'INNER' : 'LEFT').' JOIN '.$this->_tableStatisticRef.' AS sf ON (sf.user_id = u.ID AND sf.quiz_id = %d)
-							LEFT JOIN '.$this->_tableStatistic.' AS s ON ( s.statistic_ref_id = sf.statistic_ref_id )
-							LEFT JOIN '.$this->_tableQuestion.' AS q ON(q.id = s.question_id)
-						GROUP BY u.ID
-					)
-						UNION
-					(
-						SELECT
-							NULL, NULL, 0,
-							SUM(s.`correct_count`) as correct_count,
-							SUM(s.`incorrect_count`) as incorrect_count,
-							SUM(s.`hint_count`) as hint_count,
-							SUM(s.`points`) as points,
-							AVG(s.question_time) as question_time,
-							SUM(q.points * (s.correct_count + s.incorrect_count)) AS g_points
-						FROM
-							'.$this->_tableMaster.' AS m 
-							'.($onlyCompleded ? 'INNER' : 'LEFT').' JOIN '.$this->_tableStatisticRef.' AS sf ON(sf.quiz_id = m.id AND sf.user_id = 0)
-							LEFT JOIN '.$this->_tableStatistic.' AS s ON (s.statistic_ref_id = sf.statistic_ref_id)
-							LEFT JOIN '.$this->_tableQuestion.' AS q ON (q.id = s.question_id)
-						WHERE
-							m.id = %d
-						GROUP BY sf.user_id
-					)
+	public function fetchStatisticOverviewWithArgs( $args = array() ) {
+		$a = array();
+		$where = '';
+		
+		$default_args = array(
+			'quizId'        => 0,
+			'quiz'          => 0,
+			'onlyCompleded' => '',
+			'start'         => 0,
+			'limit'         => 50,
+		);
+
+		$args = wp_parse_args( $args, $default_args );
+		
+		/**
+		 * Filter Quiz Statistics Overview Where clause.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param striing $where Where clause.
+		 * @param array   $args  Query args.
+		 */
+
+		$where = apply_filters( 'learndash_fetch_quiz_statistic_overview_where', $where, $args );
+		
+		$sql =	$this->_wpdb->prepare(
+			'(
+				SELECT
+					u.`user_login`, u.`display_name`, u.ID AS user_id,
+					SUM(s.`correct_count`) as correct_count,
+					SUM(s.`incorrect_count`) as incorrect_count,
+					SUM(s.`hint_count`) as hint_count,
+					SUM(s.`points`) as points,
+					AVG(s.question_time) as question_time,
+					SUM(q.points * (s.correct_count + s.incorrect_count)) AS g_points
+				FROM
+					' . $this->_wpdb->users . ' AS u
+					'. ( $args['onlyCompleded'] ? 'INNER' : 'LEFT') . ' JOIN ' . $this->_tableStatisticRef . ' AS sf ON (sf.user_id = u.ID AND sf.quiz_id = %d)
+					LEFT JOIN ' . $this->_tableStatistic . ' AS s ON ( s.statistic_ref_id = sf.statistic_ref_id )
+					LEFT JOIN ' . $this->_tableQuestion . ' AS q ON(q.id = s.question_id) 
+					WHERE 1=1 ' . $where .' 
+				GROUP BY u.ID
+			)
+			UNION
+			(
+				SELECT
+					NULL, NULL, 0,
+					SUM(s.`correct_count`) as correct_count,
+					SUM(s.`incorrect_count`) as incorrect_count,
+					SUM(s.`hint_count`) as hint_count,
+					SUM(s.`points`) as points,
+					AVG(s.question_time) as question_time,
+					SUM(q.points * (s.correct_count + s.incorrect_count)) AS g_points
+				FROM
+					' . $this->_tableMaster . ' AS m 
+					' . ( $args['onlyCompleded'] ? 'INNER' : 'LEFT' ) . ' JOIN ' . $this->_tableStatisticRef . ' AS sf ON(sf.quiz_id = m.id AND sf.user_id = 0)
+					LEFT JOIN ' . $this->_tableStatistic . ' AS s ON (s.statistic_ref_id = sf.statistic_ref_id)
+					LEFT JOIN ' . $this->_tableQuestion . ' AS q ON (q.id = s.question_id)
+				WHERE
+					m.id = %d
+				GROUP BY sf.user_id
+			)
 					
-					ORDER BY 
-						user_login
-					LIMIT
-						%d, %d',
-				$quizId, $quizId, $start, $limit),
-			ARRAY_A
+			ORDER BY 
+				user_login
+			LIMIT
+				%d, %d',
+			$args['quizId'], $args['quizId'], $args['start'], $args['limit']
 		);
 			
+		//);
+		//error_log( 'sql[' . $sql . ']' );
+		$results = $this->_wpdb->get_results( $sql, ARRAY_A );
 		foreach($results as $row) {
 			if(!empty($row['user_login']))
 				$row['user_name'] = $row['user_login'] . ' ('. $row['display_name'] .')';

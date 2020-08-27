@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 	class Learndash_Admin_Data_Reports_Courses extends Learndash_Admin_Settings_Data_Reports {
 		
@@ -43,7 +47,9 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 			?>
 			<tr id="learndash-data-reports-container-<?php echo $this->data_slug ?>" class="learndash-data-reports-container">
 				<td class="learndash-data-reports-button-container" style="width:20%">
-					<button class="learndash-data-reports-button button button-primary" data-nonce="<?php echo wp_create_nonce( 'learndash-data-reports-'. $this->data_slug .'-'. get_current_user_id() ); ?>" data-slug="<?php echo $this->data_slug ?>"><?php printf( esc_html_x( 'Export User %s Data', 'Export User Course Data Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></button></td>
+					<button class="learndash-data-reports-button button button-primary" data-nonce="<?php echo wp_create_nonce( 'learndash-data-reports-'. $this->data_slug .'-'. get_current_user_id() ); ?>" data-slug="<?php echo $this->data_slug ?>"><?php 
+					// translators: Export User Course Data Label.
+					printf( esc_html_x( 'Export User %s Data', 'Export User Course Data Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></button></td>
 				<td class="learndash-data-reports-status-container" style="width: 80%">
 					
 					<div style="display:none;" class="meter learndash-data-reports-status">
@@ -271,15 +277,18 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 								$this->csv_parse->output_filename = $this->report_filename;
 
 								// legacy 
+								/** This filter is documented in includes/class-ld-lms.php */
 								$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, 'courses' );
 
-								/**
-								 * Filter to override CSV object attributes
-								 * @since 2.4.7
-								 * This is basically the same as the above line with the exeption of the last param used 
-								 * being the proper data slug instead of just 'courses'.
-								 */
+								/** This filter is documented in includes/class-ld-lms.php */
 								$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, $this->data_slug );
+
+								/**
+								 * Filters CSV data.
+								 *
+								 * @param array  $csv_data  An array of CSV data.
+								 * @param string $data_slug The slug of the data in the CSV.
+								 */
 								$course_progress_data = apply_filters('learndash_csv_data', $course_progress_data, $this->data_slug );
 
 								$save_ret = $this->csv_parse->save( $this->report_filename, $course_progress_data, true, wp_list_pluck( $this->data_headers, 'label' ) );
@@ -289,6 +298,7 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 						
 						$data['result_count'] 		= 	$data['total_count'] - count( $this->transient_data['users_ids'] );
 						$data['progress_percent'] 	= 	( $data['result_count'] / $data['total_count'] ) * 100;
+						// translators: placeholders: result count, total count.
 						$data['progress_label']		= 	sprintf( esc_html_x('%1$d of %2$s Users', 'placeholders: result count, total count', 'learndash'), $data['result_count'], $data['total_count']);
 			
 					}
@@ -348,7 +358,11 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
-		
+			/**
+			 * Filters data reports headers.
+			 *
+			 * @param array $data_headers An array of data report header details.
+			 */
 			$this->data_headers = apply_filters('learndash_data_reports_headers', $this->data_headers, $this->data_slug );
 		}
 
@@ -358,17 +372,14 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 				$this->csv_parse->output_filename = $this->report_filename;
 
 				// legacy 
+				/** This filter is documented in includes/class-ld-lms.php */
 				$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, 'courses' );
 				
 
-				/**
-				 * Filter to override CSV object attributes
-				 * @since 2.4.7
-				 * This is basically the same as the above line with the exeption of the last param used 
-				 * being the proper data slug instead of just 'courses'.
-				 */
+				/** This filter is documented in includes/class-ld-lms.php */
 				$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, $this->data_slug );
-				
+
+				/** This filter is documented in includes/admin/classes-data-reports-actions/class-learndash-admin-data-reports-user-courses.php */
 				$this->data_headers = apply_filters('learndash_csv_data', $this->data_headers, $this->data_slug );
 
 				$this->csv_parse->save( $this->report_filename, array(), false, wp_list_pluck( $this->data_headers, 'label' ) );
@@ -391,7 +402,13 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 		
 			// Because we on;y want to store the relative path 
 			//$ld_wp_upload_filename = str_replace( ABSPATH, '', $ld_wp_upload_filename );
-		
+			
+			/**
+			 * Filters data report file path.
+			 *
+			 * @param string $report_file_name The name of the report file path.
+			 * @param string $data_slug       The slug of the data in the CSV.
+			 */
 			$this->transient_data['report_filename'] = apply_filters( 'learndash_report_filename', $ld_wp_upload_filename, $this->data_slug );
 
 			//$this->transient_data['report_url'] = $wp_upload_dir['baseurl'] . $ld_file_part;
@@ -514,8 +531,15 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 					break;
 			}
 			/**
-			 * Allow filtering of the report column data
+			 * Filters report column data.
+			 *
 			 * @since 2.4.7
+			 *
+			 * @param int|string $column_value Report column value.
+			 * @param string     $column_key   Column key.
+			 * @param object     $report_item  Report Item.
+			 * @param WP_User    $report_user  WP_User object.
+			 * @param string     $data_slug    The slug of the data in the CSV.
 			 */
 			return apply_filters('learndash_report_column_item', $column_value, $column_key, $report_item, $report_user, $this->data_slug );
 		}

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_View_AdminToplist extends WpProQuiz_View_View {
 	
 	public function show() {
@@ -42,7 +46,8 @@ class WpProQuiz_View_AdminToplist extends WpProQuiz_View_View {
 		</div>
 	</div>
 	
-	<div id="wpProQuiz_loadData" class="wpProQuiz_blueBox" style="background-color: #F8F5A8;padding: 20px;border: 1px dotted;margin-top: 10px;">
+	<div id="wpProQuiz_nonce" data-nonce="<?php echo wp_create_nonce( 'wpProQuiz_nonce' ); ?>" style="display:none;"></div>
+	<div id="wpProQuiz_loadData" class="wpProQuiz_blueBox 1" data-nonce="<?php echo wp_create_nonce( 'learndash-wpproquiz-toplist' ); ?>" style="background-color: #F8F5A8;padding: 20px;border: 1px dotted;margin-top: 10px;">
 		<img alt="load" src="<?php echo admin_url('/images/wpspin_light.gif'); ?>" />
 		<?php esc_html_e('Loading', 'learndash'); ?>
 	</div>

@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 // This file should not be used at all! Instead, please use Composer's autoload.
 // It purely exists to reduce the maintenance burden for existing code using
 // this repository.

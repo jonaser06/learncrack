@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'LearnDash_Shortcodes_Section_ld_lesson_list' ) ) ) {
 	class LearnDash_Shortcodes_Section_ld_lesson_list extends LearnDash_Shortcodes_Section {
 
@@ -6,9 +10,11 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 			$this->fields_args = $fields_args;
 
 			$this->shortcodes_section_key 			= 	'ld_lesson_list';
+			// translators: placeholder: Lesson.
 			$this->shortcodes_section_title 		= 	sprintf( esc_html_x( '%s List', 'placeholder: Lesson', 'learndash' ), LearnDash_Custom_Label::get_label( 'lesson' ) );
 			$this->shortcodes_section_type			=	1;
-			$this->shortcodes_section_description	=	sprintf( wp_kses_post( _x( "This shortcode shows list of %s. You can use this shortcode on any page if you don't want to use the default <code>/%s/</code> page.", 'placeholders: lessons, lessons (URL slug)', 'learndash' ) ), learndash_get_custom_label_lower( 'lessons' ), LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_Permalinks', 'lessons' ) );
+			// translators: placeholders: lessons, lessons (URL slug).
+			$this->shortcodes_section_description	=	sprintf( wp_kses_post( _x( 'This shortcode shows list of %1$s. You can use this shortcode on any page if you do not want to use the default <code>/%2$s/</code> page.', 'placeholders: lessons, lessons (URL slug)', 'learndash' ) ), learndash_get_custom_label_lower( 'lessons' ), LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_Permalinks', 'lessons' ) );
 			parent::__construct(); 
 		}
 		
@@ -19,7 +25,9 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_course_id',
 					'name'  		=> 	'course_id', 
 					'type'  		=> 	'number',
+					// translators: placeholder: Course.
 					'label' 		=> 	sprintf( esc_html_x( '%s ID', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ),
+					// translators: placeholders: Course, Courses.
 					'help_text'		=>	sprintf( esc_html_x( 'Enter single %1$s ID. Leave blank for all %2$s.', 'placeholders: Course, Courses', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ), LearnDash_Custom_Label::get_label( 'courses' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
@@ -32,6 +40,7 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'help_text'		=>	wp_kses_post( __( 'See <a target="_blank" href="https://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters">the full list of available orderby options here.</a>', 'learndash' ) ),
 					'value' 		=> 	'ID',
 					'options'		=>	array(
+											// translators: placeholder: course.
 											''	 		 => sprintf( esc_html_x('Order by %s. (default)', 'placeholder: course', 'learndash'), learndash_get_custom_label_lower( 'course' ) ),
 											'id'		 =>	esc_html__('ID - Order by post id.', 'learndash'),
 											'title'		 =>	esc_html__('Title - Order by post title', 'learndash'),
@@ -47,6 +56,7 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'help_text'		=>	esc_html__( 'Order', 'learndash' ),
 					'value' 		=> 	'ID',
 					'options'		=>	array(
+											// translators: placeholder: course.
 											''	 		 =>	sprintf( esc_html_x('Order per %s (default)', 'placeholder: course', 'learndash'), learndash_get_custom_label_lower( 'course' ) ),
 											'DESC'		 =>	esc_html__('DESC - highest to lowest values', 'learndash'),
 											'ASC'		 =>	esc_html__('ASC - lowest to highest values', 'learndash'),
@@ -56,8 +66,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_num',
 					'name'  		=> 	'num', 
 					'type'  		=> 	'number',
-					'label' 		=> 	sprintf( esc_html_x( '%s Per Page', 'placeholders: lessons', 'learndash' ), LearnDash_Custom_Label::get_label( 'lessons' ) ),
-					'help_text'		=>	sprintf( esc_html_x( '%1$s per page. Default is %2$d. Set to zero for all.', 'placeholders: lessons, default per page', 'learndash' ), LearnDash_Custom_Label::get_label( 'lessons' ), LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Section_General_Per_Page', 'per_page' ) ),
+					// translators: placeholder: Lessons.
+					'label' 		=> 	sprintf( esc_html_x( '%s Per Page', 'placeholder: Lessons', 'learndash' ), LearnDash_Custom_Label::get_label( 'lessons' ) ),
+					// translators: placeholders: Lessons, default per page.
+					'help_text'		=>	sprintf( esc_html_x( '%1$s per page. Default is %2$d. Set to zero for all.', 'placeholders: Lessons, default per page', 'learndash' ), LearnDash_Custom_Label::get_label( 'lessons' ), LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Section_General_Per_Page', 'per_page' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text',
 					'attrs'			=>	array(
@@ -69,7 +81,9 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . 'show_content',
 					'name'  		=> 	'show_content', 
 					'type'  		=> 	'select',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x( 'Show %s Content', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
+					// translators: placeholder: lesson.
 					'help_text'		=>	sprintf( esc_html_x( 'show %s content.', 'placeholders: lesson', 'learndash' ), learndash_get_custom_label_lower( 'lesson' ) ),
 					'value' 		=> 	'true',
 					'options'		=>	array(
@@ -81,7 +95,9 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . 'show_thumbnail',
 					'name'  		=> 	'show_thumbnail', 
 					'type'  		=> 	'select',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x( 'Show %s Thumbnail', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
+					// translators: placeholder: lesson.
 					'help_text'		=>	sprintf( esc_html_x( 'shows a %s thumbnail.', 'placeholders: lesson', 'learndash' ), learndash_get_custom_label_lower( 'lesson' ) ),
 					'value' 		=> 	'true',
 					'options'		=>	array(
@@ -114,7 +130,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'col', 
 					'type'  		=> 	'number',
 					'label' 		=> 	esc_html__('Columns','learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'number of columns to show when using %s grid addon', 'placeholders: course', 'learndash' ), learndash_get_custom_label_lower( 'course' ) ),
+					// translators: placeholder: course.
+					'help_text'		=>	sprintf( esc_html_x( 'number of columns to show when using %s grid addon', 'placeholder: course', 'learndash' ), learndash_get_custom_label_lower( 'course' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
 				);
@@ -126,8 +143,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_lesson_cat',
 					'name'  		=> 	'lesson_cat', 
 					'type'  		=> 	'number',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x('%s Category ID', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned category id.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned category id.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
 				);
@@ -136,7 +155,9 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_lesson_category_name',
 					'name'  		=> 	'lesson_category_name', 
 					'type'  		=> 	'text',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x('%s Category Slug', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
+					// translators: placeholder: lessons.
 					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned category slug.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 				);
@@ -145,8 +166,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_lesson_categoryselector',
 					'name'  		=> 	'lesson_categoryselector', 
 					'type'  		=> 	'checkbox',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x('%s Category Selector', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
-					'help_text'		=>	sprintf( esc_html_x( 'shows a %s category dropdown.', 'placeholders: lesson', 'learndash' ), learndash_get_custom_label_lower( 'lesson' ) ),
+					// translators: placeholder: lesson.
+					'help_text'		=>	sprintf( esc_html_x( 'shows a %s category dropdown.', 'placeholder: lesson', 'learndash' ), learndash_get_custom_label_lower( 'lesson' ) ),
 					'value' 		=> 	'',
 					'options'		=>	array(
 											'true'	=>	esc_html__('Yes', 'learndash'),
@@ -159,7 +182,9 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_lesson_tag_id',
 					'name'  		=> 	'lesson_tag_id', 
 					'type'  		=> 	'number',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x('%s Tag ID', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'Lesson' ) ),
+					// translators: placeholder: lessons.
 					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned tag id.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
@@ -169,8 +194,10 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'id'			=>	$this->shortcodes_section_key . '_lesson_tag',
 					'name'  		=> 	'lesson_tag', 
 					'type'  		=> 	'text',
+					// translators: placeholder: Lesson.
 					'label' 		=> 	sprintf( esc_html_x( '%s Tag Slug', 'placeholder: Lesson', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ) ),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned tag slug.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned tag slug.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 				);
 			}
@@ -182,7 +209,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'cat', 
 					'type'  		=> 	'number',
 					'label' 		=> 	esc_html__('WP Category ID', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP category id.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP category id.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
 				);
@@ -192,7 +220,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'category_name', 
 					'type'  		=> 	'text',
 					'label' 		=> 	esc_html__('WP Category Slug', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP category slug.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP category slug.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 				);
 				
@@ -215,7 +244,8 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'tag', 
 					'type'  		=> 	'text',
 					'label' 		=> 	esc_html__( 'WP Tag Slug', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP tag slug.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP tag slug.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 				);
 
@@ -224,12 +254,14 @@ if ( ( class_exists( 'LearnDash_Shortcodes_Section' ) ) && ( !class_exists( 'Lea
 					'name'  		=> 	'tag_id', 
 					'type'  		=> 	'number',
 					'label' 		=> 	esc_html__('WP Tag ID', 'learndash'),
-					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP tag id.', 'placeholders: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
+					// translators: placeholder: lessons.
+					'help_text'		=>	sprintf( esc_html_x( 'shows %s with mentioned WP tag id.', 'placeholder: lessons', 'learndash' ), learndash_get_custom_label_lower( 'lessons' ) ),
 					'value' 		=> 	'',
 					'class'			=>	'small-text'
 				);
 			}
-		
+			
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->shortcodes_option_fields = apply_filters( 'learndash_settings_fields', $this->shortcodes_option_fields, $this->shortcodes_section_key );
 			
 			parent::init_shortcodes_section_fields();

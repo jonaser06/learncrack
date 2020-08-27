@@ -7,6 +7,10 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Filter to allow override of widget instance arguments.
  * @since 3.0
@@ -25,6 +29,12 @@ if ( isset( $widget_instance['show_lesson_quizzes'] ) && true !== (bool) $widget
 	$has_lesson_quizzes = false;
 }
 
+/**
+ * Filters Course navigation widget arguments
+ *
+ * @param array $widget_instance The widget instance.
+ * @param int   $course_id       Course ID.
+ */
 $widget_instance = apply_filters( 'learndash_course_navigation_widget_args', $widget_instance, $course_id );
 $widget_data     = array(
 	'course_id'       => $course_id,
@@ -86,7 +96,7 @@ $widget_data_json = htmlspecialchars( wp_json_encode( $widget_data ) ); ?>
 					?>
 					<div class="widget_course_return">
 						<?php esc_html_e( 'Return to', 'learndash' ); ?>
-						<a href='<?php echo esc_attr( get_permalink( $course_id ) ); ?>'><?php echo esc_html( $course->post_title ); ?></a>
+						<a href='<?php echo esc_url( get_permalink( $course_id ) ); ?>'><?php echo esc_html( $course->post_title ); ?></a>
 					</div>
 				<?php endif; ?>
 
@@ -96,7 +106,10 @@ $widget_data_json = htmlspecialchars( wp_json_encode( $widget_data ) ); ?>
 	<?php if ( false !== (bool) $widget_instance['show_widget_wrapper'] ) : ?>
 
 		</div> <!-- Closing <div id='course_navigation'> -->
-		<?php if ( apply_filters( 'learndash_course_steps_expand_all', false, $course_id, 'course_navigation_widget' ) ) : ?>
+		<?php
+		/** This filter is documented in themes/ld30/templates/course.php */
+		if ( apply_filters( 'learndash_course_steps_expand_all', false, $course_id, 'course_navigation_widget' ) ) :
+			?>
 			<script>
 				jQuery(document).ready(function() {
 					setTimeout(function(){

@@ -6,6 +6,10 @@
  * @subpackage Admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learndash_Admin_Lesson_Edit' ) ) ) {
 	/**
 	 * Class for LearnDash Admin Lesson Edit.
@@ -54,6 +58,13 @@ if ( ( class_exists( 'Learndash_Admin_Post_Edit' ) ) && ( ! class_exists( 'Learn
 
 			if ( ! parent::save_post( $post_id, $post, $update ) ) {
 				return false;
+			}
+
+			if ( isset( $_POST['ld-course-primary-set'] ) ) {
+				$course_primary = absint( $_POST['ld-course-primary-set'] );
+				if ( ! empty( $course_primary ) ) {
+					learndash_set_primary_course_for_step( $post_id, $course_primary );
+				}
 			}
 
 			if ( ! empty( $this->_metaboxes ) ) {

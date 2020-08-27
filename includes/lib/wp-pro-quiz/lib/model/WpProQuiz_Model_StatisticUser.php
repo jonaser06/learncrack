@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_StatisticUser extends WpProQuiz_Model_Model {
 	
 	protected $_correctCount = 0;

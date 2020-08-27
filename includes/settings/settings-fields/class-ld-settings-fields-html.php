@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Html' ) ) ) {
 	/**
 	 * Class to create the settings field.
@@ -30,9 +34,18 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		 * @return void
 		 */
 		public function create_section_field( $field_args = array() ) {
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html       = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 
+			/**
+			 * Filters setting field HTML element.
+			 *
+			 * @param string $html_element The HTML element to be used for setting field.
+			 */
 			$field_type = apply_filters( 'learndash_settings_field_element_html', 'div' );
 			$html      .= '<' . $field_type . ' ';
 			$html      .= $this->get_field_attribute_id( $field_args );

@@ -1,4 +1,8 @@
 <?php 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if (!class_exists('WP_List_Table')){
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -51,7 +55,11 @@ if ( !class_exists('Learndash_Admin_Groups_Users_List_Table') ) {
 				
 					?>
 					<div class="alignleft actions">
-						<a href="<?php echo add_query_arg('action', 'learndash-group-email') ?>" class="button button-secondary"><?php esc_html_e('Email Group', 'learndash') ?></a>
+						<a href="<?php echo esc_url( add_query_arg('action', 'learndash-group-email') ) ?>" class="button button-secondary"><?php echo sprintf(
+							// translators: placeholder: Group.
+							esc_html_x( 'Email %s', 'placeholder: Group', 'learndash' ),
+							LearnDash_Custom_Label::get_label( 'group' )
+						); ?></a>
 					</div>
 					<?php
 				}
@@ -73,14 +81,14 @@ if ( !class_exists('Learndash_Admin_Groups_Users_List_Table') ) {
 		function column_group_name( $item ) {
 			$output = '';
 			
-			if ( current_user_can( 'edit_groups') ) {
-				$output .= '<strong><a href="'. get_edit_post_link( $item->ID ) .'">' . $item->post_title .'</a></strong>';
+			if ( current_user_can( 'edit_group', $item->ID ) ) {
+				$output .= '<strong><a href="'. get_edit_post_link( $item->ID ) .'">' . apply_filters( 'the_title',  $item->post_title, $item->ID ) . '</a></strong>';
 			
 				$row_actions = array('edit' => '<a href="'. get_edit_post_link( $item->ID ) .'">' . esc_html__('edit', 'learndash' ) .'</a>' );
 				$output .= $this->row_actions($row_actions);
 			
 			} else {
-				$output .= '<strong>'. $item->post_title .'</strong>';
+				$output .= '<strong>'. apply_filters( 'the_title',  $item->post_title, $item->ID ) .'</strong>';
 			}
 			
 			echo $output;
@@ -91,7 +99,7 @@ if ( !class_exists('Learndash_Admin_Groups_Users_List_Table') ) {
 			$data_settings_quizzes = learndash_data_upgrades_setting('user-meta-quizzes');
 			
 			$actions = array();
-			$actions['list-view'] = '<a href="'. add_query_arg( 'group_id', $item->ID, remove_query_arg( array('s', 'paged', 'learndash-search', 'ld-group-list-view-nonce', '_wp_http_referer', '_wpnonce') ) ) .'">'. esc_html__( 'List Users', 'learndash' ) .'</a>';
+			$actions['list-view'] = '<a href="'. esc_url( add_query_arg( 'group_id', $item->ID, remove_query_arg( array('s', 'paged', 'learndash-search', 'ld-group-list-view-nonce', '_wp_http_referer', '_wpnonce') ) ) ) .'">'. esc_html__( 'List Users', 'learndash' ) .'</a>';
 			
 			if ( ( !empty( $data_settings_courses ) ) && ( !empty( $data_settings_quizzes ) ) ) {			
 				$data_slug = 'user-courses';
@@ -126,13 +134,22 @@ if ( !class_exists('Learndash_Admin_Groups_Users_List_Table') ) {
 				
 			if ( current_user_can( 'edit_groups') ) {
 				$data_slug = 'edit-group';
-				$actions[$data_slug] = '<a href="'. get_edit_post_link( $item->ID ) .'">'. esc_html__( 'Edit Group', 'learndash' ) .'</a>';
+				$actions[$data_slug] = '<a href="'. get_edit_post_link( $item->ID ) .'">'. sprintf(
+					// translators: placeholder: Group.
+					esc_html_x( 'Edit %s', 'placeholder: Group', 'learndash' ),
+					LearnDash_Custom_Label::get_label( 'group' )
+				) .'</a>';
 			}
 			
 			if ( !empty( $actions ) ) {
 				echo implode(' | ', $actions );
 			}
 			
+			/**
+			 * Fires after admin page group actions column.
+			 *
+			 * @param int $group_id Group ID.
+			 */
 			do_action( 'learndash_group_admin_page_actions', $item->ID );
 		}
 
@@ -164,7 +181,7 @@ if ( !class_exists('Learndash_Admin_Groups_Users_List_Table') ) {
 
 		function column_user_actions( $item ) {
 			?>
-			<a href="<?php echo add_query_arg( 'user_id', $item->ID, remove_query_arg(array('s', 'paged', 'learndash-search', 'ld-group-list-view-nonce', '_wp_http_referer', '_wpnonce')) );?>"><?php esc_html_e( 'Report', 'learndash' );?></a>
+			<a href="<?php echo esc_url( add_query_arg( 'user_id', $item->ID, remove_query_arg(array('s', 'paged', 'learndash-search', 'ld-group-list-view-nonce', '_wp_http_referer', '_wpnonce') ) ) );?>"><?php esc_html_e( 'Report', 'learndash' );?></a>
 			<?php
 		}
 		

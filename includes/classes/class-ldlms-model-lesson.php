@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( !class_exists( 'LDLMS_Model_Lesson' ) ) {
 	class LDLMS_Model_Lesson extends LDLMS_Model_Post {
 

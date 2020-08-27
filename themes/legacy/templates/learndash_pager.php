@@ -27,7 +27,7 @@ if ( ( isset( $pager_results ) ) && ( !empty( $pager_results ) ) ) {
 	if ( !isset( $href_val_prefix ) ) $href_val_prefix = '';
 
 	// Generic wrappers. These can be changes via the switch below
-	$wrapper_before = '<div class="learndash-pager learndash-pager-'. $pager_context .'">';
+	$wrapper_before = '<div class="learndash-pager learndash-pager-' . $pager_context . '" data-nonce="' . wp_create_nonce( 'learndash-pager' ) . '" >';
 	$wrapper_after = '</div>';
 
 	if ( $pager_results['total_pages'] > 1 ) {
@@ -82,20 +82,20 @@ if ( ( isset( $pager_results ) ) && ( !empty( $pager_results ) ) ) {
 		<span class="pager-left">
 			<a 
 			<?php if ( ( isset( $href_query_arg ) ) && ( !empty( $href_query_arg ) ) ) { ?>
-				href="<?php echo add_query_arg( $href_query_arg, $href_val_prefix . 1 ) ?>" 
+				href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . 1 ) ); ?>" 
 			<?php } ?> 
 			data-paged="<?php echo $href_val_prefix; ?>1" class="<?php echo $pager_left_class ?>" <?php echo $pager_left_disabled; ?> title="<?php esc_attr_e( 'First Page', 'learndash' ); ?>">&laquo;</a>
 			<a <?php if ( ( isset( $href_query_arg ) ) && ( !empty( $href_query_arg ) ) ) { ?>
-				href="<?php echo add_query_arg( $href_query_arg, $href_val_prefix . $prev_page_number ) ?>" 
+				href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . $prev_page_number ) ); ?>" 
 			<?php } ?> data-paged="<?php echo $href_val_prefix . $prev_page_number; ?>" class="<?php echo $pager_left_class ?>" <?php echo $pager_left_disabled; ?> title="<?php esc_attr_e( 'Previous Page', 'learndash' ); ?>">&lsaquo;</a>
 		</span>
 		<span class="pager-right">
 			<a <?php if ( ( isset( $href_query_arg ) ) && ( !empty( $href_query_arg ) ) ) { ?>
-				href="<?php echo add_query_arg( $href_query_arg, $href_val_prefix . $next_page_number ) ?>" 
+				href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . $next_page_number ) ); ?>" 
 			<?php } ?>	data-paged="<?php echo $href_val_prefix . $next_page_number; ?>" class="<?php echo $pager_right_class ?>" <?php echo $pager_right_disabled; ?> title="<?php esc_attr_e( 'Next Page', 'learndash' ); ?>">&rsaquo;</a>
 			
 			<a <?php if ( ( isset( $href_query_arg ) ) && ( !empty( $href_query_arg ) ) ) { ?>
-				href="<?php echo add_query_arg( $href_query_arg, $href_val_prefix . $pager_results['total_pages'] ) ?>" 
+				href="<?php echo esc_url( add_query_arg( $href_query_arg, $href_val_prefix . $pager_results['total_pages'] ) ); ?>" 
 			<?php } ?> data-paged="<?php echo $href_val_prefix . $pager_results['total_pages'] ?>" class="<?php echo $pager_right_class ?>" <?php echo $pager_right_disabled; ?> title="<?php esc_attr_e( 'Last Page', 'learndash' ); ?>">&raquo;</a>
 		</span>
 		<span class="pager-legend">

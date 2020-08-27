@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Defaults for fallbacks
 $certificateLink = null;
 $score           = null;
@@ -41,10 +45,7 @@ if ( get_current_user_id() === absint( $user_id ) || learndash_is_admin_user() |
 	}
 
 	if ( isset( $quiz_attempt['statistic_ref_id'] ) && ! empty( $quiz_attempt['statistic_ref_id'] ) ) {
-		/**
-		 *   @since 2.3
-		 * See snippet on use of this filter https://bitbucket.org/snippets/learndash/5o78q
-		 */
+		/** This filter is documented in themes/ld30/templates/quiz/partials/attempt.php */
 		if ( apply_filters( 'show_user_profile_quiz_statistics', get_post_meta( $quiz_attempt['post']->ID, '_viewProfileStatistics', true ), $user_id, $quiz_attempt, basename( __FILE__ ) ) ) {
 			$stats = '<a class="user_statistic" data-statistic-nonce="' . wp_create_nonce( 'statistic_nonce_' . $quiz_attempt['statistic_ref_id'] . '_' . get_current_user_id() . '_' . $user_id ) . '" data-user-id="' . esc_attr( $user_id ) . '" data-quiz-id="' . esc_attr( $quiz_attempt['pro_quizid'] ) . '" data-ref-id="' . esc_attr( intval( $quiz_attempt['statistic_ref_id'] ) ) . '" href="#"><span class="ld-icon ld-icon-assignment"></span></a>';
 		}
@@ -76,6 +77,13 @@ $quiz_link  = ! empty( $quiz_attempt['post']->ID ) ? learndash_get_step_permalin
 				$certificateLink = '<a class="ld-certificate-link" href="' . $certificateLink . '" target="_new" aria-label="' . __( 'Certificate', 'learndash' ) . '"><span class="ld-icon ld-icon-certificate"></span></a>';
 			}
 
+			/**
+			 * Filters LearnDash profile quiz column list.
+			 *
+			 * @param array $quiz_columns      An array of quiz columns list.
+			 * @param array $quiz_attempt      This is the quiz attempt array read from the user meta.
+			 * @param array $quiz_list_columns An array of quiz list columns data.
+			 */
 			$quiz_columns = apply_filters(
 				'learndash_profile_quiz_columns',
 				array(
@@ -131,6 +139,12 @@ $quiz_link  = ! empty( $quiz_attempt['post']->ID ) ? learndash_get_step_permalin
 					</div> <!--/.ld-table-list-title-->
 					<div class="ld-table-list-columns">
 						<?php
+
+						/**
+						 * Filters essay column heading details.
+						 *
+						 * @param array $column_headings An array of essay column heading details array. Heading details array can have keys for id and label.
+						 */
 						$columns = apply_filters(
 							'learndash-essay-column-headings',
 							array(

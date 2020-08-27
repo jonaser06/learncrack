@@ -56,9 +56,48 @@ if ( ( !class_exists( 'LD_REST_Courses_Steps_Controller_V1' ) ) && ( class_exist
 						'permission_callback' 	=> array( $this, 'update_course_steps_permissions_check' ),
 						'args'                => $this->get_collection_params(),
 					),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 	    }
+
+		/**
+		 * Gets the course steps schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+
+			$schema = array(
+				'$schema'    => 'http://json-schema.org/draft-04/schema#',
+				'title'      => 'course-step',
+				'parent'     => 'course',
+				'type'       => 'object',
+				'properties' => array(
+					'id'         => array(
+						'description' => __( 'Unique identifier for the object.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'type' => array(
+						'description' => __( 'The course step type.', 'learndash' ),
+						'type'        => 'string',
+						'enum'        => array(
+							'all',
+							'h',
+							'l',
+							't',
+							'r',
+						),
+						'context'     => array( 'view', 'edit' ),
+					),
+				),
+			);
+
+			return $schema;
+
+		}
 		
 		public function get_collection_params() {
 			$query_params_default = parent::get_collection_params();

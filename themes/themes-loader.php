@@ -6,6 +6,10 @@
  * @subpackage Themes
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once __DIR__ . '/class-ld-themes-register.php';
 
 // Register your themes.

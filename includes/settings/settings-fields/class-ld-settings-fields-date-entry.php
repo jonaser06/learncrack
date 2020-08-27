@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Date_Entry' ) ) ) {
 
 	/**
@@ -32,8 +36,11 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		 */
 		public function create_section_field( $field_args = array() ) {
 			global $wp_locale;
-
+			
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
+
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html       = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 
 			$date_value = '';
@@ -72,7 +79,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$monthnum     = zeroise( $i, 2 );
 				$monthtext    = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
 				$month_field .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $value_mm, false ) . '>';
-				/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+				// translators: placeholder: month number, month text.
 				$month_field .= sprintf( esc_html_x( '%1$s-%2$s', 'placeholder: month number, month text', 'learndash' ), $monthnum, $monthtext ) . "</option>\n";
 			}
 				$month_field .= '</select>';
@@ -92,6 +99,7 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$minute_field
 			) . '</div>';
 
+			/** This filter is documented in includes/settings/settings-fields/class-ld-settings-fields-checkbox-switch.php */
 			$html = apply_filters( 'learndash_settings_field_html_after', $html, $field_args );
 
 			echo $html;

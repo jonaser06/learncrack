@@ -38,18 +38,22 @@
 		$previous_item = learndash_get_previous( $post );
 		if ( ( !empty( $previous_item ) ) && ( $previous_item instanceof WP_Post ) ) {
 			if ( $previous_item->post_type == 'sfwd-quiz') {
-				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholders: quiz URL', 'learndash' ), 
+				// translators: placeholder: Quiz URL.
+				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholder: Quiz URL', 'learndash' ), 
 				'<a class="learndash-link-previous-incomplete" href="'. learndash_get_step_permalink( $previous_item->ID, $course_id ) .'">'. learndash_get_custom_label_lower('quiz') .'</a>' );
 				
 			} else if ( $previous_item->post_type == 'sfwd-topic') {
-				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholders: topic URL, topic label', 'learndash' ), 
+				// translators: placeholder: Topic URL.
+				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholder: Topic URL', 'learndash' ), 
 				'<a class="learndash-link-previous-incomplete" href="'. learndash_get_step_permalink( $previous_item->ID, $course_id ) .'">'. learndash_get_custom_label_lower('topic') .'</a>' );
 			} else {
-				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholders: lesson URL, lesson label', 'learndash' ), 
+				// translators: placeholder: Lesson URL.
+				echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholder: Lesson URL', 'learndash' ), 
 				'<a class="learndash-link-previous-incomplete" href="'. learndash_get_step_permalink( $previous_item->ID, $course_id ) .'">'. learndash_get_custom_label_lower('lesson') .'</a>' );
 			}
 			
 		} else {
+			// translators: placeholder: lesson.
 			echo sprintf( esc_html_x( 'Please go back and complete the previous %s.', 'placeholder lesson', 'learndash' ), learndash_get_custom_label_lower('lesson') );
 		}
 	?>
@@ -61,7 +65,9 @@
 
 	<?php if ( ( isset( $materials ) ) && ( !empty( $materials ) ) ) : ?>
 		<div id="learndash_lesson_materials" class="learndash_lesson_materials">
-			<h4><?php printf( esc_html_x( '%s Materials', 'Lesson Materials Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'lesson' ) ); ?></h4>
+			<h4><?php 
+			// translators: placeholder: Lesson.
+			printf( esc_html_x( '%s Materials', 'placeholder: Lesson', 'learndash' ), LearnDash_Custom_Label::get_label( 'lesson' ) ); ?></h4>
 			<p><?php echo $materials; ?></p>
 		</div>
 	<?php endif; ?>
@@ -75,7 +81,9 @@
 	<?php if ( ! empty( $topics ) ) : ?>
 		<div id="learndash_lesson_topics_list" class="learndash_lesson_topics_list">
             <div id='learndash_topic_dots-<?php echo esc_attr( $post->ID ); ?>' class="learndash_topic_dots type-list">
-                <strong><?php printf( esc_html_x( '%1$s %2$s', 'Lesson Topics Label', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ), LearnDash_Custom_Label::get_label( 'topics' ) ); ?></strong>
+				<strong><?php
+				// translators: placeholders: Lesson, Topics.
+				printf( esc_html_x( '%1$s %2$s', 'placeholders: Lesson, Topics', 'learndash'), LearnDash_Custom_Label::get_label( 'lesson' ), LearnDash_Custom_Label::get_label( 'topics' ) ); ?></strong>
                 <ul>
                     <?php $odd_class = ''; ?>
 
@@ -86,8 +94,8 @@
 
                         <li class='<?php echo esc_attr( $odd_class ); ?>'>
                             <span class="topic_item">
-                                <a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo learndash_get_step_permalink( $topic->ID, $course_id ); ?>' title='<?php echo esc_attr( $topic->post_title ); ?>'>
-                                    <span><?php echo $topic->post_title; ?></span>
+                                <a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_html( $topic->post_title ); ?>'>
+                                    <span><?php echo apply_filters( 'the_title', $topic->post_title, $topic->ID ); ?></span>
                                 </a>
                             </span>
                         </li>
@@ -125,10 +133,10 @@
 			<div id="quiz_list" class="quiz_list">
 
 			<?php foreach ( $quizzes as $quiz ) : ?>
-				<div id='post-<?php echo esc_attr( $quiz['post']->ID ); ?>' class='<?php echo esc_attr( $quiz['sample'] ); ?>'>
+				<div id="post-<?php echo esc_attr( $quiz['post']->ID ); ?>" class="<?php echo esc_attr( $quiz['sample'] ); ?>">
 					<div class="list-count"><?php echo esc_attr( $quiz['sno'] ); ?></div>
 					<h4>
-						<a class='<?php echo esc_attr( $quiz['status'] ); ?>' href='<?php echo esc_attr( $quiz['permalink'] ); ?>'><?php echo $quiz['post']->post_title; ?></a>
+						<a class="<?php echo esc_attr( $quiz['status'] ); ?>" href="<?php echo esc_url( $quiz['permalink'] ); ?>"><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></a>
 					</h4>
 				</div>
 			<?php endforeach; ?>

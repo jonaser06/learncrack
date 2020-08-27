@@ -47,7 +47,17 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 		private $repo_url_base = 'https://api.bitbucket.org/2.0/repositories/learndash';
 		private $download_url_base = 'https://bitbucket.org/learndash';
 
+		/**
+		 * Repository Lock file ref.
+		 *
+		 * @since 3.1.8
+		 *
+		 * @var file_pointer $lock_repository_fp;
+		 */
+		private $lock_repository_fp = null;
+
 		public function __construct() {
+			add_filter( 'http_request_args', array( $this, 'http_request_args' ), 50, 2 );
 		}
 
 		public function init_oauth_key_set() {
@@ -119,7 +129,58 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 			}
 			return $request_url;
 		}
-		
+
+		/**
+		 * Filter the WordPress HTTP Request Args.
+		 *
+		 * This filter is called just before the download_url()
+		 * request. We hook into this filter to control the timeout
+		 * on the calls to BitBucket.
+		 */
+		public function http_request_args( $parsed_args = array(), $url = '' ) {
+			if ( ! empty( $url ) ) {
+				if ( substr( $url, 0, strlen( $this->download_url_base ) ) === $this->download_url_base ) {
+					if ( substr( $url, 0, strlen( $this->download_url_base . '/learndash-add-ons/get/stable.zip' ) ) === $this->download_url_base . '/learndash-add-ons/get/stable.zip' ) {
+						$parsed_args['timeout'] = LEARNDASH_HTTP_BITBUCKET_README_DOWNLOAD_TIMEOUT;
+					}
+
+					/**
+					 * Filter the timeout for LearnDash BitBucket downloads.
+					 *
+					 * @since 3.1.8
+					 *
+					 * @param int    $timeout     Current timeout in seconds.
+					 * @param array  $parsed_args Array of request args.
+					 * @param string $url         URL for request.
+					 */
+					$parsed_args['timeout'] = apply_filters( 'learndash_bitbucket_request_timeout', absint( $parsed_args['timeout'] ), $parsed_args, $url );
+
+				} elseif ( 'https://support.learndash.com' === substr( $url, 0, strlen( 'https://support.learndash.com' ) ) ) {
+					if ( ( isset( $parsed_args['method'] ) ) && ( 'GET' === strtoupper( $parsed_args['method'] ) ) ) {
+						$parsed_args['timeout'] = LEARNDASH_HTTP_REMOTE_GET_TIMEOUT;
+					} else {
+						$parsed_args['timeout'] = LEARNDASH_HTTP_REMOTE_POST_TIMEOUT;
+					}
+
+					/**
+					 * Filter the timeout for LearnDash Support site connections.
+					 *
+					 * @since 3.1.8
+					 *
+					 * @param int    $timeout     Current timeout in seconds.
+					 * @param array  $parsed_args Array of request args.
+					 * @param string $url         URL for request.
+					 */
+					$parsed_args['timeout'] = apply_filters( 'learndash_support_request_timeout', absint( $parsed_args['timeout'] ), $parsed_args, $url );
+				}
+			}
+
+			return $parsed_args;
+		}
+
+		/**
+		 * Get the local add-on directory path.
+		 */
 		public function get_addon_directory() {
 			if ( empty( $this->ld_addons_dir ) ) {
 				$wp_upload_dir       = wp_upload_dir();
@@ -135,14 +196,55 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 			return $this->ld_addons_dir;
 		}
 
-		public function get_bitbucket_repositories() {
-
+		/**
+		 * Get the BitBucket repositories.
+		 */
+		public function get_bitbucket_repositories( $override_cache = false ) {
 			// Clear out the existiing plugins array.
 			$repository_data = array();
+
+			if ( true !== $override_cache ) {
+				// Get the number of past errors. 
+
+				$repo_error_count = 3;
+				if ( ( defined( 'LEARNDASH_REPO_ERROR_THRESHOLD_COUNT' ) ) && ( LEARNDASH_REPO_ERROR_THRESHOLD_COUNT > 1 ) ) {
+					$repo_error_count = absint( LEARNDASH_REPO_ERROR_THRESHOLD_COUNT );
+				}
+
+				$repo_error_time = 7200;
+				if ( ( defined( 'LEARNDASH_REPO_ERROR_THRESHOLD_TIME' ) ) && ( LEARNDASH_REPO_ERROR_THRESHOLD_TIME > 1 ) ) {
+					$repo_error_time = absint( LEARNDASH_REPO_ERROR_THRESHOLD_TIME );
+				}
+
+				$log_error_count = $this->get_error_count_bitbucket_repository( 'learndash-add-ons' );
+				if ( absint( $log_error_count ) >= $repo_error_count ) {
+					// Check the last time the log file was updated.
+					$log_error_time  = $this->get_error_update_timestamp_bitbucket_repository( 'learndash-add-ons' );
+					$log_error_time_diff = time() - $log_error_time;
+					if ( intval( $log_error_time_diff ) < $repo_error_time ) {
+						return $repository_data;
+					}
+
+					// If we are over the wait time we can try again. So we clear the log.
+					$this->clear_error_bitbucket_repository( 'learndash-add-ons' );
+				}
+			} else {
+				// f we are in cach orderride mode we clear the log.
+				$this->clear_error_bitbucket_repository( 'learndash-add-ons' );
+				$this->remove_lock_bitbucket_repository( 'learndash-add-ons' );
+			}
+
+			// Check if we can lock the processing file.
+			if ( ! $this->lock_bitbucket_repository( 'learndash-add-ons' ) ) {
+				return $repository_data;
+			}
 
 			$request_url = $this->get_bitbucket_repository_download_url( 'learndash-add-ons' );
 			$request_url = $this->setup_url_params( $request_url );
 			if ( ! empty( $request_url ) ) {
+				if ( ! function_exists( 'download_url' ) ) {
+					require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'file.php';
+				}
 				$download = download_url( $request_url );
 				if ( ! is_wp_error( $download ) ) {
 					if ( is_file( $download ) ) {
@@ -181,25 +283,15 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 							$repository_data = $this->parse_repository_txt( $body );
 						}
 					}
+
+					// Clear the log on success.
+					$this->clear_error_bitbucket_repository( 'learndash-add-ons' );
 				} else {
-					$request_url = $this->repo_url_base . '/learndash-add-ons/src/master/repositories.txt';
-
-					$request_url = $this->setup_url_params( $request_url );
-					if ( ! empty( $request_url ) ) {
-						$options = array( 'timeout' => LEARNDASH_HTTP_REMOTE_GET_TIMEOUT );
-						$response = wp_remote_get( $request_url, $options );
-						if ( is_wp_error( $response ) ) {
-							return $response;
-						}
-
-						$code = wp_remote_retrieve_response_code( $response );
-
-						$body = wp_remote_retrieve_body( $response );
-						if ( ( 200 === $code ) && ( ! empty( $body ) ) ) {
-							$repository_data = $this->parse_repository_txt( $body );
-						}
-					}
+					$this->error_log_bitbucket_repository( 'learndash-add-ons', $download );
 				}
+
+				// Unlock the lock file for other processes.
+				$this->unlock_bitbucket_repository( 'learndash-add-ons' );
 			}
 
 			return $repository_data;
@@ -211,6 +303,7 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 		public function get_bitbucket_repository_readme( $plugin_key = '' ) {
 			if ( ! empty( $plugin_key ) ) {
 				$body = '';
+				$code = 0;
 
 				if ( empty( $body ) ) {
 					$plugin_readme_file = ABSPATH . DIRECTORY_SEPARATOR . $plugin_key . '.txt';
@@ -228,24 +321,7 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 					}
 				}
 
-				if ( empty( $body ) ) {
-					$request_url = $this->repo_url_base . '/' . $plugin_key . '/src/master/readme.txt';
-
-					$request_url = $this->setup_url_params( $request_url );
-					if ( ! empty( $request_url ) ) {
-						$options = array( 'timeout' => LEARNDASH_HTTP_REMOTE_GET_TIMEOUT);
-
-						$response = wp_remote_get( $request_url, $options );
-						if ( is_wp_error( $response ) ) {
-							return $response;
-						}
-
-						$code = wp_remote_retrieve_response_code( $response );
-						$body = wp_remote_retrieve_body( $response );
-					}
-				}
-
-				if ( ( $code === 200 ) && ( ! empty( $body ) ) ) {
+				if ( ( 200 === $code ) && ( ! empty( $body ) ) ) {
 					$readme_parser = new LearnDashWPReadmeParser();
 					$body_parsed = $readme_parser->parse_readme_contents( $body );
 
@@ -258,14 +334,223 @@ if ( !class_exists( 'LearnDash_BitBucket_API' ) ) {
 				}
 			}
 		}
-		
-		function get_bitbucket_repository_download_url( $plugin_key = '', $tag_or_version = 'stable' ) {
-			if ( !empty( $plugin_key ) ) {
-				$request_url = $this->download_url_base ."/". $plugin_key ."/get/". $tag_or_version .".zip";
+
+		/**
+		 * Get the Repository Download URL
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key     Plugin Key.
+		 * @param string $tag_or_version Repo version or tag.
+		 */
+		public function get_bitbucket_repository_download_url( $plugin_key = '', $tag_or_version = 'stable' ) {
+			if ( ! empty( $plugin_key ) ) {
+				$request_url = $this->download_url_base . '/' . $plugin_key . '/get/' . $tag_or_version . '.zip';
 				return $request_url;
 			}
 		}
 		
+		/**
+		 * Get the Repository Lock file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function get_bitbucket_repository_lock_file( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				return $this->get_addon_directory() . '/' . $plugin_key . '.pid';
+			}
+		}
+
+		/**
+		 * Get the Repository Log file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function get_bitbucket_repository_log_file( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				return $this->get_addon_directory() . '/' . $plugin_key . '.log';
+			}
+		}
+
+		/**
+		 * Lock the Repository file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function lock_bitbucket_repository( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				$addon_lock_file = $this->get_bitbucket_repository_lock_file( $plugin_key );
+				if ( ! empty( $addon_lock_file ) ) {
+					$this->lock_repository_fp = fopen( $addon_lock_file, 'w+' );
+					if ( $this->lock_repository_fp ) {
+						if ( flock( $this->lock_repository_fp, LOCK_EX | LOCK_NB ) ) {
+							fwrite( $this->lock_repository_fp, getmypid() . '|' . time() );
+							fflush( $this->lock_repository_fp );
+							return true;
+						} else {
+							/*
+							$force_relock_file = false;
+							$lock_file_contents = fread( $this->lock_repository_fp, '1024' );
+							if ( ! empty( $lock_file_contents ) ) {
+								$lock_file_contents_array = explode( '|', $lock_file_contents );
+								$lock_update_timestamp_diff = time() - absint( $lock_file_contents_array[1] );
+								error_log( 'PID [' . getmypid() . '] lock_update_timestamp_diff[' . $lock_update_timestamp_diff . ']' );
+								if ( intval( $lock_update_timestamp_diff ) > 2 * LEARNDASH_HTTP_BITBUCKET_README_DOWNLOAD_TIMEOUT ) {
+									$force_relock_file = true;
+								}
+							} else {
+								$force_relock_file = true;
+							}
+
+							if ( true === $force_relock_file ) {
+								$this->remove_lock_bitbucket_repository( $plugin_key );
+								return $this->lock_bitbucket_repository( $plugin_key );
+							}
+							*/
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Remove Lock Repository file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function remove_lock_bitbucket_repository( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				$addon_lock_file = $this->get_bitbucket_repository_lock_file( $plugin_key );
+				if ( ( ! empty( $addon_lock_file ) ) && ( file_exists( $addon_lock_file ) ) ) {
+					@unlink( $addon_lock_file );
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Unlock the Repository file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function unlock_bitbucket_repository( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				if ( $this->lock_repository_fp ) {
+					flock( $this->lock_repository_fp, LOCK_UN );
+					$this->remove_lock_bitbucket_repository( $plugin_key );
+				}
+			}
+		}
+
+		/**
+		 * Write to the Repository log file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function error_log_bitbucket_repository( $plugin_key = '', $error ) {
+			if ( ! empty( $plugin_key ) ) {
+				$log_message = '';
+				if ( ( property_exists( $error, 'error_data' ) ) && ( is_array( $error->error_data ) ) ) {
+					foreach ( $error->error_data as $error_set ) {
+						if ( isset( $error_set['code'] ) ) {
+							$log_message .= 'Error: ' . absint( $error_set['code'] );
+						}
+						if ( isset( $error_set['body'] ) ) {
+							$log_message .= ' Message: ' . strip_tags( $error_set['body'] );
+						}
+					}
+				}
+
+				if ( ! empty( $log_message ) ) {
+					$addon_log_file = $this->get_bitbucket_repository_log_file( $plugin_key );
+					if ( ! empty( $addon_log_file ) ) {
+						$log_repository_fp = fopen( $addon_log_file, 'a+' );
+						if ( $log_repository_fp ) {
+							fwrite( $log_repository_fp, getmypid() . ': ' . $log_message . "\r\n" );
+							fclose( $log_repository_fp );
+						}
+					}
+				}
+			}
+		}
+
+		/**
+		 * Clear the Repository log file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function clear_error_bitbucket_repository( $plugin_key = '' ) {
+			if ( ! empty( $plugin_key ) ) {
+				$addon_log_file = $this->get_bitbucket_repository_log_file( $plugin_key );
+				if ( ! empty( $addon_log_file ) ) {
+					$log_repository_fp = fopen( $addon_log_file, 'w' );
+					if ( $log_repository_fp ) {
+						fclose( $log_repository_fp );
+					}
+				}
+			}
+		}
+
+		/**
+		 * Count entries from the Repository log file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+		protected function get_error_count_bitbucket_repository( $plugin_key = '' ) {
+			$log_entries_count = 0;
+			if ( ! empty( $plugin_key ) ) {
+				$addon_log_file = $this->get_bitbucket_repository_log_file( $plugin_key );
+				if ( ( ! empty( $addon_log_file ) ) && ( file_exists( $addon_log_file ) ) ) {
+					$log_entries = file_get_contents( $addon_log_file );
+					$log_entries_array = explode( "\n", $log_entries );
+					$log_entries_array = array_filter( $log_entries_array );
+					$log_entries_count = count( $log_entries_array );
+				}
+			}
+
+			return $log_entries_count;
+		}
+
+		/**
+		 * Get last updated timestamp for the Repository log file
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $plugin_key Plugin Key.
+		 */
+
+		protected function get_error_update_timestamp_bitbucket_repository( $plugin_key = '' ) {
+			$log_update_timestamp = 0;
+			if ( ! empty( $plugin_key ) ) {
+				$addon_log_file = $this->get_bitbucket_repository_log_file( $plugin_key );
+				if ( ( ! empty( $addon_log_file ) ) && ( file_exists( $addon_log_file ) ) ) {
+					$log_update_timestamp = filemtime( $addon_log_file );
+				}
+			}
+
+			return $log_update_timestamp;
+		}
+		
+
 		/* The calling function get_bitbucket_repositories() connects to bitbucket and retreives
 		 * a file respoitories.txt. Each line of the file represents a repository and contains 
 		 * three fields separated by '|'. 

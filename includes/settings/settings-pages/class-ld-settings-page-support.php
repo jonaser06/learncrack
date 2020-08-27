@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDash_Settings_Page_Support' ) ) ) {
 	/**
 	 * Class to create the settings page.
@@ -34,13 +38,13 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 			$this->show_quick_links_meta = true;
 
 			add_action( 'learndash-settings-page-load', array( $this, 'learndash_settings_page_load' ) );
-				
+
 			parent::__construct();
 		}
 
-		function learndash_settings_page_load( $settings_screen_id = '' ) {
+		public function learndash_settings_page_load( $settings_screen_id = '' ) {
 			global $sfwd_lms;
-			
+
 			if ( $settings_screen_id === $this->settings_screen_id ) {
 
 				$this->gather_system_details();
@@ -49,7 +53,12 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 				if ( ( isset( $_GET['ld_download_system_info_nonce'] ) ) && ( ! empty( $_GET['ld_download_system_info_nonce'] ) ) && ( wp_verify_nonce( $_GET['ld_download_system_info_nonce'], 'ld_download_system_info_' . get_current_user_id() ) ) ) {
 					header( 'Content-type: text/plain' );
 					header( 'Content-Disposition: attachment; filename=ld_system_info-' . date( 'Ymd' ) . '.txt' );
-					$this->show_system_info( 'text' );
+					$support_page_instance = LearnDash_Settings_Page::get_page_instance( 'LearnDash_Settings_Page_Support' );
+					if ( $support_page_instance ) {
+						foreach ( $support_page_instance->get_support_sections() as $_key => $_section ) {
+							$support_page_instance->show_support_section( $_key, 'text' );
+						}
+					}
 					die();
 				}
 
@@ -65,15 +74,26 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 			}
 		}
 
-			/**
+		/**
 		 * Used to collect all needed display elements. Many filters by section as well as a final filter
 		 *
 		 * @since v2.5.4
 		 */
 		public function gather_system_details() {
+
+			/**
+			 * Filters list of initial sections for admin settings support tab.
+			 *
+			 * @param array $systen_info An array of support sections.
+			 */
 			$this->system_info = apply_filters( 'learndash_support_sections_init', $this->system_info );
 
 			// Finally a filter for all sections. This is where some external process will add new sections etc.
+			/**
+			 * Filters list of sections for admin settings support tab.
+			 *
+			 * @param array $systen_info An array of support sections.
+			 */
 			$this->system_info = apply_filters( 'learndash_support_sections', $this->system_info );
 
 		}
@@ -101,18 +121,27 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 						if ( ( isset( $_set['columns'] ) ) && ( ! empty( $_set['columns'] ) ) && ( isset( $_set['settings'] ) ) && ( ! empty( $_set['settings'] ) ) ) {
 							foreach ( $_set['settings'] as $setting_key => $setting_set ) {
-								$_SHOW_FIRST = false;
-								foreach ( $_set['columns'] as $column_key => $column_set ) {
-									$value = strip_tags( str_replace( array( '<br />', '<br>', '<br >' ), "\r\n", $setting_set[ $column_key ] ) );
-
-									// Add some format spacing to make the raw txt version easier to read.
-									$spaces_needed = 50 - strlen( $value );
-									if ( $spaces_needed > 0 ) {
-										$value .= str_repeat( ' ', $spaces_needed );
+								if ( 'settings-sub-section-' === substr( $setting_key, 0, strlen( 'settings-sub-section-' ) ) ) {
+									if ( isset( $setting_set['text'] ) ) {
+										echo "\r\n";
+										echo $setting_set['text'];
+										echo "\r\n";
 									}
-									echo $value;
+								} else {
+
+									$_SHOW_FIRST = false;
+									foreach ( $_set['columns'] as $column_key => $column_set ) {
+										$value = strip_tags( str_replace( array( '<br />', '<br>', '<br >' ), "\r\n", $setting_set[ $column_key ] ) );
+
+										// Add some format spacing to make the raw txt version easier to read.
+										$spaces_needed = 50 - strlen( $value );
+										if ( $spaces_needed > 0 ) {
+											$value .= str_repeat( ' ', $spaces_needed );
+										}
+										echo $value;
+									}
+									echo "\r\n";
 								}
-								echo "\r\n";
 							}
 						}
 						echo "\r\n";
@@ -137,6 +166,13 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 										if ( isset( $column_set['class'] ) ) {
 											$column_class = $column_set['class'];
 										}
+										/**
+										 * Filters admin settings support column CSS class.
+										 *
+										 * @param string $column_class     Column CSS class.
+										 * @param string $column_key       Column Key.
+										 * @param string $system_info_item Name fo system info item.
+										 */
 										$column_class = apply_filters( 'learndash_support_column_class', $column_class, $column_key, $_key );
 										?>
 											<th scope="col" class="<?php echo $column_class; ?>">
@@ -156,12 +192,30 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 								<body>
 									<?php
 									foreach ( $_set['settings'] as $setting_key => $setting_set ) {
-										?>
+										if ( 'settings-sub-section-' === substr( $setting_key, 0, strlen( 'settings-sub-section-' ) ) ) {
+											?>
+											<tr class="settings-sub-section">
+											<th scope="row" class="settings-sub-section" colspan="<?php echo count( $_set['columns'] ); ?>">
+											<?php
+											if ( isset( $setting_set['html'] ) ) {
+												echo $setting_set['html'];
+											}
+											?>
+											</th>
+											</tr>
+											<?php
+										} else {
+											?>
 											<tr>
 											<?php
 											foreach ( $_set['columns'] as $column_key => $column_set ) {
 												?>
-												<td scope="col" class="<?php apply_filters( 'learndash_support_column_class', '', $column_key, $_key ); ?>">
+												<td scope="col" class="
+												<?php
+													/** This filter is documented in includes/settings/settings-pages/class-ld-settings-page-support.php */
+													apply_filters( 'learndash_support_column_class', '', $column_key, $_key );
+												?>
+												">
 												<?php
 												if ( isset( $setting_set[ $column_key . '_html' ] ) ) {
 														echo $setting_set[ $column_key . '_html' ];
@@ -175,6 +229,7 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 											?>
 											</tr>
 											<?php
+										}
 									}
 									?>
 								</body>

@@ -1,10 +1,20 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_StatisticUserMapper extends WpProQuiz_Model_Mapper {
 	
 	public function fetchUserStatistic($refIdUserId, $quizId, $avg = false) {
 		$where = $avg ? 'sf.user_id = %d' : 'sf.statistic_ref_id = %d';
 		
 		$result = $this->_wpdb->get_results(
+
+			/**
+			 * Filters quiz user statistics question title.
+			 *
+			 * @param string $question_title User statistics question title.
+			 */
 			$this->_wpdb->prepare(
 				"SELECT 
 					SUM(s.correct_count) AS correct_count,

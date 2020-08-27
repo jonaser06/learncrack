@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'Learndash_Admin_Questions_Listing' ) ) ) {
 	/**
 	 * Class for LearnDash Quiz Questions Listing Pages.
@@ -96,7 +100,7 @@ if ( ( class_exists( 'Learndash_Admin_Posts_Listing' ) ) && ( ! class_exists( 'L
 				if ( ! empty( $quiz_id ) ) {
 					$quizzes_url = add_query_arg( 'post_type', learndash_get_post_type_slug( 'quiz' ), admin_url( 'edit.php' ) );
 
-					$new_title     = '<a href="' . $quizzes_url . '">' . LearnDash_Custom_Label::get_label( 'quizzes' ) . '</a> &gt; <a href="' . get_edit_post_link( $quiz_id ) . '">' . get_the_title( $quiz_id ) . '</a> - ' . esc_html( $post_type_object->labels->name );
+					$new_title     = '<a href="' . esc_url( $quizzes_url ) . '">' . LearnDash_Custom_Label::get_label( 'quizzes' ) . '</a> &gt; <a href="' . get_edit_post_link( $quiz_id ) . '">' . get_the_title( $quiz_id ) . '</a> - ' . esc_html( $post_type_object->labels->name );
 					$post_new_file = add_query_arg(
 						array(
 							'post_type' => $post_type,

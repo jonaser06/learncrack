@@ -49,7 +49,7 @@ if ( ( isset( $course_step_post ) ) && ( $course_step_post instanceof WP_Post ) 
 						<td class="ld-assignment-delete-col"><?php 
 							if ( ! learndash_is_assignment_approved_by_meta( $assignment->ID ) ) {
 								if ( (isset( $post_settings['lesson_assignment_deletion_enabled'] ) ) && ( $post_settings['lesson_assignment_deletion_enabled'] == 'on' ) && ( ( $assignment->post_author == $user_id ) || ( learndash_is_admin_user( $current_user_id ) ) || ( learndash_is_group_leader_of_user( $current_user_id, $post->post_author ) ) ) ) { ?>
-							<a href="<?php echo add_query_arg('learndash_delete_attachment', $assignment->ID) ?>" title="<?php esc_html_e('Delete this uploaded Assignment', 'learndash'); ?>"><?php esc_html_e('X', 'learndash' ); ?></a><?php
+							<a href="<?php echo esc_url( add_query_arg('learndash_delete_attachment', $assignment->ID ) ); ?>" title="<?php esc_html_e('Delete this uploaded Assignment', 'learndash'); ?>"><?php esc_html_e('X', 'learndash' ); ?></a><?php
 								} 
 							}
 						?></td>
@@ -61,12 +61,13 @@ if ( ( isset( $course_step_post ) ) && ( $course_step_post instanceof WP_Post ) 
 						<?php
 							if ( true === $assignment_post_type_object->publicly_queryable ) {
 								?>
-								<a href='<?php echo esc_attr( get_permalink( $assignment->ID ) ); ?>'><?php esc_html_e( 'View', 'learndash' ); ?></a> 
+								<a href='<?php echo esc_url( get_permalink( $assignment->ID ) ); ?>'><?php esc_html_e( 'View', 'learndash' ); ?></a> 
 								<?php
 									if ( post_type_supports( 'sfwd-assignment', 'comments' ) ) {
+										/** This filter is documented in https://developer.wordpress.org/reference/hooks/comments_open/ */
 										if ( apply_filters( 'comments_open', $assignment->comment_status, $assignment->ID ) ) {
 										?>
-										<a href='<?php echo esc_attr( get_comments_link( $assignment->ID ) ); ?>'><?php 
+										<a href='<?php echo esc_url( get_comments_link( $assignment->ID ) ); ?>'><?php 
 											echo sprintf(
 											// translators: placeholder: comments count.
 											esc_html_x( 'Comments (%d)', 'placeholder: commentd count', 'learndash' ), get_comments_number( $assignment->ID ) 

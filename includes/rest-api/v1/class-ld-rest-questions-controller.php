@@ -38,6 +38,7 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array(
+							'description' => __( 'The question ID', 'learndash' ),
 							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
@@ -52,6 +53,7 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array(
+							'description'       => __( 'The question ID', 'learndash' ),
 							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
@@ -66,6 +68,7 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 					'permission_callback' => array( $this, 'permissions_check' ),
 					'args'                => array(
 						'id' => array(
+							'description'       => __( 'The question ID', 'learndash' ),
 							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
@@ -74,6 +77,7 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 						),
 					),
 				),
+				'schema' => array( $this, 'get_schema' ),
 			) );
 		}
 
@@ -182,7 +186,9 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 				return new WP_REST_Response( $this->get_question_data( $question_id ), 200 );
 			}
 
-			return new WP_Error( 'cant-delete', sprintf( esc_html__( 'Could not update the %s.', 'learndash' ), \LearnDash_Custom_Label::get_label( 'question' ) ), array( 'status' => 500 ) );
+			return new WP_Error( 'cant-delete', 
+			// translators: placeholder: Question.
+			sprintf( esc_html_x( 'Could not update the %s.', 'placeholder: Question', 'learndash' ), \LearnDash_Custom_Label::get_label( 'question' ) ), array( 'status' => 500 ) );
 		}
 
 		/**
@@ -223,6 +229,185 @@ if ( ! class_exists( 'LD_REST_Questions_Controller_V1' ) ) {
 			] );
 
 			return $data;
+		}
+
+		/**
+		 * Gets the sfwd-question schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = array(
+				'$schema'    => 'http://json-schema.org/draft-04/schema#',
+				'title'      => 'question',
+				'type'       => 'object',
+				'properties' => array(
+					'_id'                             => array(
+						'description' => __( 'Unique identifier for the object.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'_quizId'                         => array(
+						'description' => __( 'The ID of the quiz associated with the question.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'_sort'                           => array(
+						'description' => __( 'The order of the question in the quiz.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_title'                          => array(
+						'description' => __( 'The title for the object.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_question'                       => array(
+						'description' => __( 'The question content.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_correctMsg'                     => array(
+						'description' => __( 'The message to show when the answer is correct.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_incorrectMsg'                   => array(
+						'description' => __( 'The message to show when the answer is incorrect.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_correctSameText'                => array(
+						'description' => __( 'Whether the incorrect and correct message are same.', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_tipEnabled'                     => array(
+						'description' => __( 'The message to show when the answer is incorrect.', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_tipMsg'                         => array(
+						'description' => __( 'The solution hint for the question.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_points'                         => array(
+						'description' => __( 'The total number of points that can be obtained from the question', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_showPointsInBox'                => array(
+						'description' => __( 'Whether to show points in box.', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_answerPointsActivated'          => array(
+						'description' => __( 'Whether the individual points for the answers are activated.', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_answerType'                     => array(
+						'description' => __( 'The type of the answer.', 'learndash' ),
+						'type'        => 'string',
+						'enum'        => array(
+							'single',
+							'multiple',
+							'free_answer',
+							'sort_answer',
+							'matrix_sort_answer',
+							'cloze_answer',
+							'essay',
+							'assessment_answer',
+						),
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_answerPointsDiffModusActivated' => array(
+						'description' => __( 'Whether the different points modus is activated.', 'learndash' ),
+						'type'        => array( 'boolean', 'null' ),
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_disableCorrect'                 => array(
+						'description' => __( 'Whether to distinguish between correct and incorrect when the different point modus is activated.', 'learndash' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_matrixSortAnswerCriteriaWidth'  => array(
+						'description' => __( 'The percentage width of the criteria table column for matrix sort answer.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit' ),
+					),
+					'_answerData'                     => array(
+						'description' => __( 'An array of answer data objects', 'learndash' ),
+						'type'        => 'array',
+						'context'     => array( 'view', 'edit' ),
+						'properties'  => array(
+							'_answer'             => array(
+								'description' => __( 'The answer text.', 'learndash' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_html'               => array(
+								'description' => __( 'Whether the HTML is allowed in the answer or not', 'learndash' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_points'             => array(
+								'description' => __( 'The number of points that can be obtained from the answer.', 'learndash' ),
+								'type'        => 'integer',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_correct'            => array(
+								'description' => __( 'Whether the answer is correct.', 'learndash' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_sortString'         => array(
+								'description' => __( 'Sort string.', 'learndash' ),
+								'type'        => 'string',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_sortStringHtml'     => array(
+								'description' => __( 'Whether to allow HTML in sort string.', 'learndash' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_graded'             => array(
+								'description' => __( 'Whether the answer can be graded or not.', 'learndash' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit' ),
+							),
+							'_gradingProgression' => array(
+								'description' => __( 'Determines how should the answer to this question be marked and graded upon quiz submission.', 'learndash' ),
+								'type'        => 'text',
+								'context'     => array( 'view', 'edit' ),
+								'enum'        => array( 'not-graded-none', 'not-graded-full', 'graded-full' ),
+							),
+							'_gradedType'         => array(
+								'description' => __( 'Determines how a user can submit answer.', 'learndash' ),
+								'type'        => 'boolean',
+								'context'     => array( 'view', 'edit' ),
+								'enum'        => array( 'text', 'upload' ),
+							),
+						),
+					),
+					'question_id'                     => array(
+						'description' => __( 'The question post ID.', 'learndash' ),
+						'type'        => 'integer',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'readonly'    => true,
+					),
+					'question_post_title'             => array(
+						'description' => __( 'The question post title.', 'learndash' ),
+						'type'        => 'string',
+						'context'     => array( 'view', 'edit' ),
+					),
+				),
+			);
+
+			return $schema;
 		}
 	}
 }

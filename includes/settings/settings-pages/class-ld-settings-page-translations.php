@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDash_Settings_Page_Translations' ) ) ) {
 	/**
 	 * Class to create the settings page.
@@ -131,7 +135,9 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 					case 'pot_download':
 						if ( ( ! empty( $project ) )  && ( ! empty( $nonce ) ) ) {
 							if ( wp_verify_nonce( $nonce, 'ld-translation-' . $action . '-' . $project ) ) {
-								$reply = LearnDash_Translations::download_pot_file( $project );
+								if ( learndash_updates_enabled() ) {
+									$reply = LearnDash_Translations::download_pot_file( $project );
+								}
 							}
 						}	
 						break;
@@ -147,7 +153,9 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 					case 'install':
 						if ( ( ! empty( $project ) ) && ( ! empty( $locale ) ) && ( ! empty( $nonce ) ) ) {
 							if ( wp_verify_nonce( $nonce, 'ld-translation-' . $action . '-' . $project . '-' . $locale ) ) {
-								$reply = LearnDash_Translations::install_translation( $project, $locale );
+								if ( learndash_updates_enabled() ) {
+									$reply = LearnDash_Translations::install_translation( $project, $locale );
+								}
 							}
 						}
 						break;
@@ -155,7 +163,9 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 					case 'update':
 						if ( ( ! empty( $project ) ) && ( ! empty( $locale ) ) && ( ! empty( $nonce ) ) ) {
 							if ( wp_verify_nonce( $nonce, 'ld-translation-' . $action . '-' . $project . '-' . $locale ) ) {
-								$reply = LearnDash_Translations::update_translation( $project, $locale );
+								if ( learndash_updates_enabled() ) {
+									$reply = LearnDash_Translations::update_translation( $project, $locale );
+								}
 							}
 						}
 						break;
@@ -170,7 +180,9 @@ if ( ( class_exists( 'LearnDash_Settings_Page' ) ) && ( ! class_exists( 'LearnDa
 
 					case 'refresh':
 						if ( wp_verify_nonce( $nonce, 'ld-translation-' . $action ) ) {
-							$reply = LearnDash_Translations::refresh_translations();
+							if ( learndash_updates_enabled() ) {
+								$reply = LearnDash_Translations::refresh_translations();
+							}
 						}
 						break;
 

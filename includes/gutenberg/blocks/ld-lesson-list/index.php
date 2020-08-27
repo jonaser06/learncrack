@@ -101,7 +101,7 @@ if ( ( class_exists( 'LearnDash_Gutenberg_Block' ) ) && ( ! class_exists( 'Learn
 		public function render_block( $attributes = array() ) {
 
 			if ( is_user_logged_in() ) {
-
+				/** This filter is documented in includes/gutenberg/blocks/ld-course-list/index.php */
 				$attributes           = apply_filters( 'learndash_block_markers_shortcode_atts', $attributes, $this->shortcode_slug, $this->block_slug, '' );
 				$shortcode_params_str = $this->prepare_course_list_atts_to_param( $attributes );
 				$shortcode_params_str = '[' . $this->shortcode_slug . ' ' . $shortcode_params_str . ']';

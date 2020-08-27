@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Helper_Until {
 	
 	public static function saveUnserialize($str, &$into) {
@@ -39,7 +43,7 @@ class WpProQuiz_Helper_Until {
 	public static function getDatePicker($format, $namePrefix) {
 		global $wp_locale;
 		
-		$day = ' <select name="'.$namePrefix.'_day"><option value=""></option>';
+		$day = ' <select name="'.$namePrefix.'_day"><option value="">' . esc_html__( 'day', 'learndash' ) . '</option>';
 		
 		for($i = 1; $i <= 31; $i++) {
 			$day .= '<option value="'.$i.'">'.$i.'</option>';
@@ -49,7 +53,7 @@ class WpProQuiz_Helper_Until {
 		
 		
 		
-		$monthNumber = ' <select name="'.$namePrefix.'_month"><option value=""></option>';
+		$monthNumber = ' <select name="'.$namePrefix.'_month"><option value="">' . esc_html__( 'month', 'learndash' ) . '</option>';
 		
 		for($i = 1; $i <= 12; $i++) {
 			$monthNumber .= '<option value="'.$i.'">'.$i.'</option>';
@@ -57,7 +61,7 @@ class WpProQuiz_Helper_Until {
 		
 		$monthNumber .= '</select> ';
 		
-		$monthName = ' <select name="'.$namePrefix.'_month"><option value=""></option>';
+		$monthName = ' <select name="'.$namePrefix.'_month"><option value="">' . esc_html__( 'month', 'learndash' ) . '</option>';
 		$names = array_values($wp_locale->month);
 		
 		$index = 1;
@@ -68,9 +72,9 @@ class WpProQuiz_Helper_Until {
 		$monthName .= '</select>';
 		
 		
-		$year = ' <select name="'.$namePrefix.'_year"><option value=""></option>';
+		$year = ' <select name="'.$namePrefix.'_year"><option value="">'. esc_html__( 'year', 'learndash' ) . '</option>';
 		
-		for($i = 1900; $i <= date('Y'); $i++) {
+		for($i = date('Y'); $i >= 1900 ; $i--) {
 			$year .= '<option value="'.$i.'">'.$i.'</option>';
 		}
 		

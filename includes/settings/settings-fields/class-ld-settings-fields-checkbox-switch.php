@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'LearnDash_Settings_Fields_Checkbox_Switch' ) ) ) {
 
 	/**
@@ -31,8 +35,20 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 		 * @return void
 		 */
 		public function create_section_field( $field_args = array() ) {
+
+			/**
+			 * Filters setting field arguments.
+			 *
+			 * @param array $field_arguments An array of setting field arguments.
+			 */
 			$field_args = apply_filters( 'learndash_settings_field', $field_args );
 
+			/**
+			 * Filters the HTML output to be displayed before settings field.
+			 *
+			 * @param string $output         The HTML output to be displayed before setting field.
+			 * @param array  $field_arguments An array of setting field arguments.
+			 */
 			$html = apply_filters( 'learndash_settings_field_html_before', '', $field_args );
 
 			if ( ( isset( $field_args['options'] ) ) && ( ! empty( $field_args['options'] ) ) ) {
@@ -166,6 +182,12 @@ if ( ( class_exists( 'LearnDash_Settings_Fields' ) ) && ( ! class_exists( 'Learn
 				$html .= '</fieldset>';
 			}
 
+			/**
+			 * Filters the HTML output to be displayed after settings field.
+			 *
+			 * @param string $output         The HTML output to be displayed after setting field.
+			 * @param array  $field_arguments An array of setting field arguments.
+			 */
 			$html = apply_filters( 'learndash_settings_field_html_after', $html, $field_args );
 
 			echo $html;

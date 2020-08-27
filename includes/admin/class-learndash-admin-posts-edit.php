@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Post_Edit' ) ) {
 	/**
 	 * Absract for LearnDash Post Edit Pages.
@@ -83,6 +87,14 @@ if ( ! class_exists( 'Learndash_Admin_Post_Edit' ) ) {
 
 			if ( $this->post_type_check() ) {
 
+				/**
+				 * Filters post metaboxes init settings.
+				 *
+				 * The Dynamic part `$post_type` refers to the post type slug.
+				 *
+				 * @param string $post_type Post type slug.
+				 * @param array  $metaboxes Common array set to contain the metaboxes shown on the post edit screen.
+				 */
 				$this->_metaboxes = apply_filters( 'learndash_post_settings_metaboxes_init_' . $this->post_type, $this->_metaboxes );
 
 				if ( ( isset( $_GET['post'] ) ) && ( ! empty( $_GET['post'] ) ) ) {
@@ -318,9 +330,16 @@ if ( ! class_exists( 'Learndash_Admin_Post_Edit' ) ) {
 			}
 
 			// Check permissions.
-			if ( ! current_user_can( 'edit_courses', $post_id ) ) {
+			if ( learndash_get_post_type_slug( 'group' ) === $post->post_type ) {
+				if ( ! current_user_can( 'edit_group', $post_id ) ) {
+					return false;
+				}
+			} else if ( ! current_user_can( 'edit_course', $post_id ) ) {
 				return false;
 			}
+
+			// Remove our save_Post hook to prevent recursive save loops.
+			remove_action( 'save_post', array( $this, 'save_post' ), 50, 3 );
 
 			// Clear the oEmbed post cache.
 			$this->post_clear_oembed_cache( $post_id );
@@ -422,3 +441,4 @@ require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-edits/clas
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-edits/class-learndash-admin-topic-edit.php';
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php';
 require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-edits/class-learndash-admin-question-edit.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-posts-edits/class-learndash-admin-group-edit.php';

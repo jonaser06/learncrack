@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_QuestionMapper extends WpProQuiz_Model_Mapper {
 	private $_table;
 
@@ -233,6 +237,17 @@ class WpProQuiz_Model_QuestionMapper extends WpProQuiz_Model_Mapper {
 			$ld_quiz_questions_object = LDLMS_Factory_Post::quiz_questions( intval( $quiz_post_id ) );
 			if ( $ld_quiz_questions_object ) {
 				$pro_questions = $ld_quiz_questions_object->get_questions( 'pro_objects' );
+
+				/**
+				 * Filters pro quiz questions list.
+				 * 
+				 * Used in `fetchAll` method of `WpProQuiz_Model_QuestionMapper` class to fetch all pro quiz questions.
+				 *
+				 * @param array   $pro_questions An array of pro quiz question IDs.
+				 * @param int     $quiz_id       ID of the quiz.
+				 * @param boolean $random        Whether to fetch questions in random order.
+				 * @param int     $max           The maximum number of questions to be fetched.
+				 */
 				$pro_questions = apply_filters( 'learndash_fetch_quiz_questions', $pro_questions, $quizId, $rand, $max );
 				if ( ! empty( $pro_questions ) ) {
 					if ( $rand ) {

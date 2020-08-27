@@ -1,13 +1,33 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Action to add custom content before the progress bar
+ * Fires before the progress bar
  *
  * @since 3.0
  */
 
 $context = ( isset( $context ) ? $context : 'learndash' );
 
+/**
+ * Fires before the progress bar.
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ */
 do_action( 'learndash-progress-bar-before', $course_id, $user_id );
+
+/**
+ * Fires before the progress bar for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-progress-bar-before', $course_id, $user_id );
 
 /**
@@ -16,6 +36,14 @@ do_action( 'learndash-' . $context . '-progress-bar-before', $course_id, $user_i
  */
 if ( 'topic' !== $context ) {
 
+	/**
+	 * Filters LearnDash progress arguments.
+	 * This filter will not be called if the context is `topic`.
+	 *
+	 * @param array $progress_args An array of progress arguments.
+	 * @param int   $course_id     Course ID.
+	 * @param int   $user_id       User ID.
+	 */
 	$progress_args = apply_filters(
 		'learndash_progress_args',
 		array(
@@ -28,10 +56,20 @@ if ( 'topic' !== $context ) {
 		$context
 	);
 
+	/**
+	 * Filters the progress statistics.
+	 *
+	 * The dynamic portion of the hook name, `$context`, refers to the context of progress,
+	 * such as `course`, `lesson`, `topic`, `quiz`, etc.
+	 *
+	 * @param string $progress_markup The HTML template of users course/lesson progress
+	 */
 	$progress = apply_filters( 'learndash-' . $context . '-progress-stats', learndash_course_progress( $progress_args ) );
 
 } else {
 	global $post;
+
+	/** This filter is documented in themes/ld30/templates/modules/progress.php */
 	$progress = apply_filters( 'learndash-' . $context . '-progress-stats', learndash_lesson_progress( $post, $course_id ) );
 }
 
@@ -88,7 +126,7 @@ if ( $progress ) :
 								);
 							else :
 								echo sprintf(
-									// translators: placeholder: completed steps, total steps
+									// translators: placeholder: completed steps, total steps.
 									esc_html_x( '%1$d/%2$d Steps', 'placeholder: completed steps, total steps', 'learndash' ),
 									esc_html( $progress['completed'] ),
 									esc_html( $progress['total'] )
@@ -110,9 +148,22 @@ if ( $progress ) :
 	<?php
 endif;
 /**
- * Action to add custom content before the course content progress bar
+ * Fires before the course content progress bar.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-progress-bar-after', $course_id, $user_id );
+
+/**
+ * Fires before the course steps for any context.
+ *
+ * The dynamic portion of the hook name, `$context`, refers to the context for which the hook is fired,
+ * such as `course`, `lesson`, `topic`, `quiz`, etc.
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ */
 do_action( 'learndash-' . $context . '-progress-bar-after', $course_id, $user_id );

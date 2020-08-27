@@ -35,8 +35,10 @@ const {
 registerBlockType(
     'learndash/ld-course-expire-status',
     {
+		// translators: placeholder: Course.
 		title: sprintf(_x('LearnDash %s Expire Status', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ),
-		description: sprintf(_x('This block displays the user %s access expire date.', 'placeholders: course', 'learndash'), ldlms_get_custom_label('course') ),
+		// translators: placeholder: Course.
+		description: sprintf(_x('This block displays the user %s access expire date.', 'placeholders: Course', 'learndash'), ldlms_get_custom_label('course') ),
 		icon: 'clock',
 		category: 'learndash-blocks',
 		example: {
@@ -99,8 +101,10 @@ registerBlockType(
 						title={ __( 'Settings', 'learndash' ) }
 					>
 						<TextControl
-							label={sprintf(_x('%s ID', 'Course ID', 'learndash'), ldlms_get_custom_label('course') ) }
-							help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: course, course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
+							// translators: placeholder: Course.
+							label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course') ) }
+							// translators: placeholders: Course, Course.
+							help={sprintf(_x('Enter single %1$s ID. Leave blank if used within a %2$s.', 'placeholders: Course, Course', 'learndash'), ldlms_get_custom_label('course'), ldlms_get_custom_label('course') ) }
 							value={course_id || ''}
 							onChange={course_id => setAttributes({ course_id })}
 						/>
@@ -140,7 +144,9 @@ registerBlockType(
 							onChange={ preview_show => setAttributes( { preview_show } ) }
 						/>
 						<TextControl
+							// translators: placeholder: Course.
 							label={sprintf(_x('%s ID', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
+							// translators: placeholder: Course.
 							help={sprintf(_x('Enter a %s ID to test preview', 'placeholder: Course', 'learndash'), ldlms_get_custom_label('course'))}
 							value={preview_course_id || ''}
 							type={'number'}

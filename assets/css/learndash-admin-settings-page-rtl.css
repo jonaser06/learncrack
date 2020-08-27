@@ -498,11 +498,11 @@ span.learndash-description {
   border: none;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
+.select2-container--learndash .select2-selection--single .select2-selection__rendered {
     color: #72777c !important;
 }
 
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
+.select2-container--learndash .select2-results__option--highlighted[aria-selected] {
     background-color: #11a0d2  !important;
 }
 
@@ -532,7 +532,7 @@ width: 100% !important;
 
 .sfwd_options .ld-select select {
   -moz-appearance: none;
-  -webkit-appearance: textarea;
+  -webkit-appearance: inherit;
   appearance: none;
   background: none;
   border: 0;
@@ -563,7 +563,7 @@ width: 100% !important;
   width: 100%;
 }
 
-.sfwd_options .ld-select2 .select2-container {
+.sfwd_options .ld-select2 .select2-container--learndash {
     width: 100% !important;
     max-width: 450px;
     height: 100%;
@@ -575,26 +575,26 @@ width: 100% !important;
   padding-bottom: 5px;
 }
 */
-.sfwd_options .ld-select2 .select2-container--default .select2-selection--single {
+.sfwd_options .ld-select2 .select2-container--learndash .select2-selection--single {
   padding-top: 3px;
   padding-bottom: 3px;
   height: 100%;
   border: 0px;
 }
 
-.sfwd_options .ld-select2 .select2-container--default .select2-selection--single .select2-selection__arrow {
+.sfwd_options .ld-select2 .select2-container--learndash .select2-selection--single .select2-selection__arrow {
   height: 100%;
 }
 /*
-.sfwd_options .ld-select2 .select2-container--default .select2-selection--single .select2-selection__placeholder {
+.sfwd_options .ld-select2 .select2-container--learndash .select2-selection--single .select2-selection__placeholder {
   color: inherit;
 }
 */
-.sfwd_options .ld-select2 .select2-container--default .select2-selection--single .select2-selection__arrow b {
+.sfwd_options .ld-select2 .select2-container--learndash .select2-selection--single .select2-selection__arrow b {
   border-top-color: inherit;
 }
 
-.sfwd_options .select2-container--default .select2-selection--multiple {
+.sfwd_options .select2-container--learndash .select2-selection--multiple {
     border: 0px solid #aaa !important; 
 }
 .sfwd_options .select2-container .select2-search--inline .select2-search__field {
@@ -603,7 +603,7 @@ width: 100% !important;
 }
 
 /*
-.select2-container--default .select2-selection--single {
+.select2-container--learndash .select2-selection--single {
     background-color: #fff;
     border: 1px solid #aaa;
     border-radius: 4px;
@@ -1169,4 +1169,66 @@ Quiz Edit Result Text lists
 .ld-plugin-update-notice .header {
   font-size: 130%;
   font-weight: bold;
+}
+
+
+.sfwd_options .ld-settings-info-banner {
+  display: block;
+  padding: 5px 10px 5px 10px;
+  margin: 5px 0;
+}
+
+.sfwd_options .ld-settings-info-banner p::before {
+  font: normal 20px/1 dashicons;
+  float: right;
+}
+
+.sfwd_options .ld-settings-info-banner p {
+  margin: .5em 0;
+  padding: 0;
+	font-size: 13px;
+	line-height: 1.5em;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	vertical-align: top;
+}
+
+.sfwd_options .ld-settings-info-banner.ld-settings-info-banner-alert {
+  background-color: #fbeaea;
+  border-right-color: #dc3232;
+  border-right-width: 2px;
+  border-right-style: solid;
+}
+
+.sfwd_options .ld-settings-info-banner.ld-settings-info-banner-alert p::before {
+	color: #dc3232;
+  content: "\f534";
+  margin-left: 6px; 
+}
+
+.sfwd_options .ld-settings-info-banner.ld-settings-info-banner-success {
+  border-color: #46b450;
+  border-width: 0 2px 1px 0;
+  border-style: solid;
+}
+
+/*
+.sfwd_options .ld-settings-info-banner.ld-settings-info-banner-success p::before {
+	color: #46b450;
+}
+*/
+
+/** Settiings for Group Attributes metabox */
+
+.edit-post-sidebar #learndash_group_attributes_metabox select#group_parent_id {
+  max-width: 85%;
+  width: 100%;
+}
+
+#learndash_group_attributes_metabox input#group_menu_order {
+  display: block;
+}
+
+.edit-post-sidebar #learndash_group_attributes_metabox .group-menu-order-label-wrapper {
+  margin-top: 10px;
 }

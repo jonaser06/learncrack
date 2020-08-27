@@ -18,6 +18,10 @@
 		<taxonomy translate="1">ld_lesson_tag</taxonomy>
 		<taxonomy translate="1">ld_topic_category</taxonomy>
 		<taxonomy translate="1">ld_topic_tag</taxonomy>
+		<taxonomy translate="1">ld_quiz_category</taxonomy>
+		<taxonomy translate="1">ld_quiz_tag</taxonomy>
+		<taxonomy translate="1">ld_group_category</taxonomy>
+		<taxonomy translate="1">ld_group_tag</taxonomy>
 	</taxonomies>
 	<custom-fields>
 		<custom-field action="ignore">course_id</custom-field>
@@ -70,7 +74,10 @@
 			<key name="quizzes" />
 			<key name="question" />
 			<key name="questions" />
+			<key name="group" />
+			<key name="groups" />
 			<key name="button_take_this_course" />
+			<key name="button_take_this_group" />
 			<key name="button_mark_complete" />
 			<key name="button_click_here_to_continue" />
 		</key>

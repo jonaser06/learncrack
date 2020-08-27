@@ -14,6 +14,7 @@ function learndash_binary_selector(selector_div) {
 	
 	self.selector_div = selector_div;
 	self.selector_id = jQuery(self.selector_div).prop('id');	
+	self.nonce = jQuery(self.selector_div).data('nonce');	
 	self.selected_items = {};
 	
 	self.selector_data_loaded = false;
@@ -148,6 +149,7 @@ function learndash_binary_selector(selector_div) {
 							
 							var post_data = {
 								'action': 'learndash_binary_selector_pager',
+								'nonce': self.nonce,
 								'query_data': search_values[position]['query_data'],
 							};
 
@@ -196,6 +198,7 @@ function learndash_binary_selector(selector_div) {
 
 							var post_data = {
 								'action': 'learndash_binary_selector_pager',
+								'nonce': self.nonce,
 								'query_data': search_values[position]['query_data'],
 							};
 							
@@ -320,6 +323,7 @@ function learndash_binary_selector(selector_div) {
 		
 		var post_data = {
 			'action': 'learndash_binary_selector_pager',
+			'nonce': self.nonce,
 			'query_data': query_data,
 		};
 		
@@ -610,6 +614,7 @@ function learndash_binary_selector(selector_div) {
 
 		var post_data = {
 			'action': 'learndash_binary_selector_lazy_loader',
+			'nonce': self.nonce,
 			'query-data': query_data
 		};
 

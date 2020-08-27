@@ -17,7 +17,7 @@ foreach ( $course_progress as $course_id => $coursep ) {
 	if ( ( !( $course instanceof WP_Post ) ) || ( $course->post_type != 'sfwd-courses' ) || ( empty( $course->post_title ) ) ) 
 		continue;
 	
-	?><span class="learndash-profile-course-title"><strong><a href="<?php echo get_permalink( $course->ID ); ?>"><?php echo get_the_title( $course->ID ) ?></a></strong>:</span><?php
+	?><span class="learndash-profile-course-title"><strong><a href="<?php echo esc_url( get_permalink( $course->ID ) ); ?>"><?php echo get_the_title( $course->ID ) ?></a></strong>:</span><?php
 
 	$course_status = learndash_course_status( $course_id, $user_id );
 	?> <?php _e('Status:', 'learndash') ?> <span class="leardash-course-status leardash-course-status-<?php echo sanitize_title_with_dashes($course_status) ?>"><?php echo $course_status ?></span><?php
@@ -39,15 +39,18 @@ foreach ( $course_progress as $course_id => $coursep ) {
 			$coursep['completed'] = $coursep['total'];
 	}
 	
-	echo ' '. sprintf( __( 'Completed <strong>%d</strong> out of <strong>%d</strong> steps', 'learndash' ), $coursep['completed'], $coursep['total'] );
+	// translators: placeholders: Course steps completed, Course steps total.
+	echo ' '. sprintf( _x( 'Completed <strong>%1$d</strong> out of <strong>%2$d</strong> steps', 'placeholders: Course steps completed, Course steps total', 'learndash' ), $coursep['completed'], $coursep['total'] );
 
 	$since = learndash_user_group_enrolled_to_course_from( $user_id, $course->ID );
 	if ( !empty( $since ) ) {
-		echo ' <span class="learndash-profile-course-access-label">'. sprintf( __('Since: %s (Group Access)', 'learndash'), learndash_adjust_date_time_display( $since ) ) .'</span>';
+		// translators: placeholder: Group Access Date.
+		echo ' <span class="learndash-profile-course-access-label">'. sprintf( esc_html_x('Since: %s (Group Access)', 'placeholder: Group Access Date', 'learndash'), learndash_adjust_date_time_display( $since ) ) .'</span>';
 	} else {
 		$since = ld_course_access_from( $course->ID,  $user_id );
 		if ( !empty( $since ) ) {
-			echo ' <span class="learndash-profile-course-access-label">'. sprintf( __('Since: %s', 'learndash' ), learndash_adjust_date_time_display( $since ) ) .'</span>';
+			// translators: placeholder: Access Date.
+			echo ' <span class="learndash-profile-course-access-label">'. sprintf( esc_html_x('Since: %s', 'placeholder: Access Date', 'learndash' ), learndash_adjust_date_time_display( $since ) ) .'</span>';
 		}
 	} 
 
@@ -60,7 +63,9 @@ foreach ( $course_progress as $course_id => $coursep ) {
 		} else {
 			$expired_on = ld_course_access_expires_on($course_id, $user_id);
 			if (!empty( $expired_on ) ) {
-				?> <span class="leardash-course-expired"><?php echo sprintf( _x('(expires %s)', 'Course Expires on date', 'learndash'),
+				?> <span class="leardash-course-expired"><?php 
+				// translators: placeholder: Course Access Expire Date.
+				echo sprintf( _x('(expires %s)', 'placeholder: Course Access Expire Date', 'learndash'),
 			 		learndash_adjust_date_time_display( $expired_on ) ) ?></span> <?php
 			}
 		}
@@ -69,14 +74,14 @@ foreach ( $course_progress as $course_id => $coursep ) {
 	if ( ( $user_id == get_current_user_id() ) || ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) {
 		$certificateLink = learndash_get_course_certificate_link( $course_id, $user_id );
 		if ( !empty( $certificateLink ) ) {
-			?> - <a class="learndash-profile-course-certificate-link" href="<?php echo $certificateLink ?>" target="_blank"><?php echo __( 'Certificate', 'learndash' ); ?></a><?php
+			?> - <a class="learndash-profile-course-certificate-link" href="<?php echo esc_url( $certificateLink ); ?>" target="_blank"><?php echo __( 'Certificate', 'learndash' ); ?></a><?php
 		}
 	}
 
 	if ( current_user_can('edit_courses', intval($course->ID) ) ) {
 		$edit_post_link = get_edit_post_link( intval($course->ID) );
 		//error_log('edit_post_link['. $edit_post_link .']');
-		?> <a class="learndash-profile-edit-course-link" href="<?php echo $edit_post_link; ?>"><?php echo _x('(edit)', 'profile edit course link label', 'learndash') ?></a><?php
+		?> <a class="learndash-profile-edit-course-link" href="<?php echo esc_url( $edit_post_link ); ?>"><?php echo _x('(edit)', 'profile edit course link label', 'learndash') ?></a><?php
 	}
 
 	if ( learndash_show_user_course_complete( $user_id ) ) {
@@ -123,7 +128,9 @@ foreach ( $course_progress as $course_id => $coursep ) {
 						true
 					);
 				?>
-				<input id="learndash-mark-course-complete-<?php echo $course_id ?>" type="checkbox" <?php echo $course_checked; ?> class="learndash-mark-course-complete" data-name="<?php echo htmlspecialchars( json_encode( $user_course_progress, JSON_FORCE_OBJECT ) ) ?>" <?php echo $unchecked_children_message ?> /><label for="learndash-mark-course-complete-<?php echo $course_id ?>"><?php echo sprintf( _x('%s All Complete', 'Course All Complete', 'learndash'), LearnDash_Custom_Label::get_label( 'course' ) ) ?></label><br />
+				<input id="learndash-mark-course-complete-<?php echo $course_id ?>" type="checkbox" <?php echo $course_checked; ?> class="learndash-mark-course-complete" data-name="<?php echo htmlspecialchars( json_encode( $user_course_progress, JSON_FORCE_OBJECT ) ) ?>" <?php echo $unchecked_children_message ?> /><label for="learndash-mark-course-complete-<?php echo $course_id ?>"><?php 
+				// translators: placeholder: Course.
+				echo sprintf( _x('%s All Complete', 'placeholder: Course', 'learndash'), LearnDash_Custom_Label::get_label( 'course' ) ) ?></label><br />
 				<?php
 					$template_file = SFWD_LMS::get_template(
 						'course_navigation_admin',

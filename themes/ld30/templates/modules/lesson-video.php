@@ -17,6 +17,10 @@
  * @package LearnDash\Lesson
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Basic usage. If the [ld_video] placeholder (not a shortcode) is added to the
 // lesson/topic content the video will be inserted at that place within the
 // $content.

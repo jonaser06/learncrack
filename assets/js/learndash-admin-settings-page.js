@@ -30,6 +30,7 @@ jQuery(document).ready(function() {
 			jQuery(item).select2({
 				placeholder: placeholder,
 				width: 'resolve',
+				theme: 'learndash',
 				dir: (window.isRtl) ? 'rtl' : '',
 				dropdownAutoWidth: true
 			});
@@ -729,10 +730,24 @@ jQuery(document).ready(function() {
 	 * Handle the Template load button on the Quiz / Questions edit metabox.
 	 */
 	if (jQuery('.sfwd_options input[name="templateLoad"]').length) {
+		// Hide the Load Template section if there are no options. Other than the default message.
+		if ( jQuery('.sfwd_options select[name="templateLoadId"] option').length < 2 ) {
+			var template_load_settings_row = jQuery('.sfwd_options input[name="templateLoad"]').parents('.sfwd_input');
+			if (typeof template_load_settings_row !== 'undefined') {
+				jQuery(template_load_settings_row).hide();
+			}
+		}
+
 		jQuery('.sfwd_options input[name="templateLoad"]').click(function () {
 			if (jQuery('.sfwd_options select[name="templateLoadId"]').length) {
 				var template_load_url = jQuery('.sfwd_options select[name="templateLoadId"]').val();
-				if (template_load_url != '') {
+				if (( template_load_url != '') && (template_load_url != '-1') ) {
+					if (jQuery('.sfwd_options input[name="templateLoadReplaceCourse"]').length) {
+						var template_course = jQuery('.sfwd_options input[name="templateLoadReplaceCourse"]').val();
+						if ( ( typeof template_course !== 'undefined' )&& ( '' !== template_course ) ) {	
+							template_load_url = template_load_url + '&templateLoadReplaceCourse=' + template_course;
+						}
+					}
 					window.location.href = template_load_url;
 				}
 			}
@@ -1054,44 +1069,76 @@ if (jQuery('body.plugins-php table.wp-list-table.plugins .ld-plugin-update-notic
 	});
 }
 
+/**
+ * Handle the dimissable license notice. Sends trigger to server to store for 24 hours.
+ */
+if (jQuery('.learndash-updates-disabled-dismissible').length) {
+	jQuery('.learndash-updates-disabled-dismissible').on('click', '.notice-dismiss', function (event, el) {
+		var nonce = jQuery(event.currentTarget).parent('.learndash-updates-disabled-dismissible').data('notice-dismiss-nonce');
+		post_data = {
+			'action': 'learndash_license_notice_dismissed',
+			'learndash_license_notice_dismissed_nonce': nonce
+		}
+
+		jQuery.ajax({
+			type: 'POST',
+			url: ajaxurl,
+			dataType: 'json',
+			cache: false,
+			data: post_data,
+			error: function (jqXHR, textStatus, errorThrown) {
+			},
+			success: function (reply_data) {
+			}
+		});
+	});
+}
 
 function learndash_course_edit_page_billing_cycle_javascript() {
-	var selector = jQuery('body.post-type-sfwd-courses .sfwd_options select[name=course_price_billing_t3]');
-	var parent = selector.parent();
-	var billing_cycle = selector.val();
 
-	function build_notice(message) {
-		return '<div id="sfwd-courses_course_price_billing_cycle_instructions"><label class="sfwd_help_text">' + message + '</label></div>';
-	}
+	if ( jQuery('.sfwd_options select[name=course_price_billing_t3]').length) {
+		var selector = jQuery('.sfwd_options select[name=course_price_billing_t3]');
+	} else if(jQuery('.sfwd_options select[name=group_price_billing_t3]').length) {
+		var selector = jQuery('.sfwd_options select[name=group_price_billing_t3]');
+	} 
 
-	function output_message() {
-		switch (billing_cycle) {
-			case "D":
-				message = sfwd_data.valid_recurring_paypal_day_range;
-				parent.append(build_notice(message));
-				break;
-			case "W":
-				message = sfwd_data.valid_recurring_paypal_week_range;
-				parent.append(build_notice(message));
-				break;
-			case "M":
-				message = sfwd_data.valid_recurring_paypal_month_range;
-				parent.append(build_notice(message));
-				break;
-			case "Y":
-				message = sfwd_data.valid_recurring_paypal_year_range;
-				parent.append(build_notice(message));
-			default:
-				break;
+	if ('undefined' !== typeof selector) {
+		var parent = selector.parent();
+		var billing_cycle = selector.val();
+
+		function build_notice(message) {
+			return '<div id="learndash_price_billing_cycle_instructions"><label class="sfwd_help_text">' + message + '</label></div>';
 		}
-	}
-	output_message();
 
-	selector.change(function (e) {
-		billing_cycle = selector.val();
-		jQuery("#sfwd-courses_course_price_billing_cycle_instructions").remove();
-		output_message(billing_cycle);
-	});
+		function output_message() {
+			switch (billing_cycle) {
+				case "D":
+					message = sfwd_data.valid_recurring_paypal_day_range;
+					parent.append(build_notice(message));
+					break;
+				case "W":
+					message = sfwd_data.valid_recurring_paypal_week_range;
+					parent.append(build_notice(message));
+					break;
+				case "M":
+					message = sfwd_data.valid_recurring_paypal_month_range;
+					parent.append(build_notice(message));
+					break;
+				case "Y":
+					message = sfwd_data.valid_recurring_paypal_year_range;
+					parent.append(build_notice(message));
+				default:
+					break;
+			}
+		}
+		output_message();
+
+		selector.change(function (e) {
+			billing_cycle = selector.val();
+			jQuery("#learndash_price_billing_cycle_instructions").remove();
+			output_message(billing_cycle);
+		});
+	}
 };
 
 /** 

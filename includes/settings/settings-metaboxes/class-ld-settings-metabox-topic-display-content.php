@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Topic_Display_Content' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -45,6 +49,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				'lesson_video_shown'                 => 'lesson_video_shown',
 				'lesson_video_auto_start'            => 'lesson_video_auto_start',
 				'lesson_video_show_controls'         => 'lesson_video_show_controls',
+				'lesson_video_focus_pause'           => 'lesson_video_focus_pause',
+				'lesson_video_track_time'            => 'lesson_video_track_time',
 				'lesson_video_auto_complete'         => 'lesson_video_auto_complete',
 				'lesson_video_auto_complete_delay'   => 'lesson_video_auto_complete_delay',
 				'lesson_video_hide_complete_button'  => 'lesson_video_hide_complete_button',
@@ -61,7 +67,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 
 				'forced_lesson_time_enabled'         => 'forced_lesson_time_enabled',
 				'forced_lesson_time'                 => 'forced_lesson_time',
-				//'forced_lesson_time_cookie_key'      => 'forced_lesson_time_cookie_key',
 			);
 
 			parent::__construct();
@@ -107,6 +112,14 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					$this->setting_option_values['lesson_video_show_controls'] = '';
 				}
 
+				if ( ! isset( $this->setting_option_values['lesson_video_focus_pause'] ) ) {
+					$this->setting_option_values['lesson_video_focus_pause'] = '';
+				}
+
+				if ( ! isset( $this->setting_option_values['lesson_video_track_time'] ) ) {
+					$this->setting_option_values['lesson_video_track_time'] = '';
+				}
+
 				if ( ! isset( $this->setting_option_values['lesson_video_auto_complete'] ) ) {
 					$this->setting_option_values['lesson_video_auto_complete'] = '';
 				}
@@ -129,8 +142,14 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					$this->setting_option_values['lesson_assignment_upload'] = '';
 				}
 
-				if ( ! isset( $this->setting_option_values['assignment_upload_limit_extensions'] ) ) {
-					$this->setting_option_values['assignment_upload_limit_extensions'] = '';
+				if ( ! empty( $this->setting_option_values['assignment_upload_limit_extensions'] ) ) {
+					if ( is_array( $this->setting_option_values['assignment_upload_limit_extensions'] ) ) {
+						if ( count( $this->setting_option_values['assignment_upload_limit_extensions'] ) > 1 ) {
+							$this->setting_option_values['assignment_upload_limit_extensions'] = implode( ',', $this->setting_option_values['assignment_upload_limit_extensions'] );
+						} else {
+							$this->setting_option_values['assignment_upload_limit_extensions'] = $this->setting_option_values['assignment_upload_limit_extensions'][0];
+						}
+					}
 				}
 
 				if ( ! isset( $this->setting_option_values['assignment_upload_limit_size'] ) ) {
@@ -192,6 +211,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				$this->setting_option_values['lesson_video_shown']                = '';
 				$this->setting_option_values['lesson_video_auto_start']           = '';
 				$this->setting_option_values['lesson_video_show_controls']        = '';
+				$this->setting_option_values['lesson_video_focus_pause']          = '';
+				$this->setting_option_values['lesson_video_track_time']           = '';
 				$this->setting_option_values['lesson_video_auto_complete']        = '';
 				$this->setting_option_values['lesson_video_auto_complete_delay']  = '0';
 				$this->setting_option_values['lesson_video_show_complete_button'] = '';
@@ -208,7 +229,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 			} elseif ( 'on' !== $this->setting_option_values['forced_lesson_time_enabled'] ) {
 				$this->setting_option_values['forced_lesson_time_enabled'] = '';
 				$this->setting_option_values['forced_lesson_time']         = '';
-				//$this->setting_option_values['forced_lesson_time_cookie_key'] = '';
 			}
 		}
 
@@ -342,7 +362,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'value'          => $this->setting_option_values['topic_materials'],
 					'default'        => '',
 					'placeholder'    => esc_html__( 'Add a list of needed documents or URLs. This field supports HTML.', 'learndash' ),
-					'editor_args' => array(
+					'editor_args'    => array(
 						'textarea_name' => $this->settings_metabox_key . '[topic_materials]',
 						'textarea_rows' => 3,
 					),
@@ -447,6 +467,32 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					),
 					'parent_setting' => 'lesson_video_enabled',
 				),
+				'lesson_video_focus_pause'           => array(
+					'name'           => 'lesson_video_focus_pause',
+					'label'          => esc_html__( 'Video Pause on Window Unfocused', 'learndash' ),
+					'type'           => 'checkbox-switch',
+					'value'          => $this->setting_option_values['lesson_video_focus_pause'],
+					'help_text'      => esc_html__( 'Pause the video if user switches to a different window. VooPlayer not supported.', 'learndash' ),
+					'default'        => '',
+					'options'        => array(
+						'on' => '',
+						''   => '',
+					),
+					'parent_setting' => 'lesson_video_enabled',
+				),
+				'lesson_video_track_time'            => array(
+					'name'           => 'lesson_video_track_time',
+					'label'          => esc_html__( 'Video Resume', 'learndash' ),
+					'type'           => 'checkbox-switch',
+					'value'          => $this->setting_option_values['lesson_video_track_time'],
+					'help_text'      => esc_html__( 'Allows user to resume video position. Uses browser cookie. VooPlayer not supported.', 'learndash' ),
+					'default'        => '',
+					'options'        => array(
+						'on' => '',
+						''   => '',
+					),
+					'parent_setting' => 'lesson_video_enabled',
+				),
 
 				'lesson_assignment_upload'           => array(
 					'name'                => 'lesson_assignment_upload',
@@ -483,11 +529,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					'label'          => esc_html__( 'File Size Limit', 'learndash' ),
 					'type'           => 'text',
 					'class'          => '-small',
-					'placeholder'    => sprintf(
-						// translators: placeholder: PHP file upload size.
-						esc_html_x( '%s', 'placeholder: PHP file upload size', 'learndash' ),
-						ini_get( 'upload_max_filesize' )
-					),
+					'placeholder'    => ini_get( 'upload_max_filesize' ),
 					'help_text'      => sprintf(
 						// translators: placeholder: PHP file upload size.
 						esc_html_x( 'Default maximum file size supported is: %s', 'placeholder: PHP file upload size', 'learndash' ),
@@ -539,8 +581,9 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 						''   => array(
 							'label'               => esc_html__( 'Manually grade', 'learndash' ),
 							'description'         => sprintf(
-								// translators: placeholder: topic.
-								esc_html_x( 'Admin or group leader approval and grading required. The %s cannot be completed until the assignment is approved.', 'placeholder: topic', 'learndash' ),
+								// translators: placeholder: Group, topic.
+								esc_html_x( 'Admin or %1$s leader approval and grading required. The %2$s cannot be completed until the assignment is approved.', 'placeholder: Group, topic', 'learndash' ),
+								learndash_get_custom_label( 'group' ),
 								learndash_get_custom_label_lower( 'topic' )
 							),
 							'inline_fields'       => array(
@@ -590,6 +633,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				unset( $this->setting_option_fields['lesson'] );
 			}
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_metabox_key );
 
 			parent::load_settings_fields();
@@ -598,7 +642,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 		/**
 		 * Filter settings values for metabox before save to database.
 		 *
-		 * @param array $settings_values Array of settings values.
+		 * @param array  $settings_values Array of settings values.
 		 * @param string $settings_metabox_key Metabox key.
 		 * @param string $settings_screen_id Screen ID.
 		 * @return array $settings_values.
@@ -620,7 +664,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				if ( ( 'on' !== $settings_values['forced_lesson_time_enabled'] ) || ( empty( $settings_values['forced_lesson_time'] ) ) ) {
 					$settings_values['forced_lesson_time_enabled'] = '';
 					$settings_values['forced_lesson_time']         = '';
-					//$settings_values['forced_lesson_time_cookie_key'] = '';
 				}
 
 				if ( ( 'on' !== $settings_values['lesson_assignment_points_enabled'] ) || ( empty( $settings_values['lesson_assignment_points_amount'] ) ) ) {
@@ -648,6 +691,8 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 					$settings_values['lesson_video_shown']                = '';
 					$settings_values['lesson_video_auto_start']           = '';
 					$settings_values['lesson_video_show_controls']        = '';
+					$settings_values['lesson_video_focus_pause']          = '';
+					$settings_values['lesson_video_track_time']           = '';
 					$settings_values['lesson_video_auto_complete']        = '';
 					$settings_values['lesson_video_auto_complete_delay']  = '';
 					$settings_values['lesson_video_show_complete_button'] = '';
@@ -667,7 +712,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				if ( 'on' !== $settings_values['forced_lesson_time_enabled'] ) {
 					$settings_values['forced_lesson_time_enabled'] = '';
 					$settings_values['forced_lesson_time']         = '';
-					//$settings_values['forced_lesson_time_cookie_key'] = '';
 				}
 
 				if ( 'on' === $settings_values['lesson_video_enabled'] ) {

@@ -46,7 +46,7 @@ if ( ( !class_exists( 'LD_REST_Quizzes_Controller_V1' ) ) && ( class_exists( 'LD
 						'permission_callback' => array( $this, 'create_item_permissions_check' ),
 						'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				)
 			);
 
@@ -84,9 +84,22 @@ if ( ( !class_exists( 'LD_REST_Quizzes_Controller_V1' ) ) && ( class_exists( 'LD
 							),
 						),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				)
 			);
+		}
+
+		/**
+		 * Gets sfwd-quiz schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = $this->get_public_item_schema();
+
+			$schema['title'] = 'quiz';
+
+			return $schema;
 		}
 
 		function rest_collection_params_filter( $query_params, $post_type ) {

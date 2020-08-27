@@ -5,6 +5,11 @@
  * @package LearnDash
  * @subpackage Settings
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once __DIR__ . '/class-ld-settings-section-side-submit.php';
 require_once __DIR__ . '/class-ld-settings-section-side-quick-links.php';
 
@@ -44,6 +49,17 @@ require_once __DIR__ . '/class-ld-settings-section-questions-management-display.
 //require_once( __DIR__ . '/class-ld-settings-section-questions-cpt.php' );
 //require_once __DIR__ . '/class-ld-settings-section-questions-template-management.php';
 //require_once __DIR__ . '/class-ld-settings-section-questions-category-management.php';
+
+// Certificate Options.
+require_once __DIR__ . '/class-ld-settings-section-certificates-cpt.php';
+require_once __DIR__ . '/class-ld-settings-section-certificates-styles.php';
+
+// Groups
+require_once __DIR__ . '/class-ld-settings-section-groups-group-leader-user.php';
+require_once __DIR__ . '/class-ld-settings-section-groups-management-display.php';
+require_once __DIR__ . '/class-ld-settings-section-groups-cpt.php';
+require_once __DIR__ . '/class-ld-settings-section-groups-taxonomies.php';
+require_once __DIR__ . '/class-ld-settings-section-groups-membership.php';
 
 
 // Settings General tab.

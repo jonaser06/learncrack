@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class WpProQuiz_Model_Question extends WpProQuiz_Model_Model {
 	protected $_id = 0;
@@ -346,6 +349,10 @@ class WpProQuiz_Model_Question extends WpProQuiz_Model_Model {
 
 		foreach( $array_vars as $key => $value ) {
 			switch( $key ) {
+				case '_id':
+					$this->setId( $value );
+					break;
+
 				case '_quizId':
 					$this->setQuizId( $value );
 					break;

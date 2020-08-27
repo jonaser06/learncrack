@@ -7,6 +7,10 @@
  * @subpackage Data Upgrades
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
 	/**
 	 * Class to create the Data Upgrade for Courses.
@@ -105,13 +109,24 @@ if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
 			$this->meta_key = $this->transient_prefix . $this->data_slug;
 
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
-
+			/**
+			 * Filters value of process time percentage.
+			 *
+			 * @param int $process_time_percent Process time percentage.
+			 */
+			$process_time_percent = apply_filters( 'learndash_process_time_percent', 80 );
 			if ( ! defined( 'LEARNDASH_PROCESS_TIME_PERCENT' ) ) {
-				define( 'LEARNDASH_PROCESS_TIME_PERCENT', apply_filters( 'learndash_process_time_percent', 80 ) );
+				define( 'LEARNDASH_PROCESS_TIME_PERCENT', $process_time_percent );
 			}
 
+			/**
+			 * Filters value of process time seconds.
+			 *
+			 * @param int $process_time_seconds Process time seconds.
+			 */
+			$process_time_seconds = apply_filters( 'learndash_process_time_seconds', 10 );
 			if ( ! defined( 'LEARNDASH_PROCESS_TIME_SECONDS' ) ) {
-				define( 'LEARNDASH_PROCESS_TIME_SECONDS', apply_filters( 'learndash_process_time_seconds', 10 ) );
+				define( 'LEARNDASH_PROCESS_TIME_SECONDS', $process_time_seconds );
 			}
 		}
 
@@ -218,6 +233,8 @@ if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
 							$this->data_settings['version_history'][0] = $this->data_settings['prior_version'];
 						}
 					}
+					// Set the upgrade flag to trigger 'activate' logic.
+					$this->data_settings['is_upgrade']      = true;
 
 					$this->data_settings['current_version'] = LEARNDASH_VERSION;
 					$this->data_settings['version_history'][ time() ] = LEARNDASH_VERSION;
@@ -344,6 +361,7 @@ if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
 
 			<table id="learndash-data-upgrades" class="wc_status_table widefat" cellspacing="0">
 			<?php
+			wp_nonce_field( 'learndash-data-upgrades-nonce-' . get_current_user_id(), 'learndash-data-upgrades-nonce' );
 			foreach ( self::$upgrade_actions as $upgrade_action_slug => $upgrade_action ) {
 				$upgrade_action['instance']->show_upgrade_action();
 			}
@@ -543,18 +561,18 @@ if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
 }
 
 // Go ahead and inlcude out User Meta Courses upgrade class.
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-translations.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-group-leader-role.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-user-activity-db-table.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-user-meta-courses.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-user-meta-quizzes.php';
-//require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-course-access-list.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-quiz-questions.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-course-access-list-convert.php';
-require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-uprades-actions/class-learndash-admin-data-upgrades-rename_wpproquiz-tables.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-translations.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-group-leader-role.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-user-activity-db-table.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-user-meta-courses.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-user-meta-quizzes.php';
+//require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-course-access-list.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-quiz-questions.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-course-access-list-convert.php';
+require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/classes-data-upgrades-actions/class-learndash-admin-data-upgrades-rename_wpproquiz-tables.php';
 
 /**
- * Action to let other.
+ * Fires on admin data upgrades init
  *
  * @since 2.6.0
  */
@@ -566,18 +584,18 @@ do_action( 'learndash_data_upgrades_init' );
 function learndash_data_upgrades_ajax() {
 
 	$reply_data = array( 'status' => false );
-	if ( isset( $_POST['data'] ) ) {
-		$post_data = $_POST['data'];
-	} else {
-		$post_data = array();
-	}
 
-	if ( learndash_is_admin_user() ) {
-		$ld_admin_data_upgrades = Learndash_Admin_Data_Upgrades::get_instance();
-		$reply_data['data']     = $ld_admin_data_upgrades->do_data_upgrades( $post_data, $reply_data );
+	if ( ( is_user_logged_in() ) && ( learndash_is_admin_user() ) ) {
+		if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-data-upgrades-nonce-' . get_current_user_id() ) ) ) {
 
-		if ( ! empty( $reply_data ) ) {
-			echo json_encode( $reply_data );
+			if ( ( isset( $_POST['data'] ) ) && ( ! empty( $_POST['data'] ) ) ) {
+				$ld_admin_data_upgrades = Learndash_Admin_Data_Upgrades::get_instance();
+				$reply_data['data']     = $ld_admin_data_upgrades->do_data_upgrades( $_POST['data'], $reply_data );
+
+				if ( ! empty( $reply_data ) ) {
+					echo json_encode( $reply_data );
+				}
+			}
 		}
 	}
 	wp_die();

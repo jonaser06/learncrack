@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Support_WordPress_Plugins' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -106,6 +110,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 					}
 				}
 
+				/** This filter is documented in includes/settings/settings-sections/class-ld-settings-section-support-database-tables.php */
 				$support_sections[ $this->setting_option_key ] = apply_filters( 'learndash_support_section', $this->settings_set, $this->setting_option_key );
 			}
 

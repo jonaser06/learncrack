@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'LearnDash_Settings_Metabox_Course_Users_Settings' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -29,14 +33,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 				learndash_get_custom_label( 'course' )
 			);
 
-			/*
-			$this->settings_section_description = sprintf(
-				// translators: placeholder: course.
-				esc_html_x( 'Controls how users will gain access to the %s', 'placeholder: course', 'learndash' ),
-				learndash_get_custom_label_lower( 'course' )
-			);
-			*/
-
 			parent::__construct();
 		}
 
@@ -46,9 +42,6 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 		 */
 		public function load_settings_values() {
 			parent::load_settings_values();
-			if ( true === $this->settings_values_loaded ) {
-
-			}
 		}
 
 		/**
@@ -74,7 +67,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 						$metabox_description = '';
 
 						$course_access_users = learndash_get_course_users_access_from_meta( $course_id );
-						if ( ! empty( $course_access_users )) {
+						if ( ! empty( $course_access_users ) ) {
 							$course_access_users = learndash_convert_course_access_list( $course_access_users, true );
 						} else {
 							$course_access_users = array();
@@ -84,7 +77,7 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 							'html_title'            => '',
 							'course_id'             => $course_id,
 							'search_posts_per_page' => 100,
-							'selected_ids'          => $course_access_users
+							'selected_ids'          => $course_access_users,
 						);
 
 						// Use nonce for verification.
@@ -95,8 +88,9 @@ if ( ( class_exists( 'LearnDash_Settings_Metabox' ) ) && ( ! class_exists( 'Lear
 						}
 
 						$metabox_description .= sprintf(
-							// translators: placeholder: Course.
-							esc_html_x( 'Users enrolled via Groups using this %s are excluded from the listings below and should be manage via the Group admin screen.', 'placeholder: Course', 'learndash' ),
+							// translators: placeholder: Groups, Course.
+							esc_html_x( 'Users enrolled via %1$s using this %2$s are excluded from the listings below and should be manage via the Group admin screen.', 'placeholder: Groups, Course', 'learndash' ),
+							LearnDash_Custom_Label::get_label( 'groups' ),
 							LearnDash_Custom_Label::get_label( 'course' )
 						);
 						?>

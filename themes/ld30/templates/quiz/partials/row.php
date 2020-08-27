@@ -15,32 +15,54 @@
  * @package LearnDash\Course
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $quiz_classes = learndash_quiz_row_classes( $quiz, $context );
 $is_sample    = ( isset( $lesson['sample'] ) ? $lesson['sample'] : false );
+
+/**
+ * Filters quiz row attributes. Used while displaying a single quiz row.
+ *
+ * @param string $attribute Quiz row attribute. The value is data-ld-tooltip if a user does not have access to quiz otherwise empty string.
+ */
 $atts         = apply_filters( 'learndash_quiz_row_atts', ( isset( $has_access ) && ! $has_access && ! $is_sample ? 'data-ld-tooltip="' . esc_html__( "You don't currently have access to this content", 'learndash' ) . '"' : '' ) );
 
 /**
- * Action to add custom content before the quiz row listing
+ * Fires before the quiz row listing.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $quiz_id   Quiz ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-quiz-row-before', $quiz['post']->ID, $course_id, $user_id ); ?>
 <div id="<?php echo esc_attr( 'ld-table-list-item-' . $quiz['post']->ID ); ?>" class="<?php echo esc_attr( $quiz_classes['wrapper'] ); ?>" <?php echo wp_kses_post( $atts ); ?>>
 	<div class="<?php echo esc_attr( $quiz_classes['preview'] ); ?>">
-		<a class="<?php echo esc_attr( $quiz_classes['anchor'] ); ?>" href="<?php echo esc_attr( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>">
+		<a class="<?php echo esc_attr( $quiz_classes['anchor'] ); ?>" href="<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>">
 			<?php
 			/**
-			 * Action to add custom content before quiz row status
+			 * Fires before the quiz row status.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Post ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-row-status-before', $quiz['post']->ID, $course_id, $user_id );
 
 			learndash_status_icon( $quiz['status'], 'sfwd-quiz', null, true );
 			/**
-			 * Action to add custom content before quiz row title
+			 * Fires before the quiz row title.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-row-title-before', $quiz['post']->ID, $course_id, $user_id );
 			?>
@@ -49,9 +71,13 @@ do_action( 'learndash-quiz-row-before', $quiz['post']->ID, $course_id, $user_id 
 
 			<?php
 			/**
-			 * Action to add custom content before quiz row title
+			 * Fires after the quiz row title.
 			 *
-			 * @since 3.0
+			 * @since 3.0.0
+			 *
+			 * @param int $quiz_id   Quiz ID.
+			 * @param int $course_id Course ID.
+			 * @param int $user_id   User ID.
 			 */
 			do_action( 'learndash-quiz-row-title-after', $quiz['post']->ID, $course_id, $user_id );
 			?>
@@ -60,8 +86,12 @@ do_action( 'learndash-quiz-row-before', $quiz['post']->ID, $course_id, $user_id 
 </div>
 <?php
 /**
- * Action to add custom content after the quiz row listing
+ * Fires after the quiz row listing.
  *
- * @since 3.0
+ * @since 3.0.0
+ *
+ * @param int $quiz_id   Quiz ID.
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
  */
 do_action( 'learndash-quiz-row-after', $quiz['post']->ID, $course_id, $user_id );

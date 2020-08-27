@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 //require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/settings/class-ld-settings-section-fields.php';
 
 if ( ! class_exists( 'LearnDash_Settings_Section' ) ) {
@@ -442,6 +446,7 @@ if ( ! class_exists( 'LearnDash_Settings_Section' ) ) {
 			global $learndash_metaboxes;
 
 			if ( $settings_screen_id === $this->settings_screen_id ) {
+				/** This filter is documented in includes/settings/class-ld-settings-metaboxes.php */
 				if ( apply_filters( 'learndash_show_metabox', true, $this->metabox_key, $this->settings_screen_id ) ) {
 
 					if ( ! isset( $learndash_metaboxes[ $this->settings_screen_id ] ) ) {
@@ -499,20 +504,58 @@ if ( ! class_exists( 'LearnDash_Settings_Section' ) ) {
 				 * do_settings_fields because we want to control the label and help icons
 				 */
 
+				/**
+				 * Fires before settings sections.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_before', $this->settings_section_key, $this->settings_screen_id );
 
 				echo '<div class="sfwd sfwd_options ' . esc_attr( $this->settings_section_key ) . '">';
 
+				/**
+				 * Fires before settings section fields.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_fields_before', $this->settings_section_key, $this->settings_screen_id );
 				$this->show_settings_section_fields( $this->settings_page_id, $this->settings_section_key );
+
+				/**
+				 * Fires after the settings section fields.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_fields_after', $this->settings_section_key, $this->settings_screen_id );
 
+				/**
+				 * Fires before settings section reset link.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_reset_before', $this->settings_section_key, $this->settings_screen_id );
 				$this->show_settings_section_reset_confirm_link();
+
+				/**
+				 * Fires after settings section reset link.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_reset_after', $this->settings_section_key, $this->settings_screen_id );
 
 				echo '</div>';
 
+				/**
+				 * Fires after settings sections.
+				 *
+				 * @param string $settings_section_key Settings section key.
+				 * @param string $setting_screen_id    Settings screen ID.
+				 */
 				do_action( 'learndash_section_after', $this->settings_section_key, $this->settings_screen_id );
 			}
 		}

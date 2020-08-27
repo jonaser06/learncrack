@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once __DIR__ . '/class-ld-settings-page-overview.php';
 require_once __DIR__ . '/class-ld-settings-page-custom-labels.php';
 require_once __DIR__ . '/class-ld-settings-page-courses-options.php';
@@ -14,6 +18,8 @@ require_once __DIR__ . '/class-ld-settings-page-lessons-options.php';
 require_once __DIR__ . '/class-ld-settings-page-topics-options.php';
 require_once __DIR__ . '/class-ld-settings-page-quizzes-options.php';
 require_once __DIR__ . '/class-ld-settings-page-questions-options.php';
+require_once __DIR__ . '/class-ld-settings-page-groups-options.php';
+require_once __DIR__ . '/class-ld-settings-page-certificate-options.php';
 require_once __DIR__ . '/class-ld-settings-page-certificate-shortcodes.php';
 require_once __DIR__ . '/class-ld-settings-page-assignments-options.php';
 

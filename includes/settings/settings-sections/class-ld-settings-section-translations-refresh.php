@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Section_Translations_Refresh' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -55,7 +59,9 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 						<?php if ( ! is_null( $last_update_time ) ) { ?>
 							<p class="learndash-translations-last-update"><span class="label"><?php esc_html_e( 'Updated', 'learndash' ); ?></span>: <span class="value"><?php echo learndash_adjust_date_time_display( $last_update_time, 'M d, Y h:ia' ); ?></span></p>
 						<?php } ?>
-						<a id="learndash-translation-refresh" class="button button-primary learndash-translations-refresh" href="<?php echo LearnDash_Translations::get_action_url( 'refresh' ); ?> "><?php esc_html_e( 'Refresh', 'learndash' ); ?></a>
+						<?php if ( learndash_updates_enabled() ) { ?>
+							<a id="learndash-translation-refresh" class="button button-primary learndash-translations-refresh" href="<?php echo esc_url( LearnDash_Translations::get_action_url( 'refresh' ) ); ?> "><?php esc_html_e( 'Refresh', 'learndash' ); ?></a>
+						<?php } ?>	
 					</div>
 
 					<div class="clear"></div>

@@ -19,7 +19,7 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 		/**
 		 * Collection of all tables by section.
 		 *
-		 * @var array $table_sections.
+		 * @var array $table_base.
 		 */
 		private static $tables_base = array(
 			'activity'  => array(
@@ -40,7 +40,66 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 			),
 		);
 
+		/**
+		 * Collection of all tables.
+		 *
+		 * @var array $table.
+		 */
 		private static $tables = array();
+
+		/**
+		 * Collection of tables indexes.
+		 *
+		 * @var array $tables_indexes.
+		 */
+		private static $tables_primary_indexes = array(
+			'user_activity'      => array(
+				'table_name'     => 'user_activity',
+				'primary_column' => 'activity_id',
+				'auto_increment' => true,
+			),
+			'user_activity_meta' => array(
+				'table_name'     => 'user_activity_meta',
+				'primary_column' => 'activity_meta_id',
+				'auto_increment' => true,
+			),
+
+			'quiz_category'      => array(
+				'table_name'     => 'quiz_category',
+				'primary_column' => 'category_id',
+				'auto_increment' => true,
+			),
+			'quiz_form'          => array(
+				'table_name'     => 'quiz_form',
+				'primary_column' => 'form_id',
+				'auto_increment' => true,
+			),
+			'quiz_master'        => array(
+				'table_name'     => 'quiz_master',
+				'primary_column' => 'id',
+				'auto_increment' => true,
+			),
+			'quiz_question'      => array(
+				'table_name'     => 'quiz_question',
+				'primary_column' => 'id',
+				'auto_increment' => true,
+			),
+			'quiz_statistic_ref' => array(
+				'table_name'     => 'quiz_statistic_ref',
+				'primary_column' => 'statistic_ref_id',
+				'auto_increment' => true,
+			),
+			'quiz_template'      => array(
+				'table_name'     => 'quiz_template',
+				'primary_column' => 'template_id',
+				'auto_increment' => true,
+			),
+			'quiz_toplist'       => array(
+				'table_name'     => 'quiz_toplist',
+				'primary_column' => 'toplist_id',
+				'auto_increment' => true,
+			),
+		);
 
 		/**
 		 * Public constructor for class
@@ -62,9 +121,11 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 			if ( ( true === $force_reload ) || ( ! isset( self::$tables[ $blog_id ] ) ) || ( empty( self::$tables[ $blog_id ] ) ) ) {
 				self::$tables[ $blog_id ] = array();
 				/**
-				 * Fitler the list of custom database tables.
+				 * Filters the list of custom database tables.
 				 *
 				 * @since 2.6.0
+				 *
+				 * @param array $tables List of custom database tables.
 				 */
 				self::$tables_base = apply_filters( 'learndash_custom_database_tables', self::$tables_base );
 
@@ -125,7 +186,7 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 				if ( ! empty( $table_section ) ) {
 					if ( isset( self::$tables[ $blog_id ][ $table_section ] ) ) {
 						if ( true === $return_sections ) {
-							$tables_return[ $table_section ] = self::$tables[$blog_id ][ $table_section ];
+							$tables_return[ $table_section ] = self::$tables[ $blog_id ][ $table_section ];
 						} else {
 							$tables_return = self::$tables[ $blog_id ][ $table_section ];
 						}
@@ -172,6 +233,12 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 					break;
 			}
 
+			/**
+			 * Filters database table prefix.
+			 *
+			 * @param string $table_prefix   Database table prefix.
+			 * @param string $table_section Table section prefix.
+			 */
 			return apply_filters( 'learndash_table_prefix', $table_prefix, $table_section );
 		}
 
@@ -185,10 +252,10 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 						$table_sub_prefix = esc_attr( LEARNDASH_PROQUIZ_DATABASE_PREFIX_SUB );
 					} else {
 						if ( ! class_exists( 'Learndash_Admin_Data_Upgrades' ) ) {
-							require_once( LEARNDASH_LMS_PLUGIN_DIR .'includes/admin/class-learndash-admin-data-upgrades.php' );
+							require_once LEARNDASH_LMS_PLUGIN_DIR . 'includes/admin/class-learndash-admin-data-upgrades.php';
 						}
 						$data_upgrade_proquiz_tables = Learndash_Admin_Data_Upgrades::get_instance( 'Learndash_Admin_Data_Upgrades_Rename_WPProQuiz_Tables' );
-						$data_settings = $data_upgrade_proquiz_tables->init_settings();
+						$data_settings               = $data_upgrade_proquiz_tables->init_settings();
 						if ( isset( $data_settings['prefixes']['current'] ) ) {
 							$table_sub_prefix = $data_settings['prefixes']['current'];
 						} else {
@@ -199,7 +266,7 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 							}
 						}
 					}
-					
+
 					break;
 
 				case 'activity':
@@ -214,7 +281,13 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 					break;
 			}
 
-			return apply_filters( 'learndash_table_sub_prefix', $table_sub_prefix, $table_section );		
+			/**
+			 * Filters database table sub prefix.
+			 *
+			 * @param string $table_prefix   Database table sub prefix.
+			 * @param string $table_section Table section prefix.
+			 */
+			return apply_filters( 'learndash_table_sub_prefix', $table_sub_prefix, $table_section );
 		}
 
 		/**
@@ -234,19 +307,110 @@ if ( ! class_exists( 'LDLMS_DB' ) ) {
 			}
 		}
 
-		// End of functions.
+		public static function get_table_status_info( $table_name = '' ) {
+			global $wpdb;
+
+			$table_info = array(
+				'rows_count' => 0,
+				'engine'    => '',
+				'collation' => '',
+			);
+
+			$table_name = self::get_table_name( $table_name );
+			if ( ! empty( $table_name ) ) {
+
+				/**
+				 * Filter for gathering Database Info.
+				 *
+				 * @since 3.2.0
+				 *
+				 * @param boolean $process_database_into true.
+				 * @return boolean True to process. Anything else to abort.
+				 */
+				if ( true === apply_filters( 'learndash_support_db_tables_info', true ) ) {
+					if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name ) {
+						/**
+						 * Filters whether to show tables rows in admin support section.
+						 *
+						 * @param boolean $show_table_rows Whether to show table rows.
+						 */
+						if ( true === apply_filters( 'learndash_support_db_tables_rows', true ) ) {
+							$table_rows         = $wpdb->get_var( $wpdb->prepare( 'SELECT table_rows FROM information_schema.tables WHERE table_schema = %s AND table_name = %s', DB_NAME, $table_name ) );
+							$table_info['rows_count'] = absint( $table_rows );
+						}
+
+						$table_status = $wpdb->get_row( $wpdb->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $table_name ), ARRAY_A );
+						if ( $table_status ) {
+							if ( ( isset( $table_status['Name'] ) ) && ( $table_status['Name'] === $table_name ) ) {
+								if ( isset( $table_status['Engine'] ) ) {
+									$table_info['engine'] = esc_attr( $table_status['Engine'] );
+								}
+
+								if ( isset( $table_status['Collation'] ) ) {
+									$table_info['collation'] = esc_attr( $table_status['Collation'] );
+								}
+							}
+						}
+					}
+				}
+			}
+		
+			return $table_info;
+		}
+
+		/**
+		 * Utility function to check the primary index and AUTO_INCREMENT for
+		 * a database table.
+		 *
+		 * @since 3.1.8
+		 *
+		 * @param string $table_name Name of table to check.
+		 * @return boolean true if indexes are valid. False if not.
+		 * Null is returned if no indexes or not a valid table.
+		 */
+	public static function check_table_primary_index( $table_name = '' ) {
+		global $wpdb;
+
+		$table_index_set = self::get_table_primary_index_set( $table_name );
+		if ( ! empty( $table_index_set ) ) {
+			$table_name = self::get_table_name( $table_index_set['table_name'] );
+			$table      = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', esc_attr( $table_name ) ) );
+			if ( ( $table === $table_name ) && ( ! empty( $wpdb->last_result ) ) ) {
+				$primary_column = $wpdb->get_var( $wpdb->prepare( "SHOW FIELDS FROM {$table_name} WHERE Field = %s", esc_attr( $table_index_set['primary_column'] ) ) );
+				if ( ( $primary_column === $table_index_set['primary_column'] ) && ( ! empty( $wpdb->last_result ) ) ) {
+					foreach ( $wpdb->last_result as $result_object ) {
+						if ( $result_object->Field === $table_index_set['primary_column'] ) {
+							if ( true === $table_index_set['auto_increment'] ) {
+								if ( 'auto_increment' !== $result_object->Extra ) {
+									return false;
+								} else {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
+
+		/**
+		 * Returns the Primary Index set if available.
+		 *
+		 * @since 3.1.8
+		 * @param string $table_name Name of table to check.
+		 * @return array of table index set..
+		 */
+	private static function get_table_primary_index_set( $table_name = '' ) {
+		if ( ( ! empty( $table_name ) ) && ( isset( self::$tables_primary_indexes[ $table_name ] ) ) ) {
+			return self::$tables_primary_indexes[ $table_name ];
+		}
+	}
+
+		// End of functions.
+}
 }
 
 // These are the base table names WITHOUT the $wpdb->prefix.
 global $learndash_db_tables;
 $learndash_db_tables = LDLMS_DB::get_tables();
-
-
-/*
-add_action( 'switch_blog', function( $new_blog, $prev_blog_id ) {
-	if ( $new_blog !== $prev_blog_id ) {
-		LDLMS_DB::init(true);
-	}
-}, 10, 2 );
-*/

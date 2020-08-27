@@ -450,12 +450,16 @@
 				},
 
 				sort_answer: function() {
-					var $items = $questionList.children();
-
-					$items.each(function(i, v) {
-						var $this = $(this);
-						response[i] = $this.attr('data-pos');
+					var $items = $questionList.children('li.wpProQuiz_questionListItem');
+					var idx = 0;
+					$items.each(function (item_idx, item) {
+						var data_pos = jQuery(item).data('pos');
+						if (typeof data_pos !== 'undefined') {
+							response[idx] = data_pos;
+							idx++;
+						}
 					});
+
 					if (lockResponse == true) {
 						$questionList.sortable("destroy");
 					}
@@ -1150,61 +1154,6 @@
 				}
 			},
 
-
-			viewUserQuizStatistics: function(button) {
-				//console.log('in viewUserQuizStatistics');
-				
-				var refId 	= jQuery(button).data('ref_id');
-				//console.log('refId[%o]', refId);
-				var quizId = jQuery(button).data('quiz_id');
-				//console.log('quizId[%o]', quizId);
-					
-				var post_data = {
-					'action': 'wp_pro_quiz_admin_ajax',
-					'func': 'statisticLoadUser',
-					'data': {
-						'quizId': quizId,
-		            	'userId': 0,
-		            	'refId': refId,
-		            	'avg': 0
-					}
-				}
-		
-				jQuery('#wpProQuiz_user_overlay, #wpProQuiz_loadUserData').show();
-				var content = jQuery('#wpProQuiz_user_content').hide();
-				
-				console.log('- wpProQuiz_front.js');
-				jQuery.ajax({
-					type: "POST",
-					url: WpProQuizGlobal.ajaxurl,
-					dataType: "json",
-					cache: false,
-					data: post_data,
-					error: function(jqXHR, textStatus, errorThrown ) {
-					},
-					success: function(reply_data) {
-
-						if ( typeof reply_data.html !== 'undefined' ) {
-							content.html(reply_data.html);
-							jQuery('#wpProQuiz_user_content').show();
-							
-							console.log('trigger event change - wpProQuiz_front.js');
-							jQuery('#wpProQuiz_loadUserData').hide();
-			
-							content.find('.statistic_data').click(function() {
-								jQuery(this).parents('tr').next().toggle('fast');
-		
-								return false;
-							});
-						}
-					}
-				});
-			
-				jQuery('#wpProQuiz_overlay_close').click(function() {
-					jQuery('#wpProQuiz_user_overlay').hide();
-				});
-			},
-
 			showSingleQuestion: function(question) {
 				var page = question ? Math.ceil(question / config.qpp) : 1;
 
@@ -1354,7 +1303,11 @@
 				
 					var nonce = $( '#_uploadEssay_nonce_' + question_id ).val();
 					var uploadEssaySubmit = $('#uploadEssaySubmit_' + question_id );
-					uploadEssaySubmit.val(config.essayUploading);
+
+					var uploadEssayMessage = $('#uploadEssayMessage_' + question_id);
+					uploadEssayMessage.removeClass('uploadEssayMessage_fail');
+					uploadEssayMessage.removeClass('uploadEssayMessage_success');
+					uploadEssayMessage.html(config.essayUploading );
 
 					var data = new FormData();
 					data.append('action', 'learndash_upload_essay');
@@ -1372,19 +1325,24 @@
 						contentType: false,
 						processData: false,
 						success: function(response){
+							// Update the response message. Then later apply the class for the color.
+							if (typeof response.data.message != 'undefined') {
+								uploadEssayMessage.html(response.data.message);
+							}
+
 							if(response.success == true && typeof response.data.filelink != 'undefined' ) {
+								uploadEssayMessage.addClass( 'uploadEssayMessage_success');
 								$('#uploadEssayFile_' + question_id ).val(response.data.filelink);
+								
+								// disable the upload button. Only one file per quiz.
 								uploadEssaySubmit.attr('disabled', 'disabled');
-								setTimeout( function(){
-									uploadEssaySubmit.val(config.essaySuccess);
-								}, 1500 );
-							
+								
 								var $item = $('#uploadEssayFile_' + question_id ).parents('.wpProQuiz_listItem');
 								$e.trigger({type: 'questionSolved', values: {item: $item, index: $item.index(), solved: true}});
 				
 							} else {
+								uploadEssayMessage.addClass('uploadEssayMessage_fail');
 								uploadEssaySubmit.removeAttr('disabled');
-								uploadEssaySubmit.val('Failed. Try again.');
 							}
 						}
 					});
@@ -1850,7 +1808,7 @@
 					responses[question_id] = readResponses(name, data, $this, $questionList, true);
 					responses[question_id]['question_pro_id'] = data['id'];
 					responses[question_id]['question_post_id'] = data['question_post_id'];
-
+					//console.log('responses[%o]', responses);
 					plugin.methode.CookieSaveResponse(question_id, question_index, data.type, responses[question_id]);
 				});
 				//console.log('responses[%o]', responses);
@@ -2071,7 +2029,7 @@
 						});
 						break;
 					case 'sort_answer':
-						var $items = $questionList.children();
+						var $items = $questionList.children('li.wpProQuiz_questionListItem');
 
 						$items.each(function(i, v) {
 							var $this = $(this);
@@ -2225,7 +2183,8 @@
 			loadQuizData: function() {
 				plugin.methode.ajax({
 					action: 'wp_pro_quiz_load_quiz_data',
-					quizId: config.quizId
+					quizId: config.quizId,
+					quiz_nonce: config.quiz_nonce,
 				}, function(json) {
 					if(json.toplist) {
 						plugin.methode.handleToplistData(json.toplist);
@@ -2303,6 +2262,7 @@
 					action: 'wp_pro_quiz_add_toplist',
 					quizId: config.quizId,
 					quiz : config.quiz,
+					quiz_nonce: config.quiz_nonce,
 					token: toplistData.token,
 					name: $addBox.find('input[name="wpProQuiz_toplistName"]').val(),
 					email: $addBox.find('input[name="wpProQuiz_toplistEmail"]').val(),
@@ -2407,9 +2367,8 @@
 			},
 
 			loadQuizDataAjax: function(quizStart) {
-				
 				plugin.methode.ajax({
-					action: 'wp_pro_quiz_admin_ajax',
+					action: 'wp_pro_quiz_admin_ajax_load_data',
 					func: 'quizLoadData',
 					data: {
 						quizId: config.quizId,
@@ -2761,13 +2720,6 @@
 				plugin.methode.startQuiz();
 				return false;
 			});
-
-			/*
-			$e.find('input[name="viewUserQuizStatistics"]').click(function() {
-				plugin.methode.viewUserQuizStatistics(this);
-				return false;
-			});
-			*/
 
 			if(bitOptions.checkBeforeStart && !bitOptions.preview) {
 				plugin.methode.checkQuizLock();

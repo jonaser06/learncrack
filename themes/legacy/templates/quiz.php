@@ -73,7 +73,9 @@ if ( ! empty( $lesson_progression_enabled ) ) {
 	if ( ( isset( $materials ) ) && ( !empty( $materials ) ) ) : 
 		?>
 		<div id="learndash_quiz_materials" class="learndash_quiz_materials">
-			<h4><?php printf( _x( '%s Materials', 'Quiz Materials Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></h4>
+			<h4><?php 
+			// translators: placeholder: Quiz.
+			printf( _x( '%s Materials', 'placeholder: Quiz', 'learndash' ), LearnDash_Custom_Label::get_label( 'quiz' ) ); ?></h4>
 			<p><?php echo $materials; ?></p>
 		</div>
 		<?php 

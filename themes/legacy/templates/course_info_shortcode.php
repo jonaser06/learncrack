@@ -27,7 +27,9 @@ $shortcode_atts_json = htmlspecialchars( json_encode( $shortcode_atts ) );
 	<?php if ( ( $pagenow != 'profile.php' ) && ( $pagenow != 'user-edit.php' ) ) { ?>
 		<?php if ( $courses_registered ) : ?>
 			<div id='ld_course_info_mycourses_list' class="ld_course_info_mycourses_list">
-				<h4><?php echo sprintf( _x( 'You are registered for the following %s', 'You are registered for the following courses', 'learndash' ), learndash_get_custom_label_lower( 'courses' ) ); ?></h4>
+				<h4><?php 
+				// translators: placeholder: courses.
+				echo sprintf( _x( 'You are registered for the following %s', 'placeholder: courses', 'learndash' ), learndash_get_custom_label_lower( 'courses' ) ); ?></h4>
 				<div class="ld-courseregistered-content-container"><?php
 				
 				$template_file = SFWD_LMS::get_template( 
@@ -69,7 +71,9 @@ $shortcode_atts_json = htmlspecialchars( json_encode( $shortcode_atts ) );
 				echo do_shortcode('[ld_user_course_points user_id="'. $user_id .'" context="profile"]'); 
 
 				if ( ( learndash_is_admin_user() ) || ( ( learndash_is_group_leader_user() ) && ( learndash_is_group_leader_of_user( get_current_user_id(), $user_id ) ) ) ) {
-					?><p><label for="learndash-course-points-user"><strong><?php printf( _x( 'Extra %s points', 'placeholders: Course Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></strong></label> <input id="learndash-course-points-user" name="learndash_course_points" type="number" min="0" step="any" value="<?php echo learndash_format_course_points( get_user_meta( $user_id, 'course_points', true ) ) ?>" /><?php } ?></p>
+					?><p><label for="learndash-course-points-user"><strong><?php 
+					// translators: placeholder: Course.
+					printf( _x( 'Extra %s points', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></strong></label> <input id="learndash-course-points-user" name="learndash_course_points" type="number" min="0" step="any" value="<?php echo learndash_format_course_points( get_user_meta( $user_id, 'course_points', true ) ) ?>" /><?php } ?></p>
 					<?php 
 				} 
 			}
@@ -77,7 +81,9 @@ $shortcode_atts_json = htmlspecialchars( json_encode( $shortcode_atts ) );
 	<?php /* Course progress */ ?>
 	<?php if ( !empty( $course_progress ) ) : ?>
 		<div id="course_progress_details" class="course_progress_details">
-			<h4><?php printf( _x( '%s progress details:', 'Course progress details Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></h4>
+			<h4><?php 
+			// translators: placeholder: Course.
+			printf( _x( '%s progress details:', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></h4>
 			<?php 
 				if ( learndash_show_user_course_complete( $user_id ) ) {
 					?>
@@ -136,10 +142,14 @@ $shortcode_atts_json = htmlspecialchars( json_encode( $shortcode_atts ) );
 				}
 				LD_QuizPro::showModalWindow();
 			?>
-			<h4><?php echo sprintf( _x( 'You have taken the following %s:', 'You have taken the following quizzes:', 'learndash' ), learndash_get_custom_label_lower( 'quizzes' ) ); ?></h4>
+			<h4><?php 
+			// translators: placeholder: quizzes.
+			echo sprintf( _x( 'You have taken the following %s:', 'placeholder: quizzes', 'learndash' ), learndash_get_custom_label_lower( 'quizzes' ) ); ?></h4>
 
 			<?php /* The confirm delete quiz message should not contain HTML. Use \r\n for line breaks */ ?>
-			<div id="ld-confirm-quiz-delete-message" style="display:none"><?php echo sprintf( _x( 'Are you sure that you want to remove this %s item?', 'placeholder: Quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) )  ?></div>
+			<div id="ld-confirm-quiz-delete-message" style="display:none"><?php 
+			// translators: placeholder: quiz.
+			echo sprintf( _x( 'Are you sure that you want to remove this %s item?', 'placeholder: quiz', 'learndash' ), learndash_get_custom_label_lower( 'quiz' ) )  ?></div>
 			
 			<div class="ld-quiz-progress-content-container">
 			<?php

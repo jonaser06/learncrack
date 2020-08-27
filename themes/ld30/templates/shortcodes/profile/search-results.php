@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="ld-item-search ld-profile-search-string">
 	<div class="ld-item-search-wrapper">
 		<span class="ld-text"><?php echo sprintf(

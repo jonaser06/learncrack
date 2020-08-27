@@ -11,6 +11,10 @@
  * @param array   $course_progress User's course progress for courses.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 global $wp_locale;
 
 // Ensure the user has access to the course.
@@ -52,7 +56,7 @@ if ( ( ! empty( $course_id ) ) && ( ! empty( $user_id ) ) && ( sfwd_lms_has_acce
 
 					$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
 					$month_field .= "\t\t\t" . '<option value="' . $i . '" data-text="' . $monthtext . '" ' . $selected_mm . '>';
-					/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+					// translators: placeholder: month number, month text.
 					$month_field .= sprintf( esc_html_x( '%1$s-%2$s', 'placeholder: month number, month text', 'learndash' ), $monthnum, $monthtext ) . "</option>\n";
 				}
 				$month_field .= '</select>';

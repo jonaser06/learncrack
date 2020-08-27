@@ -33,7 +33,7 @@ if ( ( !class_exists( 'LD_REST_Lessons_Controller_V1' ) ) && ( class_exists( 'LD
 						'permission_callback' => array( $this, 'create_item_permissions_check' ),
 						'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				) 
 			);
 
@@ -81,7 +81,7 @@ if ( ( !class_exists( 'LD_REST_Lessons_Controller_V1' ) ) && ( class_exists( 'LD
 							),
 						),
 					),
-					'schema' => array( $this, 'get_public_item_schema' ),
+					'schema' => array( $this, 'get_schema' ),
 				)
 			);
 		}
@@ -105,6 +105,19 @@ if ( ( !class_exists( 'LD_REST_Lessons_Controller_V1' ) ) && ( class_exists( 'LD
 			}
 
 			return $query_params;
+		}
+
+		/**
+		 * Gets sfwd-lessons schema.
+		 *
+		 * @return array
+		 */
+		public function get_schema() {
+			$schema = $this->get_public_item_schema();
+
+			$schema['title'] = 'lesson';
+
+			return $schema;
 		}
 
 		function get_item_permissions_check( $request ) {

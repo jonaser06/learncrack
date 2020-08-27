@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WpProQuiz_Model_Template extends WpProQuiz_Model_Model {
 	
 	const TEMPLATE_TYPE_QUIZ = 0;

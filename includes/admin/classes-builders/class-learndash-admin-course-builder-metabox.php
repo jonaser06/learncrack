@@ -6,6 +6,10 @@
  * @subpackage admin
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_exists( 'Learndash_Admin_Builder' ) ) ) {
 	/**
 	 * Class for LearnDash Course Builder.
@@ -306,17 +310,12 @@ if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_e
 				//}
 
 				/**
-				 * Allow externals to control inclusion of orphaned steps.
-				 * Orphaned steps are those not attached to a course.
+				 * Filters whether to include orphaned steps or not. Orphaned steps are the steps that are not attached to a course.
 				 *
 				 * @since 2.5.9
 				 *
-				 * @param boolean true The default value is true to include orphaned steps.
-				 * @param array $args The current query args array.
-				 *
-				 * @return the external filters should return:
-				 *  true  - Yes include orphaned steps.
-				 *  false - No do not inclide orphaned steps.
+				 * @param boolean $include_orphaned_steps Whether to include orphaned steps.
+				 * @param array   $args                   An array of query arguments.
 				 */
 				$include_orphaned_steps = apply_filters( 'learndash_course_builder_include_orphaned_steps', true, $args );
 				if ( true === $include_orphaned_steps ) {
@@ -365,6 +364,11 @@ if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_e
 					$args['post__in'] = array( 0 );
 				}
 			}
+			/**
+			 * Filters course builder query arguments.
+			 *
+			 * @param array $args An array of query arguments.
+			 */
 			return apply_filters( 'learndash_course_builder_selector_args', $args );
 		}
 
@@ -724,7 +728,7 @@ if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_e
 											<span class="ld-course-builder-action ld-course-builder-action-move ld-course-builder-action-quiz-move dashicons" title="' . esc_html__( 'Move', 'learndash' ) . '"></span>
 											<span class="ld-course-builder-sub-actions">
 												<a target="_blank" class="ld-course-builder-action ld-course-builder-action-edit ld-course-builder-action-quiz-edit dashicons" href="' . $edit_post_link . '"><span class="screen-reader-text">' .
-												// translators: placeholder: placeholder: Topic.
+												// translators: placeholder: Topic.
 												sprintf( esc_html_x( 'Edit %s Settings (new window)', 'placeholder: Topic', 'learndash' ), LearnDash_Custom_Label::get_label( 'Quiz' ) ) . '" ></span></a>
 												<a target="_blank" class="ld-course-builder-action ld-course-builder-action-view ld-course-builder-action-quiz-view dashicons" href="' . $view_post_link . '"><span class="screen-reader-text" >' .
 												// translators: placeholder: placeholder: Quiz.
@@ -923,6 +927,11 @@ if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_e
 								$post_args['post_title'] = $post_type_object->labels->singular_name;
 							}
 						}
+						/**
+						 * Filters course builder new step post arguments.
+						 *
+						 * @param array $post_args An array of new step post arguments.
+						 */
 						$new_step_id = wp_insert_post( apply_filters( 'course_builder_selector_new_step_post_args', $post_args ) );
 						if ( $new_step_id ) {
 							/**
@@ -990,12 +999,13 @@ if ( ( ! class_exists( 'Learndash_Admin_Metabox_Course_Builder' ) ) && ( class_e
 								update_post_meta( $new_step_id, '_viewProfileStatistics', 1 );
 							}
 
-							learndash_update_setting( $new_step_id, 'course', '0' );
-							update_post_meta( $new_step_id, 'course_id', '0' );
-							if ( in_array( $step_set['post_type'], array( 'sfwd-topic', 'sfwd-quiz' ) ) ) {
-								learndash_update_setting( $new_step_id, 'lesson', '0' );
-								update_post_meta( $new_step_id, 'lesson_id', '0' );
-							}
+							learndash_update_setting( $new_step_id, 'course', absint( $this->builder_post_id ) );
+							//learndash_update_setting( $new_step_id, 'course', '0' );
+							//update_post_meta( $new_step_id, 'course_id', '0' );
+							//if ( in_array( $step_set['post_type'], array( 'sfwd-topic', 'sfwd-quiz' ) ) ) {
+							//	learndash_update_setting( $new_step_id, 'lesson', '0' );
+							//	update_post_meta( $new_step_id, 'lesson_id', '0' );
+							//}
 						}
 					}
 				}

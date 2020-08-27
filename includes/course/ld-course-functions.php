@@ -7,20 +7,23 @@
  * @package LearnDash\Course
  */
 
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Get course ID for resource.
- * 
- * Determine type of ID is being passed in.  Should be the ID of
+ * Gets the course ID for a resource.
+ *
+ * Determine the type of ID being passed. Should be the ID of
  * anything that belongs to a course (Lesson, Topic, Quiz, etc)
  *
  * @since 2.1.0
- * 
- * @param  obj|int 	$id 	id of resource
- * @param  bool 	$bypass_cb 	if true will bypass course_builder logic @since 2.5
+ * @since 2.5.0 Added the `$bypass_cb` parameter.
  *
- * @return string    		id of course
+ * @param  WP_Post|int|null $id        Optional. ID of the resource. Default null.
+ * @param  boolean          $bypass_cb Optional. If true will bypass course_builder logic. Default false.
+ *
+ * @return string ID of the course.
  */
 function learndash_get_course_id( $id = null, $bypass_cb = false ) {
 	//global $post;
@@ -95,18 +98,67 @@ function learndash_get_course_id( $id = null, $bypass_cb = false ) {
 	return (int)get_post_meta( $id, 'course_id', true );
 }
 
+/**
+ * Get primary course_id for course step.
+ *
+ * @since 3.2
+ * @param integer $step_id Course step post ID.
+ * @return integer $course_id Primary Course ID if found.
+ */
+function learndash_get_primary_course_for_step( $step_id = 0 ) {
+	$course_id = null;
+	$step_id = absint( $step_id );
+	if ( ! empty( $step_id ) ) {
+		$course_id = get_post_meta( $step_id, 'course_id', true );
+		if ( empty( $course_id ) ) {
+			$step_courses = learndash_get_courses_for_step( $step_id );
+			if ( ! isset( $step_courses['primary'] ) ) {
+				$step_courses['primary'] = array();
+			}
+			$step_courses['primary'] = array_keys( $step_courses['primary'] );
+			if ( ! empty( $step_courses['primary'] ) ) {
+				$course_id = absint( $step_courses['primary'][0] );
+			}
+		}
+	}
 
+	return $course_id;
+}
 
 /**
- * Get course ID for resource (legacy users)
- * 
- * Determine type of ID is being passed in.  Should be the ID of
- * anything that belongs to a course (Lesson, Topic, Quiz, etc)
- * 
+ * Set primary course_id for course step.
+ *
+ * @since 3.2
+ * @param integer $step_id Course step post ID.
+ * @return integer $course_id Primary Course ID if found.
+ */
+function learndash_set_primary_course_for_step( $step_id = 0, $course_id = 0 ) {
+	$step_id = absint( $step_id );
+	$course_id = absint( $course_id );
+
+	if ( ( ! empty( $step_id ) ) && ( ! empty( $course_id ) ) ) {
+		$step_courses = learndash_get_courses_for_step( $step_id );
+
+		if ( ( ! isset( $step_courses['primary'][ $course_id ] ) ) && ( isset( $step_courses['secondary'][ $course_id ] ) ) ) {
+			learndash_update_setting( $step_id, 'course', $course_id );
+		}
+	}
+}
+
+/**
+ * Gets the legacy course ID for a resource.
+ *
+ * Determine the type of ID is being passed in.  Should be the ID of
+ * anything that belongs to a course (Lesson, Topic, Quiz, etc).
+ *
+ * @global wpdb    $wpdb WordPress database abstraction object.
+ * @global WP_Post $post Global post object.
+ *
  * @since 2.1.0
- * 
- * @param  obj|int 	$id 	id of resource
- * @return string    		id of course
+ *
+ * @param  WP_Post|int|null $id Optional. ID of the resource. Default null.
+ *
+ * @return string ID of the course.
  */
 function learndash_get_legacy_course_id( $id = null ){
 	global $post;
@@ -160,12 +212,16 @@ function learndash_get_legacy_course_id( $id = null ){
 
 
 /**
- * Get lesson id of resource
+ * Gets the lesson ID of a resource.
+ *
+ * @global WP_Post $post Global post object.
  *
  * @since 2.1.0
- * 
- * @param  int 		$id  post id of resource
- * @return string     	 lesson id
+ *
+ * @param int|null $post_id   Optional. ID of the resource. Default null.
+ * @param int|null $course_id Optional. ID of the course. Default null.
+ *
+ * @return string Lesson ID.
  */
 function learndash_get_lesson_id( $post_id = null, $course_id = null ) {
 	global $post;
@@ -202,13 +258,20 @@ function learndash_get_lesson_id( $post_id = null, $course_id = null ) {
 
 
 /**
- * Get array of courses that user has access to
+ * Gets the array of courses that can be accessed by the user.
  *
  * @since 2.1.0
- * 
- * @param  int 		$user_id
- * @param array    	array attributes ('order', 'orderby')
- * @return array    array of courses that user has access to
+ *
+ * @param int|null $user_id User ID. Default null
+ * @param array    $atts {
+ *    Optional. An array of attributes. Default empty array.
+ *
+ *    @type string $order   Optional. Designates ascending ('ASC') or descending ('DESC') order. Default 'DESC.
+ *    @type string $orderby Optional. The name of the field to order posts by. Default ''ID.
+ *    @type string $s       Optional. The search string. Default empty.
+ * }
+ *
+ * @return array An array of courses accessible to user.
  */
 function ld_get_mycourses( $user_id = null, $atts = array() ) {
 
@@ -228,24 +291,25 @@ function ld_get_mycourses( $user_id = null, $atts = array() ) {
 
 
 /**
- * Does user have access to course (houses filter)
- * 
+ * Checks whether a user has access to a course.
+ *
  * @since 2.1.0
- * 
- * @param  int 	$post_id 	id of resource
- * @param  int 	$user_id
- * @return bool       
+ *
+ * @param int      $post_id ID of the resource.
+ * @param int|null $user_id Optional. ID of the user. Default null.
+ *
+ * @return bool Returns true if the user has access.
  */
 function sfwd_lms_has_access( $post_id, $user_id = null ) {
 
 	 /**
-	 * Filter if user has access to course
+	 * Filters whether a user has access to the course.
 	 *
-	 * Calls sfwd_lms_has_access_fn() to determine if user has access to course
-	 * 
 	 * @since 2.1.0
-	 * 
-	 * @param  bool
+	 *
+	 * @param boolean $has_access Whether the user has access to the course or not.
+	 * @param int     $post_id    Post ID.
+	 * @param int     $user_id    User ID.
 	 */
 	return apply_filters( 'sfwd_lms_has_access', sfwd_lms_has_access_fn( $post_id, $user_id ), $post_id, $user_id );
 }
@@ -253,46 +317,54 @@ function sfwd_lms_has_access( $post_id, $user_id = null ) {
 
 
 /**
- * Does user have access to course
- * 
- * Check's if user has access to course when they try to access a resource that
- * belong to that course (Lesson, Topic, Quiz, etc.)
+ * Checks whether a user has access to a course.
  *
  * @since 2.1.0
- * 
- * @param  int 	$post_id 	id of resource
- * @param  int 	$user_id
- * @return bool  
+ *
+ * @param int      $post_id ID of the resource.
+ * @param int|null $user_id Optional. ID of the user. Default null.
+ *
+ * @return bool Returns true if the user has access.
  */
 function sfwd_lms_has_access_fn( $post_id, $user_id = null ) {
 	if ( empty( $user_id ) ) {
 		$user_id = get_current_user_id();
 	}
 
-	if ( learndash_is_admin_user( $user_id ) ) {
-		/**
-		 * See example if 'learndash_override_course_auto_enroll' filter 
-		 * https://bitbucket.org/snippets/learndash/kon6y
-		 *
-		 * @since 2.3
-		 */
-		
-		$course_autoenroll_admin = LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_General_Admin_User', 'courses_autoenroll_admin_users' );
-		if ( $course_autoenroll_admin == 'yes' ) {
-			$course_autoenroll_admin = true;
-		} else {
-			$course_autoenroll_admin = false;
-		}
-		
-		if ( apply_filters('learndash_override_course_auto_enroll', $course_autoenroll_admin, $user_id ) ) {
-			return true;
-		}
-	}
-
 	$course_id = learndash_get_course_id( $post_id );
-
 	if ( empty( $course_id ) ) {
 		return true;
+	}
+
+	if ( ( learndash_is_admin_user( $user_id ) ) || ( learndash_is_group_leader_user( $user_id ) ) ) {
+		if ( learndash_is_admin_user( $user_id ) ) {
+			$course_autoenroll = LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_General_Admin_User', 'courses_autoenroll_admin_users' );
+		} elseif ( learndash_is_group_leader_user( $user_id ) ) {
+			$course_autoenroll = '';
+			if ( 'yes' === LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_Groups_Group_Leader_User', 'bypass_course_limits' ) ) {
+				$group_ids = learndash_get_administrators_group_ids( $user_id );
+				if ( ! empty( $group_ids ) ) {
+					$group_course_ids = learndash_get_groups_courses_ids( $user_id, $group_ids );
+					if ( is_array( $group_course_ids ) ) {
+						$group_course_ids = array_map( 'absint', $group_course_ids );
+						if ( in_array( $course_id, $group_course_ids ) ) {
+							$course_autoenroll = 'yes';
+						}
+					}
+				}
+			}
+		}
+
+		if ( $course_autoenroll == 'yes' ) {
+			$course_autoenroll = true;
+		} else {
+			$course_autoenroll = false;
+		}
+
+		/** This filter is documented in includes/ld-users.php */
+		if ( apply_filters('learndash_override_course_auto_enroll', $course_autoenroll, $user_id ) ) {
+			return true;
+		}
 	}
 
 	if ( ! empty( $post_id ) && learndash_is_sample( $post_id ) ) {
@@ -337,11 +409,13 @@ function sfwd_lms_has_access_fn( $post_id, $user_id = null ) {
 
 
 /**
- * Redirect user to course
+ * Redirects a user to the course page if it does not have access.
  *
  * @since 2.1.0
- * 
- * @param  int 	$post_id  id of resource that belongs to a course
+ *
+ * @param int $post_id The ID of the resource that belongs to a course.
+ *
+ * @return boolean|void Returns true if the user has access to the course.
  */
 function sfwd_lms_access_redirect( $post_id ) {
 	$access = sfwd_lms_has_access( $post_id );
@@ -350,6 +424,12 @@ function sfwd_lms_access_redirect( $post_id ) {
 	}
 
 	$link = get_permalink( learndash_get_course_id( $post_id ) );
+	/**
+	 * Filters the course redirect URL after checking access.
+	 *
+	 * @param string $link    The course URL a user is redirected to it has access.
+	 * @param int    $post_id Post ID.
+	 */
 	$link = apply_filters( 'learndash_access_redirect' , $link, $post_id );
 	if ( !empty( $link ) ) {
 		wp_redirect( $link );
@@ -360,13 +440,14 @@ function sfwd_lms_access_redirect( $post_id ) {
 
 
 /**
- * Is users access to course expired
+ * Checks whether the user's access to the course is expired.
  *
  * @since 2.1.0
- * 
- * @param  int 	$course_id
- * @param  int 	$user_id  
- * @return bool           
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ *
+ * @return bool Returns true if the access is expired otherwise false.
  */
 function ld_course_access_expired( $course_id, $user_id ) {
 	$course_access_upto = ld_course_access_expires_on( $course_id, $user_id );
@@ -377,15 +458,14 @@ function ld_course_access_expired( $course_id, $user_id ) {
 
 		if ( time() >= $course_access_upto ) {
 			/**
-			 * Filter to control processing the user course expiration.
+			 * Filters whether the course is expired for a user or not.
 			 *
 			 * @since 2.6.2
-			 * @param boolean true.
-			 * @param integer $user_id User ID.
-			 * @param integer $course_id, Course ID.
-			 * @param integer $course_access_upto Timestamp when user course access is to expire.
 			 *
-			 * If return true then processing will continue. If false returned then abort and false returned to calling function.
+			 * @param boolean $expired            Whether the course is expired or not.
+			 * @param int     $user_id            User ID.
+			 * @param int     $course_id          Course ID.
+			 * @param int     $course_access_upto Course expiration timestamp.
 			 */
 			if ( apply_filters( 'learndash_process_user_course_access_expire', true, $user_id, $course_id, $course_access_upto ) ) { 
 
@@ -396,12 +476,12 @@ function ld_course_access_expired( $course_id, $user_id ) {
 				ld_update_course_access( $user_id, $course_id, true );
 
 				/**
-				 * Action fired when the user course access expired.
+				 * Fires when the user course access is expired.
 				 *
 				 * @since 2.6.2
 				 *
-				 * @param integer $user_id User ID.
-			 	 * @param integer $course_id, Course ID.
+				 * @param int $user_id   User ID.
+				 * @param int $course_id Course ID.
 				 */
 				do_action( 'learndash_user_course_access_expired', $user_id, $course_id );
 
@@ -423,7 +503,11 @@ function ld_course_access_expired( $course_id, $user_id ) {
 
 
 /**
- * Generate alert in wp_head that users access to course is expired
+ * Generates an alert in the header that a user's access to the course is expired.
+ *
+ * Fires on `wp_head` hook.
+ *
+ * @global WP_Post $post Global post object.
  *
  * @since 2.1.0
  */
@@ -455,7 +539,9 @@ function ld_course_access_expired_alert() {
 		?>
 		<script>
 			setTimeout(function() {
-				alert("<?php echo sprintf( esc_html_x( 'Your access to this %s has expired.', 'Your access to this course has expired.', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' )); ?>")
+				alert("<?php echo sprintf( 
+					// translators: placeholder: Course.
+					esc_html_x( 'Your access to this %s has expired.', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' )); ?>")
 			}, 2000);
 		</script>
 		<?php
@@ -467,13 +553,14 @@ add_action( 'wp_head', 'ld_course_access_expired_alert', 1 );
 
 
 /**
- * Get amount of time until users course access expires for user
+ * Gets the amount of time until the course access expires for a user.
  *
  * @since 2.1.0
- * 
- * @param  int 	$course_id
- * @param  int 	$user_id  
- * @return int  
+ *
+ * @param int $course_id Course ID.
+ * @param int $user_id   User ID.
+ *
+ * @return int The timestamp for course access expiration.
  */
 function ld_course_access_expires_on( $course_id, $user_id ) {
 	// Set a default return var. 
@@ -502,12 +589,13 @@ function ld_course_access_expires_on( $course_id, $user_id ) {
 	}
 	
 	/**
-	 * Filter for 'ld_course_access_expires_on'.
-	 * 
+	 * Filters the amount of time until the user's course access expires.
+	 *
 	 * @since 3.0.7
-	 * @param integer $course_access_upto timestamp.
-	 * @param integer $course_id Course ID.
-	 * @param integer $user_id User ID.
+	 *
+	 * @param int $course_access_upto Course expires on timestamp.
+	 * @param int $course_id          Course ID.
+	 * @param int $user_id            User ID.
 	 */
 	return apply_filters( 'ld_course_access_expires_on', $course_access_upto, $course_id, $user_id );
 }
@@ -515,13 +603,14 @@ function ld_course_access_expires_on( $course_id, $user_id ) {
 
 
 /**
- * Get amount of time when lesson becomes available to user
+ * Gets the amount of time when the lesson becomes available to a user.
  *
  * @since 2.1.0
- * 
- * @param int $course_id Course ID to check.
- * @param int $user_id User ID to check.
- * @return int
+ *
+ * @param int $course_id Optional. Course ID to check. Default 0.
+ * @param int $user_id   Optional. User ID to check. Default 0.
+ *
+ * @return int The timestamp of when the course can be accessed from.
  */
 function ld_course_access_from( $course_id = 0, $user_id = 0 ) {
 	static $courses = array();
@@ -544,6 +633,13 @@ function ld_course_access_from( $course_id = 0, $user_id = 0 ) {
 
 		$courses[ $course_id ][ $user_id ] = (int) get_user_meta( $user_id, 'course_' . $course_id . '_access_from', true );
 		if ( empty( $courses[ $course_id ][ $user_id ] ) ) {
+			/**
+			 * Filters whether to update user course access from value.
+			 *
+			 * @param boolean $update_access_from Whether to update user access from.
+			 * @param int     $user_id            User ID.
+			 * @param int     $course_id          Course ID.
+			 */
 			if ( ( 'open' === learndash_get_course_meta_setting( $course_id, 'course_price_type' ) ) && ( apply_filters( 'learndash_course_open_set_user_access_from', true, $user_id, $course_id ) ) ) {
 				$enrolled_groups = learndash_user_group_enrolled_to_course_from( $user_id, $course_id );
 				if ( ! empty( $enrolled_groups ) ) {
@@ -570,27 +666,28 @@ function ld_course_access_from( $course_id = 0, $user_id = 0 ) {
 	}
 
 	/**
-	 * Filter for 'ld_course_access_from'.
-	 * 
+	 * Filters the amount of time when a lesson becomes available to the user.
+	 *
 	 * @since 3.0.7
-	 * @param integer timestamp
-	 * @param integer $course_id
-	 * @param integer $user_id
+	 *
+	 * @param int $access_from The timestamp of when the lesson wil become availble to user.
+	 * @param int $course_id   Course ID.
+	 * @param int $user_id     User ID.
 	 */
 	return apply_filters( 'ld_course_access_from', $courses[ $course_id ][ $user_id ], $course_id, $user_id );
 }
 
 /**
- * Update the course access time for a user.
+ * Updates the course access time for a user.
  *
  * @since 2.6.0
  *
- * @param int   $course_id Course ID for update.
- * @param int   $user_id User ID for update.
- * @param mixed $access Value can be a date string (YYYY-MM-DD hh:mm:ss or integer value.
- * @param bool  $is_gmt If $access value is GMT (true) or relative to site timezone (false).
+ * @param int        $course_id Course ID for update.
+ * @param int        $user_id   User ID for update.
+ * @param string|int $access    Optional. Value can be a date string (YYYY-MM-DD hh:mm:ss or integer value. Default empty.
+ * @param boolean    $is_gmt    Optional. True if the access value is GMT or false if it is relative to site timezone. Default false.
  *
- * @return bool Returns true if success.
+ * @return boolean Returns true if the value is updated successfully.
  */
 function ld_course_access_from_update( $course_id, $user_id, $access = '', $is_gmt = false ) {
 	if ( ( ! empty( $course_id ) ) && ( ! empty( $user_id ) ) && ( ! empty( $access ) ) ) {
@@ -628,14 +725,15 @@ function ld_course_access_from_update( $course_id, $user_id, $access = '', $is_g
 }
 
 /**
- * Update list of courses users has access to
+ * Updates the list of courses a user can access.
  *
  * @since 2.1.0
- * 
- * @param  int 		$user_id   
- * @param  int 	 	$course_id 
- * @param  bool 	$remove    
- * @return array   list of courses users has access to
+ *
+ * @param  int     $user_id   User ID.
+ * @param  int     $course_id Course ID.
+ * @param  boolean $remove    Optional. Whether to remove course access for the user. Default false.
+ *
+ * @return boolean|void Returns true if the user course access updation was successful otherwise false.
  */
 function ld_update_course_access( $user_id, $course_id, $remove = false ) {
 	$action_success = false;
@@ -724,14 +822,14 @@ function ld_update_course_access( $user_id, $course_id, $remove = false ) {
 	}
 
 	/**
-	 * Run actions after a users list of courses is updated
-	 * 
+	 * Fires after a user's list of courses are updated.
+	 *
 	 * @since 2.1.0
-	 * 
-	 * @param  int  	$user_id 		
-	 * @param  int  	$course_id
-	 * @param  array  	$course_access_list
-	 * @param  bool  	$remove
+	 *
+	 * @param int     $user_id            User ID.
+	 * @param int     $course_id          Course ID.
+	 * @param string  $course_access_list A comma-separated list of user IDs used for the course_access_list field.
+	 * @param boolean $remove             Whether to remove course access from the user.
 	 */
 	do_action( 'learndash_update_course_access', $user_id, $course_id, $course_access_list, $remove );
 	
@@ -740,15 +838,18 @@ function ld_update_course_access( $user_id, $course_id, $remove = false ) {
 
 
 /**
- * Get timestamp of when user has access to lesson
+ * Gets the timestamp of when a user can access the lesson.
  *
  * @since 2.1.0
- * 
- * @param  int 	$lesson_id
- * @param  int 	$user_id  
- * @return int  timestamp
+ *
+ * @param int      $lesson_id Lesson ID.
+ * @param int      $user_id   User ID.
+ * @param int|null $course_id Optional. Course ID. Default null.
+ * @param boolean  $bypass_transient Optional. Whether to bypass transient cache. Default false.
+ *
+ * @return int|void The timestamp of when the user can access the lesson.
  */
-function ld_lesson_access_from( $lesson_id, $user_id, $course_id = null ) {
+function ld_lesson_access_from( $lesson_id, $user_id, $course_id = null, $bypass_transient = false ) {
 	$return = null;
 
 	if ( is_null( $course_id ) ) {
@@ -757,7 +858,7 @@ function ld_lesson_access_from( $lesson_id, $user_id, $course_id = null ) {
 	
 	$courses_access_from = ld_course_access_from( $course_id, $user_id );
 	if ( empty( $courses_access_from ) ) {
-		$courses_access_from = learndash_user_group_enrolled_to_course_from( $user_id, $course_id );
+		$courses_access_from = learndash_user_group_enrolled_to_course_from( $user_id, $course_id, $bypass_transient );
 	}
 
 	$visible_after = learndash_get_setting( $lesson_id, 'visible_after' );
@@ -765,6 +866,13 @@ function ld_lesson_access_from( $lesson_id, $user_id, $course_id = null ) {
 		
 		// Adjust the Course acces from by the number of days. Use abs() to ensure no negative days.
 		$lesson_access_from = $courses_access_from + abs($visible_after) * 24 * 60 * 60;
+		/**
+		 * Filters the timestamp of when lesson will be visible after.
+		 *
+		 * @param int $lesson_access_from The timestamp of when the lesson will be available after a specific date.
+		 * @param int $lesson_id          Lesson ID.
+		 * @param int $user_id            User ID.
+		 */
 		$lesson_access_from = apply_filters( 'ld_lesson_access_from__visible_after', $lesson_access_from, $lesson_id, $user_id );
 
 		$current_timestamp = time();
@@ -783,24 +891,41 @@ function ld_lesson_access_from( $lesson_id, $user_id, $course_id = null ) {
 			$current_time = time();
 			
 			if ( $current_time < $visible_after_specific_date ) {
+				/**
+				 * Filters the timestamp of when lesson will be available after a specific date.
+				 *
+				 * @param int $visible_after_specific_date The timestamp of when the lesson will be available after a specific date.
+				 * @param int $lesson_id                  Lesson ID.
+				 * @param int $user_id                    User ID.
+				 */
 				$return = apply_filters( 'ld_lesson_access_from__visible_after_specific_date', $visible_after_specific_date, $lesson_id, $user_id );
 			}
 		}
 	}
 
+	/**
+	 * Filters the timestamp of when the user will have access to the lesson.
+	 *
+	 * @param int $timestamp The timestamp of when the lesson can be accessed.
+	 * @param int $lesson_id Lesson ID.
+	 * @param int $user_id   User ID.
+	 */
 	return apply_filters( 'ld_lesson_access_from', $return, $lesson_id, $user_id );
 }
 
 
 
 /**
- * Display when lesson will be available
+ * Gets when the lesson will be available.
+ *
+ * Fires on `learndash_content` hook.
  *
  * @since 2.1.0
- * 
- * @param  string $content content of lesson
- * @param  object $post    WP_Post object
- * @return string          when lesson will be available
+ *
+ * @param string  $content The content of lesson.
+ * @param WP_Post $post    The `WP_Post` object.
+ *
+ * @return string The output of when the lesson will be available.
  */
 function lesson_visible_after( $content, $post ) {	
 	if ( empty( $post->post_type ) ) {
@@ -832,16 +957,10 @@ function lesson_visible_after( $content, $post ) {
 		return $content; 
 	}
 
-	if ( learndash_is_admin_user( $user_id ) ) {
-		$bypass_course_limits_admin_users = LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_General_Admin_User', 'bypass_course_limits_admin_users' );
-		if ( $bypass_course_limits_admin_users == 'yes' ) $bypass_course_limits_admin_users = true;
-		else $bypass_course_limits_admin_users = false;
-								
-	} else {
-		$bypass_course_limits_admin_users = false;
-	}
+	$bypass_course_limits_admin_users = learndash_can_user_bypass( $user_id, 'learndash_course_lesson_not_available', $post->ID, $post );
 		
 	// For logged in users to allow an override filter. 
+	/** This filter is documented in includes/class-ld-cpt-instance.php */
 	$bypass_course_limits_admin_users = apply_filters( 'learndash_prerequities_bypass', $bypass_course_limits_admin_users, $user_id, $post->ID, $post );
 
 	$lesson_access_from = ld_lesson_access_from( $lesson_id, get_current_user_id() );
@@ -870,14 +989,15 @@ add_filter( 'learndash_content', 'lesson_visible_after', 1, 2 );
 
 
 /**
- * Is users course prerequisites completed for a given course
+ * Checks if the user's course prerequisites are completed for a given course.
  *
  * @since 2.1.0
- * 
- * @param  int  	$id  course id
- * @return boolean 
+ *
+ * @param int $post_id Optional. The ID of the course. Default 0.
+ *
+ * @return boolean Returns true if the prerequisites are completed.
  */
-function is_course_prerequities_completed( $post_id = 0 ) {
+function learndash_is_course_prerequities_completed( $post_id = 0 ) {
 	$course_pre_complete = true;
 	
 	if ( !empty( $post_id ) ) {
@@ -909,12 +1029,13 @@ function is_course_prerequities_completed( $post_id = 0 ) {
 }
 
 /**
- * Given a course ID will return an array of the prereq item and the status 
+ * Gets the list of course prerequisites and its status for a course.
  *
  * @since 2.4.0
- * 
- * @param  int  	$id  course id
- * @return array 
+ *
+ * @param int $post_id Optional. The ID of the course. Default 0.
+ *
+ * @return array An array of course prerequisites.
  */
 function learndash_get_course_prerequisites( $post_id = 0 ) {
 	$courses_status_array = array();
@@ -945,12 +1066,13 @@ function learndash_get_course_prerequisites( $post_id = 0 ) {
 }
 
 /**
- * Get list of course prerequisites for a given course
+ * Gets the list of course prerequisites for a given course.
  *
  * @since 2.1.0
- * 
- * @param  int 	 $id  course id
- * @return array      list of courses
+ *
+ * @param int $course_id Optional. The ID if the course. Default 0.
+ *
+ * @return array An array of course prerequisite.
  */
 function learndash_get_course_prerequisite( $course_id = 0 ) {
 	$course_pre = learndash_get_setting( $course_id, 'course_prerequisite' );
@@ -959,6 +1081,14 @@ function learndash_get_course_prerequisite( $course_id = 0 ) {
 	return $course_pre;
 }
 
+/**
+ * Sets new prerequisites for a course.
+ *
+ * @param int   $course_id            Optional. ID of the course. Default 0.
+ * @param array $course_prerequisites Optional. An array of course prerequisites. Default empty array.
+ *
+ * @return boolean Returns true if update was successful otherwise false.
+ */
 function learndash_set_course_prerequisite( $course_id = 0, $course_prerequisites = array() ) {
 	if ( !empty( $course_id ) ) {
 		if ( ( !empty( $course_prerequisites ) ) && ( is_array( $course_prerequisites ) ) ) {
@@ -972,12 +1102,13 @@ function learndash_set_course_prerequisite( $course_id = 0, $course_prerequisite
 
 
 /**
- * Given a course ID will return true or false if prereq is enabled
+ * Checks whether the prerequisites are enabled for a course.
  *
  * @since 2.4.0
- * 
- * @param  int  	$id  course id
- * @return bool 	true is prereq is enabled false if not 
+ *
+ * @param int $course_id The ID of the course.
+ *
+ * @return boolean Returns true if the prerequisites are enabled otherwise false.
  */
 function learndash_get_course_prerequisite_enabled( $course_id ) {
 	$course_pre_enabled = false;
@@ -1003,6 +1134,15 @@ function learndash_get_course_prerequisite_enabled( $course_id ) {
 	return $course_pre_enabled;
 }
 
+/**
+ * Sets the status of whether the course prerequisite is enabled or disabled.
+ *
+ * @param int     $course_id The ID of the course.
+ * @param boolean $enabled   Optional. The value is true to enable course prerequisites. Any other
+ *                           value will disable course prerequisites. Default true.
+ *
+ * @return boolean Returns true if the status was updated successfully otherwise false.
+ */
 function learndash_set_course_prerequisite_enabled( $course_id, $enabled = true ) {
 	if ( $enabled === true ) 
 		$enabled = 'on';
@@ -1014,12 +1154,13 @@ function learndash_set_course_prerequisite_enabled( $course_id, $enabled = true 
 }
 
 /**
- * Given a course ID will return the compare value 'ALL' or 'ANY' (default)
+ * Gets the prerequisites compare value for a course.
  *
  * @since 2.4.0
- * 
- * @param  int  	$id  course id
- * @return string 	'ALL' or 'ANY' default
+ *
+ * @param int $post_id The ID of the course.
+ *
+ * @return string The compare value for the prerequisite. Value can be 'ALL' or 'ANY' by default.
  */
 function learndash_get_course_prerequisite_compare( $post_id ) {
 
@@ -1038,12 +1179,13 @@ function learndash_get_course_prerequisite_compare( $post_id ) {
 }
 
 /**
- * Given a course ID will return true or false if course points  enabled
+ * Checks if the course points are enabled for a course.
  *
  * @since 2.4.0
- * 
- * @param  int  	$id  course id
- * @return bool 	true is prereq is enabled false if not 
+ *
+ * @param int $post_id Optional. The course ID. Default 0.
+ *
+ * @return bool Returns true if the course points are enabled otherwise false.
  */
 function learndash_get_course_points_enabled( $post_id = 0 ) {
 	$course_points_enabled = false;
@@ -1061,13 +1203,14 @@ function learndash_get_course_points_enabled( $post_id = 0 ) {
 }
 
 /**
- * Given a course ID will return the course points
+ * Gets the course points for a given course ID.
  *
  * @since 2.4.0
- * 
- * @param  int  $post_id Course Step ir Course post ID.
- * @param  int  $decimals  Number of decimal places to round. 
- * @return bool false - course points not enabled, int 0 or greater course points
+ *
+ * @param int $post_id  Optional. Course Step or Course post ID. Default 0.
+ * @param int $decimals Optional. Number of decimal places to round. Default 1.
+ *
+ * @return int|false Returns false if the course points are disabled otherwise returns course points.
  */
 function learndash_get_course_points( $post_id = 0, $decimals = 1 ) {
 	$course_points = false;
@@ -1090,12 +1233,13 @@ function learndash_get_course_points( $post_id = 0, $decimals = 1 ) {
 }
 
 /**
- * Given a course ID will return the course points for access
+ * Gets the course points access for a given course ID.
  *
  * @since 2.4.0
- * 
- * @param  int  	$id  course id
- * @return bool 	false - course point not enabled, int 0 or greater access points
+ *
+ * @param int $post_id Optional. The ID of the course. Default 0.
+ *
+ * @return int|false Returns false if the course points are disabled otherwise returns course points.
  */
 function learndash_get_course_points_access( $post_id = 0 ) {
 	$course_points_access = false;
@@ -1114,6 +1258,14 @@ function learndash_get_course_points_access( $post_id = 0 ) {
 	return $course_points_access;
 }
 
+/**
+ * Checks if a user can access course points.
+ *
+ * @param int $post_id The ID of the post.
+ * @param int $user_id Optional. The ID of the user. Default 0.
+ *
+ * @return boolean Whether a user can access course points.
+ */
 function learndash_check_user_course_points_access( $post_id, $user_id = 0 ) {
 	$user_can_access = true;
 
@@ -1147,200 +1299,96 @@ function learndash_check_user_course_points_access( $post_id, $user_id = 0 ) {
 }
 
 /**
- * Handles actions to be made when user joins a course
+ * Handles the actions to be made when the user joins a course.
  *
- * Redirects user to login url, adds course access to user
- * 
+ * Fires on `wp` hook.
+ * Redirects user to login URL, adds course access to user.
+ *
  * @since 2.1.0
  */
-function learndash_process_course_join(){
-	if ( ( ! isset( $_POST['course_join'] ) ) || ( ! isset( $_POST['course_id'] ) ) )  {
+function learndash_process_course_join() {
+	$user_id = get_current_user_id();
+
+	if ( ( isset( $_POST['course_join'] ) ) && ( isset( $_POST['course_id'] ) ) ) {
+		$post_label_prefix = 'course';
+		$post_id = intval( $_POST['course_id'] );
+		$post = get_post( $post_id );
+		if ( ( ! $post ) || ( ! is_a( $post, 'WP_Post' ) ) || ( learndash_get_post_type_slug( 'course' ) !== $post->post_type ) ) {
+			return;
+		}
+	} elseif ( ( isset( $_POST['group_join'] ) ) && ( isset( $_POST['group_id'] ) ) ) {
+		$post_label_prefix = 'group';
+		$post_id = intval( $_POST['group_id'] );
+		$post = get_post( $post_id );
+		if ( ( ! $post ) || ( ! is_a( $post, 'WP_Post' ) ) || ( learndash_get_post_type_slug( 'group' ) !== $post->post_type ) ) {
+			return;
+		}
+	} else {
 		return;
 	}
 
-	$user_id = get_current_user_id();
-	$course_id = intval( $_POST['course_id'] );
-
 	if ( empty( $user_id ) ) {
-		$redirect_url = get_permalink( $course_id );
-		//$redirect_url = add_query_arg('course_join', $_POST['course_join'], $redirect_url );
-		//$redirect_url = add_query_arg('course_id', $course_id, $redirect_url );
-		$login_url = wp_login_url( $redirect_url );
-		
-		 /**
-		 * Filter URL of where user should be redirected to
-		 * 
+		$login_url = wp_login_url( get_permalink( $post_id ) );
+
+		/**
+		 * Filters URL that a user should be redirected to after joining a course.
+		 *
 		 * @since 2.1.0
-		 * 
-		 * @param  login_url  $login_url
+		 *
+		 * @param string $login_url Redirect URL.
+		 * @param int    $post_id Course or Group ID.
 		 */
-		$login_url = apply_filters( 'learndash_course_join_redirect', $login_url, $course_id );
-		wp_redirect( $login_url );
+		$login_url = apply_filters( 'learndash_' . $post_label_prefix . '_join_redirect', $login_url, $post_id );
+		wp_safe_redirect( $login_url );
 		exit;
 	}
-	
+
 	/**
 	 * Verify the form is valid
 	 * @since 2.2.1.2
 	 */
-	if ( !wp_verify_nonce( $_POST['course_join'], 'course_join_'. $user_id .'_'. $course_id ) ) {
+	if ( ! wp_verify_nonce( $_POST[ $post_label_prefix . '_join' ], $post_label_prefix . '_join_'. $user_id . '_' . $post_id ) ) {
 		return;
 	}
 	
-	$meta = get_post_meta( $course_id, '_sfwd-courses', true );
+	$settings = learndash_get_setting( $post_id );
 
-	if ( @$meta['sfwd-courses_course_price_type'] == 'free' || @$meta['sfwd-courses_course_price_type'] == 'paynow' && empty( $meta['sfwd-courses_course_price'] ) && ! empty( $meta['sfwd-courses_course_join'] ) || sfwd_lms_has_access( $course_id, $user_id ) ) {
-		ld_update_course_access( $user_id, $course_id );
+	if ( learndash_get_post_type_slug( 'group' ) === get_post_type( $post_id ) ) {
+		if ( @$settings['group_price_type'] == 'free' || @$settings['group_price_type'] == 'paynow' && empty( $settings['group_price'] ) && ! empty( $settings['group_join'] ) || learndash_is_user_in_group( $user_id, $post_id ) ) {
+			ld_update_group_access( $user_id, $post_id );
+		}
+	} elseif ( learndash_get_post_type_slug( 'course' ) === get_post_type( $post_id ) ) {
+		if ( @$settings['course_price_type'] == 'free' || @$settings['course_price_type'] == 'paynow' && empty( $settings['course_price'] ) && ! empty( $settings['course_join'] ) || sfwd_lms_has_access( $post_id, $user_id ) ) {
+			ld_update_course_access( $user_id, $post_id );
+		}
 	}
 }
 
 add_action( 'wp', 'learndash_process_course_join' );
 
-/*
-global $learndash_after_login;
-//$learndash_after_login = false;
-function learndash_wp_login_process_course_join( $user_login = '', $user = '' ) {
-	if ( !empty( $user_login ) ) {
-		if ( !( $user instanceof WP_User ) ) {
-			$user = get_user_by('login', $user_login );
-		}
-
-		if ( $user instanceof WP_User ) {
-			global $learndash_after_login;
-            $learndash_after_login = true;
-		}
-	}
-}
-add_action('wp_login', 'learndash_wp_login_process_course_join', 99, 2);
-*/
-/*
-function learndash_course_login_redirect( $redirect_to, $requested_redirect_to, $user ) {
-	global $learndash_after_login;
-
-	if ( $learndash_after_login ) {
-		if ( ( isset( $redirect_to ) ) && ( !empty( $redirect_to ) ) ) {
-			$url = parse_url( $redirect_to );
-			if ( ( isset( $url['query'] ) ) && ( !empty( $url['query'] ) ) ) {
-				parse_str( $url['query'], $url_elements );
-
-				if ( ( isset( $url_elements['course_id'] ) ) && ( !empty( $url_elements['course_id'] ) ) && ( isset( $url_elements['course_join'] ) ) && ( !empty( $url_elements['course_join'] ) ) ) {
-
-					// sort of a hack. If we are here then the user clicked on a Course 'Take This Course' form button. At the time the user was not known to WP which means
-					// the nonce used in the form will be different than a nonce for an authentcated user. So we need to reseed the nonce so when we get to the form processing
-					// in learndash_process_course_join() it will verify. 
-	
-					$redirect_to = add_query_arg( 'course_join', wp_create_nonce( 'course_join_'. $user->ID .'_'. $url_elements['course_id'] ), $redirect_to );
-				}
-			}
-		} 
-	}
-	return $redirect_to;
-}
-add_filter( 'login_redirect', 'learndash_course_login_redirect', 10, 3 );
-*/
-
 /**
- * Shortcode to output course content
+ * Updates the user activity.
  *
- * @since 2.1.0
- * 
- * @param  array 	$atts 	shortcode attributes
- * @return string       	output of shortcode
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param array $args {
+ *    An array of user activity arguments. Default empty array.
+ *
+ *    @type int    $activity_id        Optional. Activity ID. Default 0.
+ *    @type int    $course_id          Optional. Course ID. Default 0.
+ *    @type int    $post_id            Optional. Post ID. Default 0.
+ *    @type int    $user_id            Optional. User ID. Default 0.
+ *    @type string $activity_type      Optional. Type of the activity. Default empty.
+ *    @type string $activity_status    Optional. The status of the activity. Default empty.
+ *    @type string $activity_started   Optional. The timestamp of when the activity started. Default empty.
+ *    @type string $activity_completed Optional. The timestamp of when the activity got completed. Default empty.
+ *    @type string $activity_updated   Optional. The timestamp of when the activity was last updated. Default empty.
+ *    @type string $activity_action    Optional. The action of the activity. Value can be 'update', 'insert', or 'delete'. Default 'update'.
+ *    @type string $activity_meta      Optional. The activity meta. Default empty.
+ * }
+ *
+ * @return int The ID of the updated activity.
  */
-function learndash_course_content_shortcode( $atts ) {
-	
-	global $learndash_shortcode_used;
-	
-	$atts_defaults = array(
-		'course_id' => 0,
-		'num' => false
-	);
-	$atts = shortcode_atts( $atts_defaults, $atts );
-	
-	if ( empty( $atts['course_id'] ) ) {
-		$course_id = learndash_get_course_id();
-		if ( empty( $course_id ) ) {
-			return '';
-		}
-		$atts['course_id'] = intval( $course_id );
-	}
-
-	if ( isset( $_GET['ld-courseinfo-lesson-page'] ) ) {
-		$atts['paged'] = intval( $_GET['ld-courseinfo-lesson-page'] );
-	} 
-
-	$course_id = intval( $atts['course_id'] );
-
-	$course = $post = get_post( $course_id );
-
-//	if ( ! is_singular() || $post->post_type != 'sfwd-courses' ) {
-//		return '';
-//	}
-
-	if ( is_user_logged_in() )
-		$user_id = get_current_user_id();
-	else
-		$user_id = 0;
-	
-	$logged_in = ! empty( $user_id );
-	$lesson_progression_enabled = false;
-
-	$course_settings = learndash_get_setting( $course );
-	$lesson_progression_enabled  = learndash_lesson_progression_enabled( $course_id );
-	$courses_options = learndash_get_option( 'sfwd-courses' );
-	$lessons_options = learndash_get_option( 'sfwd-lessons' );
-	$quizzes_options = learndash_get_option( 'sfwd-quiz' );
-	$course_status = learndash_course_status( $course_id, null );
-	$has_access = sfwd_lms_has_access( $course_id, $user_id );
-
-	$lessons = learndash_get_course_lessons_list( $course, $user_id, $atts );
-	$quizzes = learndash_get_course_quiz_list( $course );
-	$has_course_content = ( ! empty( $lessons ) || ! empty( $quizzes ) );
-
-	$has_topics = false;
-
-	if ( ! empty( $lessons) ) {
-		foreach ( $lessons as $lesson ) {
-			$lesson_topics[ $lesson['post']->ID ] = learndash_topic_dots( $lesson['post']->ID, false, 'array', $user_id, $course_id );
-			if ( ! empty( $lesson_topics[ $lesson['post']->ID ] ) ) {
-				$has_topics = true;
-			}
-		}
-	}
-
-	$level = ob_get_level();
-	ob_start();
-	$template_file = SFWD_LMS::get_template( 'course_content_shortcode', null, null, true );
-	if ( ! empty( $template_file ) ) {
-		include $template_file;
-	}
-	
-	$content = learndash_ob_get_clean( $level );
-	$content = str_replace( array("\n", "\r"), ' ', $content );
-	$user_has_access = $has_access? 'user_has_access':'user_has_no_access';
-
-	$learndash_shortcode_used = true;
-
-	// Prevent the shortcoce page from showing when used on a course (sfwd-courses) single page 
-	// as it will conflict with pager from the templates/course.php output. 
-	$queried_object = get_queried_object();
-	if ( ( is_a( $queried_object, 'WP_Post' ) ) && ( $queried_object->post_type == 'sfwd-courses' ) ) {
-		global $course_pager_results;
-		$course_pager_results = null;
-	}
-
-	
-	/**
-	 * Filter course content shortcode
-	 * 
-	 * @since 2.1.0
-	 */
-	return '<div class="learndash '.$user_has_access.'" id="learndash_post_'.$course_id.'">'.apply_filters( 'learndash_content', $content, $post ).'</div>';
-}
-
-add_shortcode( 'course_content', 'learndash_course_content_shortcode' );
-
-
 function learndash_update_user_activity( $args = array() ) {
 
 	global $wpdb;
@@ -1403,6 +1451,11 @@ function learndash_update_user_activity( $args = array() ) {
 	} 
 	
 	// End of args processing. Finally after we have applied all the logic we go out for filters. 
+	/**
+	 * Filters user activity arguments.
+	 *
+	 * @param array $args An array of user activity arguments.
+	 */
 	$args = apply_filters('learndash_update_user_activity_args', $args);
 	if ( empty( $args ) ) return;
 	
@@ -1516,11 +1569,30 @@ function learndash_update_user_activity( $args = array() ) {
 		}
 	}
 
+	/**
+	 * Fires after updating user activity.
+	 *
+	 * @param array $args An array of activity arguments.
+	 */
 	do_action( 'learndash_update_user_activity', $args );
 	
 	return $args['activity_id'];
 }
 
+/**
+ * Gets the user activity.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param array $args {
+ *    An array of user activity arguments. Default empty array.
+ *
+ *    @type int    Optional. $course_id     Course ID. Default 0.
+ *    @type string $activity_type Type of the activity.
+ * }
+ *
+ * @return object Activity object.
+ */
 function learndash_get_user_activity( $args = array() ) {
 	global $wpdb;
 	
@@ -1556,6 +1628,17 @@ function learndash_get_user_activity( $args = array() ) {
 	return $activity;	
 }
 
+/**
+ * Gets the user activity meta.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int     $activity_id                     Optional. Activity ID. Default 0.
+ * @param string  $activity_meta_key               Optional. The activity meta key to get. Default empty.
+ * @param boolean $return_activity_meta_value_only Optional. Whether to return only activity meta value. Default true.
+ *
+ * @return object Activity meta object.
+ */
 function learndash_get_user_activity_meta( $activity_id = 0, $activity_meta_key = '', $return_activity_meta_value_only = true ) {
 
 	global $wpdb;
@@ -1582,6 +1665,15 @@ function learndash_get_user_activity_meta( $activity_id = 0, $activity_meta_key 
 	}
 }
 
+/**
+ * Updates the user activity meta.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int         $activity_id Optional. Activity ID. Default 0.
+ * @param string      $meta_key    Optional. The activity meta key to get. Default empty.
+ * @param string|null $meta_value  Optional. Activity meta value. Default null.
+ */
 function learndash_update_user_activity_meta( $activity_id = 0, $meta_key = '', $meta_value = null) {
 	global $wpdb;
 
@@ -1627,6 +1719,13 @@ function learndash_update_user_activity_meta( $activity_id = 0, $meta_key = '', 
 	}
 }
 
+/**
+ * Deletes the user activity.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int $activity_id Optional. Activity ID. Default 0.
+ */
 function learndash_delete_user_activity( $activity_id = 0 ) {
 	global $wpdb;
 	
@@ -1644,13 +1743,17 @@ function learndash_delete_user_activity( $activity_id = 0 ) {
 		);
 	}
 }
+
 /**
- * Utility function to return all the courses that are price_type: open 
- * Logic for this query was taken from the sfwd_lms_has_access_fn() function 
- * @since 2.3
- * 
- * @param  bool 	$bypass_transient 	Set to true to bypass transient cache. 
- * @return array    array of post_ids (course ids) found
+ * Gets all the courses with the price type open.
+ *
+ * Logic for this query was taken from the `sfwd_lms_has_access_fn()` function
+ *
+ * @since 2.3.0
+ *
+ * @param boolean $bypass_transient Optional. Whether to bypass transient cache. Default false.
+ *
+ * @return array An array of course IDs.
  */
 function learndash_get_open_courses( $bypass_transient = false ) {
 	global $wpdb;
@@ -1677,12 +1780,17 @@ function learndash_get_open_courses( $bypass_transient = false ) {
 }
 
 /**
- * Utility function to return all the courses that are price_type: paynow with empty price
- * Logic for this query was taken from the sfwd_lms_has_access_fn() function 
- * @since 2.3
- * 
- * @param  bool 	$bypass_transient 	Set to true to bypass transient cache. 
- * @return array    array of post_ids (course ids) found
+ * Gets all the courses with the price type paynow.
+ *
+ * Logic for this query was taken from the `sfwd_lms_has_access_fn()` function.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.3.0
+ *
+ * @param boolean $bypass_transient Optional. Whether to bypass the transient cache. Default false.
+ *
+ * @return array An array of course IDs.
  */
 function learndash_get_paynow_courses( $bypass_transient = false ) {
 	global $wpdb;
@@ -1708,8 +1816,15 @@ function learndash_get_paynow_courses( $bypass_transient = false ) {
 	return $course_ids;
 }
 
-// Gets ALL users that have access to given course_id.
-// Optional bool flag to exclude admin roles
+/**
+ * Gets the list of users who has access to the given course.
+ *
+ * @param int     $course_id     Optional. The ID of the course. Default 0.
+ * @param array   $query_args    Optional. An array of `WP_User_query` arguments. Default empty array.
+ * @param boolean $exclude_admin Optional. Whether to exclude admins from the user list. Default true.
+ *
+ * @return WP_User_Query The `WP_User_Query` object.
+ */
 function learndash_get_users_for_course( $course_id = 0, $query_args = array(), $exclude_admin = true ) {
 	$course_user_ids = array();
 	
@@ -1748,8 +1863,9 @@ function learndash_get_users_for_course( $course_id = 0, $query_args = array(), 
 			$course_user_ids = array_unique( $course_user_ids );
 
 		$course_expired_access_users = learndash_get_course_expired_access_from_meta( $course_id );
-		if ( !empty( $course_expired_access_users ) )
-			$course_user_ids = array_diff( $course_access_list, $course_expired_access_users );
+		if ( !empty( $course_expired_access_users ) ) {
+			$course_user_ids = array_diff( $course_user_ids, $course_expired_access_users );
+		}
 
 		if ( !empty( $course_user_ids ) ) {
 			$query_args['include'] = $course_user_ids;
@@ -1785,7 +1901,12 @@ function learndash_get_users_for_course( $course_id = 0, $query_args = array(), 
 	return $course_user_ids;
 }
 
-
+/**
+ * Sets new users to the course access list.
+ *
+ * @param int   $course_id        Optional. The ID of the course. Default 0.
+ * @param array $course_users_new Optional. An array of user IDs to set course access. Default empty array.
+ */
 function learndash_set_users_for_course( $course_id = 0, $course_users_new = array() ) {
 
 	if (!empty( $course_id ) ) {
@@ -1827,7 +1948,13 @@ function learndash_set_users_for_course( $course_id = 0, $course_users_new = arr
 }
 
 
-// Get all users with explicit 'course_XX_access_from' access
+/**
+ * Gets the users with course access from the user meta.
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return array An array of user IDs that have access to course.
+ */
 function learndash_get_course_users_access_from_meta( $course_id = 0 ) {
 	global $wpdb;
 	
@@ -1842,7 +1969,13 @@ function learndash_get_course_users_access_from_meta( $course_id = 0 ) {
 	return $course_user_ids;
 }
 
-// Get all the users for a given course_id that have 'learndash_course_expired_XX' user meta records. 
+/**
+ * Gets the list of users with expired course access from the user meta.
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return array An array of users with expired course access.
+ */
 function learndash_get_course_expired_access_from_meta( $course_id = 0 ) {
 	global $wpdb;
 	
@@ -1858,8 +1991,16 @@ function learndash_get_course_expired_access_from_meta( $course_id = 0 ) {
 }
 
 
-// Utility function to att the course settings in meta. Better than having this over inline over and over again. 
-// @TODO Need to convert all references to get_post_meta for '_sfwd-courses' to use this function.
+/**
+ * Gets the course settings from the course meta.
+ *
+ * @TODO Need to convert all references to get_post_meta for '_sfwd-courses' to use this function.
+ *
+ * @param int    $course_id   Optional. The ID of the course. Default 0.
+ * @param string $setting_key Optional. The slug of the setting to get. Default empty.
+ *
+ * @return mixed Returns course settings. Passing empty setting key gets all the settings.
+ */
 function learndash_get_course_meta_setting( $course_id = 0, $setting_key = '' ) {
 	$course_settings = array();
 	
@@ -1873,8 +2014,20 @@ function learndash_get_course_meta_setting( $course_id = 0, $setting_key = '' ) 
 		if ( !isset( $meta['sfwd-courses_course_access_list'] ) ) {
 			$meta['sfwd-courses_course_access_list'] = '';
 		}
-		$meta['sfwd-courses_course_access_list'] = array_map( 'intVal', explode( ',', $meta['sfwd-courses_course_access_list'] ) );
-				
+
+		if ( ! empty( $meta['sfwd-courses_course_access_list'] ) ) {
+			if ( is_string( $meta['sfwd-courses_course_access_list'] ) ) {
+				$meta['sfwd-courses_course_access_list'] = array_map( 'absint', explode( ',', $meta['sfwd-courses_course_access_list'] ) );
+			} elseif ( is_array( $meta['sfwd-courses_course_access_list'] ) ) {
+				$meta['sfwd-courses_course_access_list'] = array_map( 'absint', $meta['sfwd-courses_course_access_list'] );
+			} else {
+				// Not sure how we can get here. Just in case.
+				$meta['sfwd-courses_course_access_list'] = array();
+			}
+		} else {
+			$meta['sfwd-courses_course_access_list'] = array();
+		}
+
 		// Need to remove the empty '0' items
 		$meta['sfwd-courses_course_access_list'] = array_diff($meta['sfwd-courses_course_access_list'], array(0, ''));
 	}
@@ -1886,6 +2039,14 @@ function learndash_get_course_meta_setting( $course_id = 0, $setting_key = '' ) 
 	}
 }
 
+/**
+ * Gets the list of course step IDs.
+ *
+ * @param int   $course_id          Optional. The ID of the course. Default 0.
+ * @param array $include_post_types Optional. An array of post types to include in course steps. Default array contains 'sfwd-lessons' and 'sfwd-topic'.
+ *
+ * @return array An array of course step IDs.
+ */
 function learndash_get_course_steps_ORG( $course_id = 0, $include_post_types = array( 'sfwd-lessons', 'sfwd-topic' ) ) {
 	$steps = array();
 	
@@ -1916,7 +2077,16 @@ function learndash_get_course_steps_ORG( $course_id = 0, $include_post_types = a
 	return $steps;
 }
 
-// Get the total number of Lessons + Topics for a given course_id. For now excludes quizzes at lesson and topic level. 
+/**
+ * Gets all the lessons and topics for a given course ID.
+ *
+ * For now excludes quizzes at lesson and topic level.
+ *
+ * @param int   $course_id          Optional. The ID of the course. Default 0.
+ * @param array $include_post_types Optional. An array of post types to include in course steps. Default array contains 'sfwd-lessons' and 'sfwd-topic'.
+ *
+ * @return array An array of all course steps.
+ */
 function learndash_get_course_steps( $course_id = 0, $include_post_types = array( 'sfwd-lessons', 'sfwd-topic' ) ) {
 
 	// The steps array will hold all the individual step counts for each post_type.
@@ -2001,6 +2171,13 @@ function learndash_get_course_steps( $course_id = 0, $include_post_types = array
 	return $steps_all;
 }
 
+/**
+ * Gets the total count of lessons and topics for a given course ID.
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return int The count of the course steps.
+ */
 function learndash_get_course_steps_count( $course_id = 0 ) {
 
 	$course_steps_count = 0;
@@ -2015,6 +2192,15 @@ function learndash_get_course_steps_count( $course_id = 0 ) {
 }
 
 // Get total completed steps for a given course_progress array structure. 
+/**
+ * Gets the total completed steps for a given course progress array.
+ *
+ * @param int   $user_id         Optional. The ID of the user. Default 0.
+ * @param int   $course_id       Optional. The ID of the course. Default 0.
+ * @param array $course_progress Optional. An array of course progress data. Default empty array.
+ *
+ * @return int The count of completed course steps.
+ */
 function learndash_course_get_completed_steps( $user_id = 0, $course_id = 0, $course_progress = array() ) {
 	$steps_completed_count = 0;
 
@@ -2078,15 +2264,55 @@ add_filter('sfwd-courses_display_options', function( $options, $location ) {
 	return $options;
 }, 1, 2);
 
+/**
+ * Updates the users group course access.
+ *
+ * Fires on `learndash_update_course_access` hook.
+ *
+ * @param int     $user_id     The ID of the user.
+ * @param int     $course_id   The ID of the course.
+ * @param array   $access_list An array of course access list.
+ * @param boolean $remove      Whether to user group from course access.
+ */
 function learndash_update_course_users_groups( $user_id, $course_id, $access_list, $remove ) {
 	if ( ( !empty( $user_id ) ) && ( !empty( $course_id ) ) && ( $remove !== true ) ) {
 		
-		$course_groups = learndash_get_course_groups( $course_id, true );
-		if ( !empty( $course_groups ) ) {
-			foreach( $course_groups as $course_group_id ) {
-				$ld_auto_enroll_group_courses = get_post_meta( $course_group_id, 'ld_auto_enroll_group_courses', true );
+		$groups = learndash_get_course_groups( $course_id, true );
+		if ( !empty( $groups ) ) {
+			foreach( $groups as $group_id ) {
+				$ld_auto_enroll_group_courses = get_post_meta( $group_id, 'ld_auto_enroll_group_courses', true );
+				/**
+				 * See settings in includes/settings/settings-metaboxes/class-ld-settings-metabox-group-courses-enroll.php
+				 * If the checkbox is set then ALL courses can be used to enroll into group. 
+				 */
 				if ( $ld_auto_enroll_group_courses == 'yes' ) {
-					ld_update_group_access( $user_id, $course_group_id );
+					/**
+					 * Filters whether to enroll into group for the course.
+					 *
+					 * @since 3.2.0
+					 *
+					 * @param boolean $enroll_in_group Whether to enroll the user into the group.
+					 * @param integer $group_id        The Group ID.
+					 * @param integer $course_id       The Course ID.
+					 */
+					if ( apply_filters( 'learndash_group_course_auto_enroll', true, $group_id, $course_id ) ) {
+						ld_update_group_access( $user_id, $group_id );
+					}
+				} else {
+					/**
+					 * Else if the checkbox is not set and there are entries for the selective course enroll. Use those.
+					 */
+					$ld_auto_enroll_group_course_ids = get_post_meta( $group_id, 'ld_auto_enroll_group_course_ids', true );
+					if ( ( is_array( $ld_auto_enroll_group_course_ids ) ) && ( ! empty( $ld_auto_enroll_group_course_ids ) ) ) {
+						$ld_auto_enroll_group_course_ids = array_map( 'absint', $ld_auto_enroll_group_course_ids );
+
+						if ( in_array( $course_id, $ld_auto_enroll_group_course_ids, true ) ) {
+							/** This filter is documented in includes/course/ld-course-functions.php */
+							if ( apply_filters( 'learndash_group_course_auto_enroll', true, $group_id, $course_id ) ) {
+								ld_update_group_access( $user_id, $group_id );
+							}
+						}
+					}
 				}
 			}
 		}
@@ -2094,7 +2320,14 @@ function learndash_update_course_users_groups( $user_id, $course_id, $access_lis
 }
 add_action( 'learndash_update_course_access', 'learndash_update_course_users_groups', 50, 4 );
 
-
+/**
+ * Gets the course completion date for a user.
+ *
+ * @param int $user_id   Optional. The ID of the user. Default 0.
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return int The timestamp of when the course was completed. The value is 0 if the course is not completed.
+ */
 function learndash_user_get_course_completed_date( $user_id = 0, $course_id = 0 ) {
 	$completed_on_timestamp = 0;
 	if ( ( ! empty( $user_id ) ) && ( !empty( $course_id ) ) ) {
@@ -2126,6 +2359,14 @@ function learndash_user_get_course_completed_date( $user_id = 0, $course_id = 0 
 	return $completed_on_timestamp;
 }
 
+/**
+ * Gets the parent step IDs for a step in a course.
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ * @param int $step_id   Optional. The ID of the step to get parent steps. Default 0.
+ *
+ * @return array An array of step IDs.
+ */
 function learndash_course_get_all_parent_step_ids( $course_id = 0, $step_id = 0 ) {
 	$step_parents = array();
 	
@@ -2167,6 +2408,15 @@ function learndash_course_get_all_parent_step_ids( $course_id = 0, $step_id = 0 
 	return $step_parents;
 }
 
+/**
+ * Gets the single parent step ID for a given step ID in a course.
+ *
+ * @param int    $course_id Optional. Course ID. Default 0.
+ * @param int    $step_id   Optional. Step ID. Default 0.
+ * @param string $step_type Optional. The type of the step. Default empty.
+ *
+ * @return int The parent step ID.
+ */
 function learndash_course_get_single_parent_step( $course_id = 0, $step_id = 0, $step_type = '' ) {
 	$parent_step_id = 0;
 	
@@ -2215,6 +2465,14 @@ function learndash_course_get_single_parent_step( $course_id = 0, $step_id = 0, 
 	return $parent_step_id;
 }
 
+/**
+ * Gets the course steps by type.
+ *
+ * @param int    $course_id Optional. Course ID. Default 0.
+ * @param string $step_type Optional. The type of the step. Default empty.
+ *
+ * @return array An array of course step IDs.
+ */
 function learndash_course_get_steps_by_type_ORG1( $course_id = 0, $step_type = '' ) {
 	$course_steps_return = array();
 	
@@ -2231,6 +2489,14 @@ function learndash_course_get_steps_by_type_ORG1( $course_id = 0, $step_type = '
 	return $course_steps_return;	
 }
 
+/**
+ * Gets the course steps by type.
+ *
+ * @param int    $course_id Optional. Course ID. Default 0.
+ * @param string $step_type Optional. The type of the step. Default empty.
+ *
+ * @return array An array of course step IDs.
+ */
 function learndash_course_get_steps_by_type( $course_id = 0, $step_type = '' ) {
 	$course_steps_return = array();
 	
@@ -2265,15 +2531,13 @@ function learndash_course_get_steps_by_type( $course_id = 0, $step_type = '' ) {
 											)
 				);
 				/**
-				 * Filter to allow override of query.
-				 * 
+				 * Filters course steps by type query arguments.
+				 *
 				 * @since 2.6.0
-				 * 
-				 * @param array   $steps_query_args Array of WP_Query args.
-				 * @param integer $course_id Course ID to get steps for.
-				 * @param string  $step_type Steps post type. Could be 'sfwd-lessons', 'sfwd-topics' etc.
-				 * 
-				 * @return Array of query args.
+				 *
+				 * @param array  $steps_query_args An array steps query arguments.
+				 * @param int    $course_id        Course ID to get steps for.
+				 * @param string $step_type        Steps post type. Could be 'sfwd-lessons', 'sfwd-topics' etc.
 				 */
 				$steps_query_args = apply_filters( 'learndash_course_steps_by_type', $steps_query_args, $course_id, $step_type );
 				if ( ! empty( $steps_query_args ) ) {
@@ -2293,6 +2557,15 @@ function learndash_course_get_steps_by_type( $course_id = 0, $step_type = '' ) {
 	return $course_steps_return;
 }
 
+/**
+ * Gets the list of children steps for a given step ID.
+ *
+ * @param int    $course_id  Optional. Course ID. Default 0.
+ * @param int    $step_id    Optional. The ID of step to get child steps. Default 0.
+ * @param string $child_type Optional. The type of the child steps to get. Default empty.
+ *
+ * @return array An array of child step IDs.
+ */
 function learndash_course_get_children_of_step( $course_id = 0, $step_id = 0, $child_type = '' ) {
 	$children_steps = array();
 	
@@ -2307,52 +2580,104 @@ function learndash_course_get_children_of_step( $course_id = 0, $step_id = 0, $c
 	
 }
 
+/**
+ * Gets the list of courses associated with a step.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int     $step_id           Optional. The ID of the step to get course list. Default 0.
+ * @param boolean $return_flat_array  Optional. Whether to return single dimensional array. Default false.
+ *
+ * @return array An array of course list for a step. Returns an multidimesional array
+ *               of course list sorted in primary and secondary course list if the
+ *               `$return_flat_array` parameter is false.
+ */
 function learndash_get_courses_for_step( $step_id = 0, $return_flat_array = false ) {
 	global $wpdb;
 	
 	$course_ids = array();
-	if ( $return_flat_array !== true ) {
-		$course_ids['primary'] = array();
-		$course_ids['secondary'] = array();
-	}
+	$course_ids['primary'] = array();
+	$course_ids['secondary'] = array();
 	
-	if ( !empty( $step_id ) ) {
-		$sql_str = $wpdb->prepare( "SELECT postmeta.meta_value as course_id, posts.post_title as course_title FROM ". $wpdb->postmeta ." AS postmeta 
-				INNER JOIN ". $wpdb->posts ." AS posts ON postmeta.meta_value = posts.ID WHERE postmeta.post_id = ". $step_id ." AND postmeta.meta_key LIKE %s ORDER BY course_title ASC", 'course_id' );
-		$course_ids_primary = $wpdb->get_results( $sql_str );
-		if ( !empty( $course_ids_primary ) ) {
-			foreach( $course_ids_primary as $course_set ) {
-				if ( $return_flat_array === true ) {
-					$course_ids[$course_set->course_id] = $course_set->course_title;
-				} else {
-					$course_ids['primary'][$course_set->course_id] = $course_set->course_title;
+	if ( ! empty( $step_id ) ) {
+		$post_post_meta = get_post_meta( $step_id );
+		foreach( $post_post_meta as $meta_key => $meta_values ) {
+			if ( 'course_id' === $meta_key ) {
+				foreach( $meta_values as $course_id ) {
+					$course_id = absint( $course_id );
+					if ( ! isset( $course_ids['primary'][ $course_id ] ) ) {
+						$course_post = get_post( $course_id );
+						if ( ( $course_post ) && ( is_a( $course_post, 'WP_Post' ) ) && ( learndash_get_post_type_slug( 'course' ) === $course_post->post_type ) ) {
+							$course_ids['primary'][ $course_id ] = get_the_title( $course_id );
+						}
+					}
+				}
+			} else if ( substr( $meta_key, 0, strlen( 'ld_course_' ) ) === 'ld_course_' ) {
+				foreach( $meta_values as $course_id ) {
+					$course_id = absint( $course_id );
+					if ( ! isset( $course_ids['secondary'][ $course_id ] ) ) {
+						$course_post = get_post( $course_id );
+						if ( ( $course_post ) && ( is_a( $course_post, 'WP_Post' ) ) && ( learndash_get_post_type_slug( 'course' ) === $course_post->post_type ) ) {
+							$course_ids['secondary'][ $course_id ] = get_the_title( $course_id );
+						}
+					}
 				}
 			}
 		}
 		
-		$sql_str = $wpdb->prepare( "SELECT postmeta.meta_value as course_id, posts.post_title as course_title FROM ". $wpdb->postmeta ." AS postmeta 
-			INNER JOIN ". $wpdb->posts ." AS posts ON postmeta.meta_value = posts.ID WHERE postmeta.post_id = ". $step_id ." AND postmeta.meta_key LIKE %s ORDER BY course_title ASC", 'ld_course_%' );
-		//$sql_str = $wpdb->prepare( "SELECT meta_value as course_id FROM ". $wpdb->postmeta ." WHERE post_id = ". $step_id ." AND meta_key LIKE %s", 'ld_course_%' );
-		$course_ids_secondary = $wpdb->get_results( $sql_str );
-		if ( !empty( $course_ids_secondary ) ) {
-			foreach( $course_ids_secondary as $course_set ) {
-				if ( $return_flat_array === true ) {
-					if ( !isset( $course_ids[$course_set->course_id] ) ) {
-						$course_ids[$course_set->course_id] = $course_set->course_title;
-					}
-				} else {
-					if ( ( !isset( $course_ids['primary'][$course_set->course_id] ) ) && ( !isset( $course_ids['secondary'][$course_set->course_id] ) ) ) {
-						$course_ids['secondary'][$course_set->course_id] = $course_set->course_title;
-					}
+		// Ensure the primary course is also part of the secondary courses.
+		if ( ! empty( $course_ids['primary'] ) ) {
+			foreach( $course_ids['primary'] as $p_course_id => $p_course_title ) {
+				if ( ! isset( $course_ids['secondary'][ $p_course_id ] ) ) {
+					update_post_meta( $step_id, 'ld_course_'. $p_course_id, $p_course_id );
 				}
-				
 			}
+		} else  {
+			foreach( $course_ids['secondary'] as $s_course_id => $s_course_title ) {
+				$course_ids['primary'][ $s_course_id ] = $s_course_title;
+				learndash_update_setting( $step_id, 'course', $s_course_id );
+				//update_post_meta( $step_id, 'course_id', $s_course_id );
+				break;
+			}
+		}
+
+		// Now ensure the primary course IDs are not included in the secondary listing.
+		foreach( $course_ids['primary'] as $p_course_id => $p_course_title ) {
+			if ( isset( $course_ids['secondary'][ $p_course_id ] ) ) {
+				unset( $course_ids['secondary'][ $p_course_id ] );
+			}
+		}
+
+		if ( $return_flat_array === true ) {
+			$course_ids_flat = array();
+			foreach( $course_ids['primary'] as $course_id => $course_title ) {
+				if ( ! isset( $course_ids_flat[ $course_id ] ) ) {
+					$course_ids_flat[ $course_id ] = $course_title;
+				}
+			}
+
+			foreach( $course_ids['secondary'] as $course_id => $course_title ) {
+				if ( ! isset( $course_ids_flat[ $course_id ] ) ) {
+					$course_ids_flat[ $course_id ] = $course_title;
+				}
+			}
+			
+			$course_ids = $course_ids_flat;
 		}
 
 		return $course_ids;
 	}
 }
 
+/**
+ * Updates the filter lesson options.
+ *
+ * @param array  $options  Setting options.
+ * @param string $location Location index.
+ * @param array  $values   Current options stored for a location.
+ *
+ * @return array An array of lesson options.
+ */
 function learndash_filter_lesson_options( $options, $location, $values ) {
 	//error_log('options<pre>'. print_r($options, true) .'</pre>');
 	//error_log('location<pre>'. print_r($location, true) .'</pre>');
@@ -2376,11 +2701,17 @@ function learndash_filter_lesson_options( $options, $location, $values ) {
 //add_filter( 'sfwd-quiz_display_settings', 'learndash_filter_lesson_options', 10, 3 );
 
 /**
- * Action hook called when a post is moved to trash or untrashed. 
- * 
+ * Updates the course step post status when a post is trashed or untrashed.
+ *
+ * Fires on `transition_post_status` hook.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
  * @since 2.5.0
- * 
- * @param  int $post_id 
+ *
+ * @param string  $new_status New post status.
+ * @param string  $old_status Old post status.
+ * @param WP_Post $post       The `WP_Post` object.
  */
 function  learndash_transition_course_step_post_status( $new_status, $old_status, $post ) {
 	global $wpdb;
@@ -2406,8 +2737,16 @@ add_action( 'transition_post_status', 'learndash_transition_course_step_post_sta
 
 
 /**
- * Need to validate URL requests when Nested URL permalinks are used. 
- * @since 2.5
+ * Validates the URL requests when nested URL permalinks are used.
+ *
+ * Fires on `wp` hook.
+ *
+ * @global WP_Post  $post     Global post object.
+ * @global WP_Query $wp_query WordPress Query object.
+ *
+ * @since 2.5.0
+ *
+ * @param WP $wp The `WP` instance.
  */
 function learndash_check_course_step( $wp ) {	
 	if ( is_single() ) {
@@ -2546,6 +2885,14 @@ function learndash_check_course_step( $wp ) {
 
 add_action( 'wp', 'learndash_check_course_step' );
 
+/**
+ * Gets the page data by page path.
+ *
+ * @param string $slug      Optional. The slug of the page. Default empty.
+ * @param string $post_type Optional. The post type slug. Default empty.
+ *
+ * @return WP_Post|array|null `WP_Post` object or array on success, null on failure.
+ */
 function learndash_get_page_by_path( $slug = '', $post_type = '' ) {
 	$course_post = null;
 	
@@ -2564,15 +2911,17 @@ function learndash_get_page_by_path( $slug = '', $post_type = '' ) {
 }
 
 /**
- * Utility function to get the Course Lessons per page setting. This function
- * will initially source the per_page from the course. But if we are using the 
- * default lessons options setting we will use that. Then if the lessons options
- * is not set for some reason we use the default system option 'posts_per_page'. 
+ * Gets the course lessons per page setting.
  *
- * @param $course_id int the course_id to get the per_page value from
- * @return $course_lessons_per_page int will be the calculated lessons per page or zero
+ * This function will initially source the per_page from the course. But if we are using the
+ * default lesson options setting we will use that. Then if the lessons options
+ * is not set for some reason we use the default system option 'posts_per_page'.
  *
  * @since 2.5.4
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return int The number of lessons per page or 0.
  */
 function learndash_get_course_lessons_per_page( $course_id = 0 ) {
 	$course_lessons_per_page = 0;
@@ -2601,12 +2950,12 @@ function learndash_get_course_lessons_per_page( $course_id = 0 ) {
 
 
 /**
- * When Course Lessons pagnination is enabled we want to advance the page to the next avaailable lesson page.
+ * Redirects users to the next available lesson page when course lesson pagination is enabled.
  *
- * For example we have a course with 100 lessons and the course has per page set to 10. The student can completed 
+ * For example, we have a course with 100 lessons and the course has per page set to 10. The student can complete
  * up to lesson 73. When the student returns to the course we don't want to default to show the first page 
- * (lessons 1-10). Instead we want to redirect the user to page 7 showing lessons 71-80. 
- * 
+ * (lessons 1-10). Instead, we want to redirect the user to page 7 showing lessons 71-80.
+ *
  * @since 2.5.4
  */
 function learndash_course_set_lessons_start_page( ) {
@@ -2616,6 +2965,13 @@ function learndash_course_set_lessons_start_page( ) {
 		$queried_object = get_queried_object();
 		if ( ( is_a( $queried_object, 'WP_Post' ) ) && ( is_user_logged_in() ) && ( !isset( $_GET['ld-lesson-page'] ) ) ) {
 			if ( $queried_object->post_type == 'sfwd-courses' ) {
+				/**
+				 * Filters whether to redirect the user to the next available lesson page in the course.
+				 *
+				 * @param boolean $advance_progress Whether to redirect user to next available lesson page.
+				 * @param int     $post_id          Queried object post ID.
+				 * @param int     $user_id          User ID.
+				 */
 				if ( apply_filters( 'learndash_course_lessons_advance_progress_page', true, $queried_object->ID, get_current_user_id() ) ) {
 					$course_lessons_per_page = learndash_get_course_lessons_per_page( $queried_object->ID );
 					if ( $course_lessons_per_page > 0 ) {
@@ -2644,6 +3000,16 @@ function learndash_course_set_lessons_start_page( ) {
 $course_pager_results = array( 'pager' => array( ) );
 global $course_pager_results;
 
+/**
+ * Handles the course lessons list pager.
+ *
+ * Fires on `learndash_course_lessons_list_pager` hook.
+ *
+ * @global array $course_pager_results
+ *
+ * @param WP_Query|null $query_result  Optional. Course lesson list `WP_Query` object. Default null.
+ * @param string        $pager_context Optional. The context where pagination is shown. Default empty.
+ */
 function learndash_course_lessons_list_pager( $query_result = null, $pager_context = '' ) {
 	global $course_pager_results;
 
@@ -2658,7 +3024,9 @@ function learndash_course_lessons_list_pager( $query_result = null, $pager_conte
 add_action( 'learndash_course_lessons_list_pager', 'learndash_course_lessons_list_pager', 10, 2 );
 
 /**
- * Determine pager settings based on _GET vars
+ * Gets the lesson topic pagination values from HTTP get global array.
+ *
+ * @return array An array of lesson topic pagination values.
  */
 function learndash_get_lesson_topic_paged_values() {
 	$paged_values = array(
@@ -2683,6 +3051,21 @@ function learndash_get_lesson_topic_paged_values() {
 	return $paged_values;
 }
 
+/**
+ * Processes the lesson topics pagination.
+ *
+ * @global array $course_pager_results
+ *
+ * @param array $topics Optional. An array of topics. Default empty array.
+ * @param array $args {
+ *    An array of lesson topic pager arguments. Default empty array.
+ *
+ *    @type int $course_id Course ID.
+ *    @type int $lesson_id Lesson ID.
+ * }
+ *
+ * @return array An array of paged topics.
+ */
 function learndash_process_lesson_topics_pager( $topics = array(), $args = array() ) {
 	global $course_pager_results;
 
@@ -2696,7 +3079,8 @@ function learndash_process_lesson_topics_pager( $topics = array(), $args = array
 			$course_pager_results[ $args['lesson_id'] ] = array();
 			$course_pager_results[ $args['lesson_id'] ]['pager'] = array();
 
-			$topics_paged = 1;									
+			$topics_paged = 1;
+
 			if ( ( ! empty($paged_values['lesson'] ) ) && ( $paged_values['lesson'] == $args['lesson_id'] ) ) {
 				$topics_paged = $paged_values['paged'];
 			} else if ( get_post_type() === learndash_get_post_type_slug( 'topic' ) ) {
@@ -2709,6 +3093,29 @@ function learndash_process_lesson_topics_pager( $topics = array(), $args = array
 					if ( ( ! empty( $topics_ids ) ) && ( in_array( get_the_ID(), $topics_ids ) ) ) {
 						$topics_paged = ++$topics_chunk_page;
 						break;
+					}
+				}
+			} else if ( get_post_type() === learndash_get_post_type_slug( 'quiz' ) ) {
+				$parent_step_ids = learndash_course_get_all_parent_step_ids( $args['course_id'], get_the_ID() );
+				if ( ! empty( $parent_step_ids ) ) {
+					$parent_step_ids = array_map( 'absint', $parent_step_ids );
+					$parent_step_ids = array_reverse( $parent_step_ids );
+					
+					if ( get_post_type( $parent_step_ids[0] ) === learndash_get_post_type_slug( 'topic' ) ) {
+						// If the Quiz has a Topic parent we loop through the topic chunks to find the parent.
+						foreach( $topics_chunks as $topics_chunk_page => $topics_chunk_set ) {
+							$topics_ids = array_values( wp_list_pluck( $topics_chunk_set, 'ID' ) );
+							if ( ( ! empty( $topics_ids ) ) && ( in_array( $parent_step_ids[0], $topics_ids ) ) ) {
+								$topics_paged = ++$topics_chunk_page;
+								break;
+							}
+						}
+					} elseif ( get_post_type( $parent_step_ids[0] ) === learndash_get_post_type_slug( 'lesson' ) ) {
+						/**
+						 * If the Quiz has a LEsson parent we just set the last Topic chunk set because
+						 * Lesson Quizzes are shown at the end.
+						 */
+						$topics_paged = count( $topics_chunks );
 					}
 				}
 			}
@@ -2726,15 +3133,17 @@ function learndash_process_lesson_topics_pager( $topics = array(), $args = array
 }
 
 /**
- * Utility function to get the Course Lessons order. 
- * The course lessons order can be set in the course or globally defined in 
- * the lesson options. This function will check all logic and return the 
+ * Gets the course lessons order query arguments.
+ *
+ * The course lessons order can be set in the course or globally defined in
+ * the lesson options. This function will check all logic and return the
  * correct setting.
  *
- * @param $course_id int the course_id to get the per_page value from
- * @return $course_lessons_order int will be the calculated lessons per page or zero
- *
  * @since 2.5.4
+ *
+ * @param int $course_id Optional. The ID of the course. Default 0.
+ *
+ * @return array An array of course lessons order query arguments.
  */
 function learndash_get_course_lessons_order( $course_id = 0 ) {
 	$course_lessons_args = array( 'order' => '', 'orderby' => '' );
@@ -2761,19 +3170,28 @@ function learndash_get_course_lessons_order( $course_id = 0 ) {
 			$course_lessons_args['orderby'] = $course_settings['course_lesson_orderby'];
 	}	
 	
+	/**
+	 * Filters course lessons order query arguments.
+	 *
+	 * @param array $course_lesson_args An arry of course lesson order arguments.
+	 * @param int   $course_id          Course ID.
+	 */
 	return apply_filters( 'learndash_course_lessons_order', $course_lessons_args, $course_id );
 }
 
 /**
- * Utility function to convert the standard comma separated list of user IDs
+ * Converts and gets the course access list.
+ *
+ * The function converts the standard comma-separated list of user IDs
  * used for the course_access_list field. The conversion is to trim and ensure
- * the values are integer and not empty. 
- * 
+ * the values are integer and not empty.
+ *
  * @since 2.5.9
- * @param string $course_access_list_str String of comma separated user IDs. 
- * @param boolean $return_array True/False bool to return string or array. 
- * 
- * @return string $course_access_list_str
+ *
+ * @param string  $course_access_list Optional. String of comma separated user IDs. Default empty.
+ * @param boolean $return_array       Optional. Whether to return array. True to return array and false to return string. Default false.
+ *
+ * @return string|array The list of user IDs.
  */
 function learndash_convert_course_access_list( $course_access_list = '', $return_array = false ) {
 	if ( ! empty( $course_access_list ) ) {
@@ -2785,7 +3203,7 @@ function learndash_convert_course_access_list( $course_access_list = '', $return
 
 		// Now normalize the array elements.
 		if ( is_array( $course_access_list ) ) {
-			$course_access_list = array_map( 'intval', $course_access_list );
+			$course_access_list = array_map( 'absint', $course_access_list );
 			$course_access_list = array_unique( $course_access_list, SORT_NUMERIC );
 			$course_access_list = array_diff( $course_access_list, array( 0 ) );
 		}
@@ -2802,11 +3220,14 @@ function learndash_convert_course_access_list( $course_access_list = '', $return
 }
 
 /**
- * Utility function to determine the number of lesson topics to display per page.
- * 
- * @since 3.0
- * @param integer $course_id Parent Course ID.
- * @param integer $lesson_id Parent Lesson ID.
+ * Determines the number of lesson topics to display per page.
+ *
+ * @since 3.0.0
+ *
+ * @param int $course_id Optional. Parent Course ID. Default 0.
+ * @param int $lesson_id Optional. Parent Lesson ID. Default 0.
+ *
+ * @return int The number of lesson topics per page.
  */
 function learndash_get_course_topics_per_page( $course_id = 0, $lesson_id = 0 ) {
 	$course_topics_per_page = 0;
@@ -2828,10 +3249,11 @@ function learndash_get_course_topics_per_page( $course_id = 0, $lesson_id = 0 ) 
 }
 
 /**
- * Transition the Course steps logic from using Shared Steps to legacy.
+ * Transitions the course steps logic from using shared steps to legacy.
  *
- * @since 3.0
- * @param integer $course_id Course ID to process.
+ * @since 3.0.0
+ *
+ * @param int $course_id Optional. Course ID to process. Default 0.
  */
 function learndash_transition_course_shared_steps( $course_id = 0 ) {
 	if ( ! empty( $course_id ) ) {
@@ -2847,6 +3269,11 @@ function learndash_transition_course_shared_steps( $course_id = 0 ) {
 	}
 }
 
+/**
+ * Checks whether to use the legacy course access list.
+ *
+ * @return boolean Returns true to use legacy course access list otherwise false.
+ */
 function learndash_use_legacy_course_access_list() {
 	$use_legacy_course_access_list = true;
 
@@ -2855,15 +3282,24 @@ function learndash_use_legacy_course_access_list() {
 		$use_legacy_course_access_list = false;
 
 	}
+	/**
+	 * Filters whether to use legacy course access list or not.
+	 *
+	 * @param boolean $use_legacy_course_access_list Whether to use legacy course access list.
+	 */
 	return apply_filters( 'learndash_use_legacy_course_access_list', $use_legacy_course_access_list );
 }
 
 /**
- * Get the user's last active (last updated) course_id
+ * Gets the user's last active (last updated) course ID.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @since 2.1.3
- * @param interger $user_id User ID.
- * @return integer Course ID.
+ *
+ * @param int $user_id Optional. User ID. Default 0.
+ *
+ * @return int The last active course ID.
  */
 function learndash_get_last_active_course( $user_id = 0 ) {
 	global $wpdb;
@@ -2893,12 +3329,14 @@ function learndash_get_last_active_course( $user_id = 0 ) {
 
 
 /**
- * Get the user's last active step within a course_id
+ * Gets the user's last active step for a course.
  *
  * @since 2.1.3
- * @param interger $user_id User ID.
- * @param interger $course_id Course ID.
- * @return integer Course Step ID.
+ *
+ * @param int $user_id   Optional. User ID. Default 0.
+ * @param int $course_id Optional. Course ID. Default 0.
+ *
+ * @return int The last active course step ID.
  */
 function learndash_user_course_last_step( $user_id = 0, $course_id = 0 ) {
 	global $wpdb;
@@ -2931,4 +3369,65 @@ function learndash_user_course_last_step( $user_id = 0, $course_id = 0 ) {
 	}
 
 	return $last_course_step_id;
+}
+
+
+/**
+ * Check if user can bypass action ($context).
+ *
+ * @since 3.1.7
+ *
+ * @param int    $user_id User ID.
+ * @param string $context The specific action to check for.
+ * @param array  $args Optional array of args related to the 
+ * context. Typically starting with an step ID, Course ID, etc.
+ * @return bool True if user can bypass. Otherwise fale.
+ */
+function learndash_can_user_bypass( $user_id = 0, $context = 'learndash_course_progression', $args = array() ) {
+	if ( empty( $user_id ) ) {
+		if ( is_user_logged_in() ) {
+			$user_id = get_current_user_id();
+		}
+	}
+
+	$can_bypass = false;
+	if ( ! empty( $user_id ) ) {
+		if ( ( learndash_is_admin_user( $user_id ) ) && ( LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_General_Admin_User', 'bypass_course_limits_admin_users' ) ) ) {
+			$can_bypass = true;
+		} elseif ( ( learndash_is_group_leader_user( $user_id ) ) && ( LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Section_Groups_Group_Leader_User', 'bypass_course_limits' ) ) ) {
+			$can_bypass = true;
+		}
+	}
+
+	/**
+	 * Filters user can bypass logic.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param boolean $can_bypass Whether the user can bypass $context.
+	 * @param int     $user_id    User ID.
+	 * @param string  $context The specific action to check for.
+	 * @param array  $args Optional array of args related to the 
+ 	 * context. Typically starting with an step ID, Course ID, etc.
+	 */
+	$can_bypass = apply_filters( 'learndash_user_can_bypass', $can_bypass, $user_id, $context, $args );
+	
+	return $can_bypass;
+}
+
+/**
+ * Checks if the user has access to a course.
+ *
+ * @todo  duplicate function, exists in other places
+ *        check it's use and consolidate
+ *
+ * @since 2.1.0
+ *
+ * @param int      $course_id Course ID.
+ * @param int|null $user_id   Optional. User ID. Default null.
+ *
+ * @return boolean Returns true if the user has access otherwise false.
+ */
+function ld_course_check_user_access( $course_id, $user_id = null ) {
+	return sfwd_lms_has_access( $course_id, $user_id );
 }

@@ -9,11 +9,16 @@
 
 namespace LearnDash\Admin\Columns;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Remove specific columns.
+ * Removes specific admin columns.
  *
  * @param array $columns The columns to be rendered.
- * @return array
+ *
+ * @return array An array of posts listing columns.
  */
 function remove_columns( $columns ) {
 	unset( $columns['categories'] );
@@ -29,11 +34,12 @@ add_filter( 'manage_sfwd-quiz_posts_columns' , 'LearnDash\Admin\Columns\remove_c
 add_filter( 'manage_sfwd-question_posts_columns' , 'LearnDash\Admin\Columns\remove_columns' );
 
 /**
- * Disable Category Filters at Posts Listing.
+ * Disables the category filters for post listings.
  *
  * @param bool   $disable   Flag to disable/enable the filter.
- * @param string $post_type The post type.
- * @return bool
+ * @param string $post_type The post type slug.
+ *
+ * @return boolean Returns true to disable category filter otherwise false.
  */
 function disable_categories_filters( $disable, $post_type ) {
 	$post_types = array(
@@ -53,10 +59,11 @@ function disable_categories_filters( $disable, $post_type ) {
 //add_filter( 'disable_categories_dropdown', 'LearnDash\Admin\Columns\disable_categories_filters', 10, 2 );
 
 /**
- * Disable Tags Filter at Posts Listing.
+ * Disables the tags filters for post listings.
  *
  * @param array  $taxonomies The taxonomies.
- * @param string $post_type  The post type.
+ * @param string $post_type  The post type slug.
+ *
  * @return array
  */
 function disable_tags_filters( $taxonomies, $post_type ) {

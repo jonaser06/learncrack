@@ -6,6 +6,10 @@
  * @subpackage Settings
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'LearnDash_Settings_Questions_Management_Display' ) ) ) {
 	/**
 	 * Class to create the settings section.
@@ -63,17 +67,22 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 			);
 
 			if ( ( is_admin() ) && ( isset( $_GET['page'] ) ) && ( 'questions-options' === $_GET['page'] ) ) {
-				$template_mapper = new WpProQuiz_Model_TemplateMapper();
-				$quiz_templates  = $template_mapper->fetchAll( WpProQuiz_Model_Template::TEMPLATE_TYPE_QUESTION, false );
-				if ( ( ! empty( $quiz_templates ) ) && ( is_array( $quiz_templates ) ) ) {
-					foreach ( $quiz_templates as $template_quiz ) {
-						$template_name = $template_quiz->getName();
-						$template_id   = $template_quiz->getTemplateId();
+				$template_mapper    = new WpProQuiz_Model_TemplateMapper();
+				$question_templates = $template_mapper->fetchAll( WpProQuiz_Model_Template::TEMPLATE_TYPE_QUESTION, false );
+				if ( ( ! empty( $question_templates ) ) && ( is_array( $question_templates ) ) ) {
+					$_templates = array();
+					foreach ( $question_templates as $template_question ) {
+						$template_name = $template_question->getName();
+						$template_id   = $template_question->getTemplateId();
 
-						if ( ! empty( $template_name ) ) {
-							$this->setting_option_values['question_templates'][ $template_id ] = esc_html( $template_name );
+						if ( ( ! empty( $template_name ) ) && ( ! isset( $_templates[ $template_id ] ) ) ) {
+							$_templates[ $template_id ] = esc_html( $template_name );
 						}
 					}
+
+					asort( $_templates );
+
+					$this->setting_option_values['question_templates'] += $_templates;
 				}
 			}
 		}
@@ -105,6 +114,7 @@ if ( ( class_exists( 'LearnDash_Settings_Section' ) ) && ( ! class_exists( 'Lear
 				),
 			);
 
+			/** This filter is documented in includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php */
 			$this->setting_option_fields = apply_filters( 'learndash_settings_fields', $this->setting_option_fields, $this->settings_section_key );
 
 			parent::load_settings_fields();
