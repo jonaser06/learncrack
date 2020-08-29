@@ -871,3 +871,6 @@ hide
  .learndash-wrapper .ld-course-status-not-enrolled, .learndash-wrapper .ld-item-list{
 	display:none !important;
 }
+ .learndash-wrapper .ld-tabs{
+	margin:0px !important;
+}
