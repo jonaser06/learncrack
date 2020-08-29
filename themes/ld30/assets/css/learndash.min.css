@@ -869,5 +869,5 @@ hide
  */
 
  .learndash-wrapper .ld-course-status-not-enrolled, .learndash-wrapper .ld-lesson-lis{
-	display:none;
+	display:none !important;
 }
