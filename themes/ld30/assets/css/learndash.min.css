@@ -862,3 +862,12 @@ body.ld-in-focus-mode.admin-bar{padding-top:0}body.ld-in-focus-mode.admin-bar .l
 .learndash-wrapper .ld-login-modal{width:100%}}@-webkit-keyframes ldrotating{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}
 }@keyframes ldrotating{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}
 }
+
+/*
+LearnDash
+hide
+ */
+
+ .learndash-wrapper .ld-course-status-not-enrolled, .learndash-wrapper .ld-lesson-lis{
+	display:none;
+}
