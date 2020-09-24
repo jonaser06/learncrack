@@ -430,7 +430,7 @@ function learndash_payment_buttons( $post ) {
 				$post_button_url = get_home_url( null, $post_button_url );
 			}
 			// $post_button = '<a class="btn-join" href="' . esc_url( $post_button_url ) . '" id="btn-join">' . $button_text . '</a>';
-			$post_button = '<a class="btn-join" href="' . esc_url( $post_button_url ) . '" id="btn-join" style="background: #F25116 !important;">Registrarse</a>';
+			$post_button = '<a class="btn-join" href="' . esc_url( $post_button_url ) . '" id="btn-join" style="background: #84BFB9 !important;">Registrarse</a>';
 		}
 
 		$payment_params = array(
