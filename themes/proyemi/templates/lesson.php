@@ -78,9 +78,9 @@ add_shortcode('comments_wp','get_comentarios');
             controls
             preload="auto"
             poster="MY_VIDEO_POSTER.jpg"
-            data-setup='{"fluid": true , "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=xjS6SftYQaQ"}] }'
+            data-setup='{"fluid": true }'
         >
-        
+        <source src="https://www.dropbox.com/s/o2hno2zuvrigy04/video_1.mp4?dl=1" type='video/mp4'>
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
