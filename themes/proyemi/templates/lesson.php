@@ -56,7 +56,7 @@ add_shortcode('comments_wp','get_comentarios');
                 </div>
                 <div class="pad3">
                     <?php echo do_shortcode( '[comments_wp]' ); ?>
-                    <form action="http://localhost/learndash/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate="">
+                    <form action="https://proyemi.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate="">
                         <div class="comment-textarea">
                             <label for="comment" class="screen-reader-text">Comentario</label>
                             <textarea name="comment" id="comment" cols="39" rows="4" tabindex="0" class="textarea-comment" placeholder="Tu comentario aquí..."></textarea>
