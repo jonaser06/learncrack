@@ -77,12 +77,10 @@ add_shortcode('comments_wp','get_comentarios');
             class="video-js"
             controls
             preload="auto"
-            width="640"
-            height="364"
             poster="MY_VIDEO_POSTER.jpg"
-            data-setup="{}"
+            data-setup='{"fluid": true}'
         >
-        <source src="https://drive.google.com/u/0/uc?export=download&confirm=dHNf&id=1pKwraLEfxQOZLlMQ2HYm7hspSYiefJTz" type='video/mp4'>
+        <source src="https://drive.google.com/u/0/uc?export=download&confirm=-SLN&id=1pKwraLEfxQOZLlMQ2HYm7hspSYiefJTz" type='video/mp4'>
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
