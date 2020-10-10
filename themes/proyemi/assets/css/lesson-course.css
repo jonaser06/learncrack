@@ -7,6 +7,9 @@ html{
     max-width: 90%;
     margin: 0 auto;
 }
+.video-js.vjs-fluid, .video-js.vjs-16-9, .video-js.vjs-4-3{
+    height: 100%;
+}
 .content-area{
     width: 100%;
     padding: 0px !important;
