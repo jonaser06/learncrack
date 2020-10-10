@@ -1,0 +1,189 @@
+/* reset */
+html{
+    
+}
+.content-area{
+    width: 100%;
+    padding: 0px !important;
+}
+#main #content-wrap{
+    padding: 0px !important;
+}
+.post-tags, .comments-area{
+    display: none;
+}
+
+.entry-content, .post-tags{
+    margin: 0px !important;
+}
+.container{
+    margin: 0px;
+    width: 100%;
+    max-width: 100%;
+}
+#site-header{
+    border: 0px;
+}
+.thumbnail, #footer{
+    display: none;
+}
+/* fin reset */
+.course-container{
+    width: 100%;
+    display: flex;
+    height: 100%;
+}
+.content-course-leeson{
+    width: 340px;
+    height: calc(100vh - 100px );
+    padding: 10px;
+}
+.content-course-player{
+    width: calc( 100% - 340px);
+    height: 100px;
+}
+/* taps */
+.tabs{
+    width: 100%;
+    height: calc( 100vh - 120px );
+    overflow: hidden;
+}
+.tabs .tab-header{
+    display: flex;
+    height: 50px;
+}
+.tabs .tab-header > div{
+    position: relative;
+    width: calc(100% / 3);
+    height: 100%;
+    text-align: center;
+    line-height: 50px;
+    font-weight: 600;
+    color: #f5f5f5;
+    cursor: pointer;
+    z-index: 2;
+    background: #84BFB9;
+}
+.tabs .tab-header > div:before{
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 0%;
+    background: #ffffff;
+    z-index: -1;
+}
+.tabs .tab-header > div:hover:before{
+    transition: all 300ms ease-in-out;
+    height: 5%;
+}
+.tabs .tab-header > div.active{
+    color: #333333;
+}
+.tabs .tab-header > div.active:before{
+    transition: all 300ms ease-in-out;
+    height: 100%;
+}
+.tabs .tab-content{
+    position: relative;
+    background: #ffffff;
+    color: #333333;
+    height: 100%;
+}
+.tabs .tab-content > div {
+    position: absolute;
+    transform: scale(0.5);
+    opacity: 0;
+    top: 200%;
+    padding: 20px 0;
+    transition: all 300ms ease-in-out;
+    color: #333333;
+    width: 100%;
+}
+.tabs .tab-content > div.active {
+    transform: scale(1);
+    opacity: 1;
+    top: 0%;
+    z-index: 9;
+    height: calc( 100% - 50px );
+}
+.pad1 p{
+    border-bottom: 1px solid #F2E6D0;
+    margin: 0;
+}
+.pad1 p a{
+    display: block;
+    padding: 10px 20px;
+}
+.pad1 p:first-child{
+    border-top: 1px solid #F2E6D0;
+}
+/* comentarios */
+.comentarios_total{
+    width: 100%;
+}
+.comentario_contenido{
+    padding: 5px;
+}
+.comentario{
+    border-bottom: 1px solid #F2E6D0;
+    margin: 0;
+    display: flex;
+}
+.comentario:first-child{
+    border-top: 1px solid #F2E6D0;
+}
+.autor_avatar{
+    width: 30%;
+    padding: 15px;  
+}
+.autor_avatar img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.autor_coment{
+    width: 70%;
+    padding-top: 10px;
+}
+.autor_meta{
+    width: 100%;
+    display: flex;
+}
+.commentario_autor{
+    width: 35%;
+    font-weight: 700;
+}
+.date_autor{
+    width: 65%;
+}
+.textarea-comment{
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid #333333;
+    height: 50px;
+    resize: none;
+    margin-top: 20px;
+    min-height: auto;
+}
+.form-submit{
+    text-align: right;
+    margin-top: 10px;
+}
+#comment-submit{
+    border-radius: 8px;
+}
+@media (max-width: 768px){
+    .course-container{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .content-course-player{
+        width: 100%;
+    }
+    .content-course-leeson{
+        width: 100%;
+        height: calc( 100vh * 0.6 );
+    }
+}
