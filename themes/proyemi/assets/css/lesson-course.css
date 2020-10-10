@@ -183,6 +183,8 @@ html{
         width: 100%;
     }
     .content-course-leeson{
+        position: relative;
+        top: 25px;
         width: 100%;
         height: calc( 100vh * 0.6 );
     }
