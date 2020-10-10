@@ -120,7 +120,7 @@
                 <?php foreach($lessons as $lesson) : ?>
                 <div class='post-<?php echo esc_attr( $lesson['post']->ID ); ?> <?php echo esc_attr( $lesson['sample'] ); ?>'>
                     <div class="list-count">
-                        <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['sno'].' - '.$lesson['post']->post_title; ?></a></p>
+                        <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
