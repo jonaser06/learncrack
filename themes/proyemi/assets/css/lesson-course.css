@@ -178,11 +178,15 @@ html{
 .form-submit{
     text-align: right;
     margin-top: 10px;
+    margin-bottom: 0px;
 }
 #comment-submit{
     border-radius: 8px;
 }
 @media (max-width: 768px){
+    .tabs{
+        height: inherit;
+    }
     .course-container{
         display: flex;
         flex-direction: column-reverse;
@@ -194,6 +198,11 @@ html{
         position: relative;
         top: 25px;
         width: 100%;
-        height: calc( 100vh * 0.6 );
+        height: 400px;
+    }
+    .tabs .tab-content > div{
+        height: 330px !important;
+        overflow-y: scroll;
+        padding-bottom: 0px;
     }
 }

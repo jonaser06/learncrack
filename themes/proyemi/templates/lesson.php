@@ -1,7 +1,20 @@
 <?php
+/* 
+* duracion tag [ videopro id="5"]
+**/
+
+add_shortcode('videopro', 'videopro');
+
+function videopro($atts = array()) { return $atts['id']; }
+
+preg_match('/\[.*\]/',get_post_field('post_content', $post->ID, 'edit'), $match );
+
+$match = explode(',',$match[0]);
+
+$videopro = $match[0];
+
 
 function get_comentarios($atts){
-	//$args = array('post_id' => $atts['id']);
 	$args = array('post_id' => get_the_ID());
     $comments = get_comments( $args );
 	$comentario = '<div class="comentarios_total">';
@@ -80,7 +93,7 @@ add_shortcode('comments_wp','get_comentarios');
             poster="MY_VIDEO_POSTER.jpg"
             data-setup='{"fluid": true }'
         >
-        <source src="https://www.dropbox.com/s/o2hno2zuvrigy04/video_1.mp4?dl=1" type='video/mp4'>
+        <source src="<?php echo do_shortcode($videopro); ?>" type='video/mp4'>
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
