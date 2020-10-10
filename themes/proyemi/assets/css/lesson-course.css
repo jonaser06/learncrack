@@ -3,8 +3,9 @@ html{
     
 }
 #site-header-inner{
-    position: relative;
-    height: 100%;
+    width: 1200px;
+    max-width: 90%;
+    margin: 0 auto;
 }
 .content-area{
     width: 100%;
