@@ -1,13 +1,6 @@
 <?php
 
-function get_comentarios($atts){
-	
-	
-	return 'hola';
-}
 
-
-add_shortcode('comments_wp','get_comentarios');
 
 ?>
 <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
