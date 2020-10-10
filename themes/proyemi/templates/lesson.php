@@ -80,7 +80,7 @@ add_shortcode('comments_wp','get_comentarios');
             poster="MY_VIDEO_POSTER.jpg"
             data-setup='{"fluid": true , "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=xjS6SftYQaQ"}] }'
         >
-        <source src="https://drive.google.com/u/0/uc?export=download&confirm=-SLN&id=1pKwraLEfxQOZLlMQ2HYm7hspSYiefJTz" type='video/mp4'>
+        
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a
             web browser that
