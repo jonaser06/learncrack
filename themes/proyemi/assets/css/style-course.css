@@ -4,6 +4,11 @@
     width: 100%;
     max-width: 100%;
 }
+#site-header-inner{
+    width: 1200px;
+    max-width: 90%;
+    margin: 0 auto;
+}
 .content-area{
     width: 100%;
 }
