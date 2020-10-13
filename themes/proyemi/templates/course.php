@@ -54,6 +54,7 @@
     </div>
     <div class="course-position-container">
         <div class="top-container">
+            <!-- <?php the_title(); ?> -->
             <h1>Sellos Artesanales</h1>
             <div class="course-description">
                 <p>Creado por: <?php the_author_meta( 'user_nicename' , $author_id ); ?></p>
