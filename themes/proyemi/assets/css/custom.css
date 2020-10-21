@@ -2,3 +2,81 @@
 #learndash_profile .profile_info .profile_avatar img {
     border-radius: 50%; 
 }
+
+.page-header{display:none;}
+.single-post-title{display:none;}
+.btn-join{
+width: 100%;
+background: #84bfb9 !important;
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+	border-radius: 0px;
+	height: 4px;
+	width: 35px;
+}
+.hamburger-inner::before {
+    top: -11px;
+}
+.hamburger-inner::after {
+    bottom: -11px;
+}
+.hamburger-inner{
+	margin-left: 13px;
+}
+.hamburger--3dx.is-active .hamburger-inner::after{
+	    -webkit-transform: translate3d(0, -11px, 0) rotate(-45deg);
+    transform: translate3d(0, -11px, 0) rotate(-45deg);
+}
+.hamburger--3dx.is-active .hamburger-inner::before{
+	    -webkit-transform: translate3d(0, 11px, 0) rotate(45deg);
+    transform: translate3d(0, 11px, 0) rotate(45deg);
+}
+#sidr {
+	width: 280px;
+	background-color: #84BFB9;
+	    box-shadow: -2px 0px 4px -2px rgba(0,0,0,0.75);
+	-webkit-box-shadow: -2px 0px 4px -2px rgba(0,0,0,0.75);
+-moz-box-shadow: -2px 0px 4px -2px rgba(0,0,0,0.75);
+}
+.icon-basket:before {
+	position: relative;
+	top: 10px;
+	margin-top:20px;
+	font-size:3.5rem;
+	color:#fff;
+}
+.sidr-class-dropdown-menu li a, .sidr-class-fs-dropdown-menu li a{
+	padding: 12px 40px;
+	font-size: 2.5rem;
+	color: #fff !important;
+}
+.sidr-class-dropdown-toggle {
+	color: #fff;
+}
+
+#footer-widgets .widget_nav_menu li:first-child {
+	border-top: none;
+}
+
+.site-footer .widget_nav_menu li{
+	border-bottom: none;
+	font-size: 1.5rem;
+  font-weight: 700;
+}
+.site-footer .widget_nav_menu li a{
+	color:#333333 !important;
+}
+.site-footer .widget_nav_menu li::after{
+	position: absolute;
+	content:'';
+	right: 30px;
+	width: 20px;
+  height: 20px;
+	background-image: 
+        url('https://proyemi.com/wp-content/uploads/2020/09/vineta.svg');background-repeat: no-repeat;
+}
+
+.footer-widgets-inner .footer-box{
+	margin-bottom: 0px !important;
+}
