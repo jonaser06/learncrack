@@ -1,4 +1,7 @@
 /* reset */
+.list-count, .widget .list-count {
+    display: block;
+}
 .container{
     margin: 0px;
     width: 100%;
