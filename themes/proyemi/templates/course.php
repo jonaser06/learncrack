@@ -23,7 +23,7 @@
     /* boton de continuar */
     $lesson_back = $lessons;
     $url = array_shift($lesson_back); 
-    $boton = '<a  href="'.$url['permalink'].'" style="background:#F25116;color:#fff;text-align:center;display:block;height:45px;line-height:45px;" >VER CURSO</a>';
+    $boton = '<a  href="'.$url['permalink'].'" style="border-radius: 4px;background:#F25116;color:#fff;text-align:center;display:block;height:45px;line-height:45px;" >VER CURSO</a>';
     /* url actual */
     $current_url="http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     /* Imagen del curso */
@@ -41,9 +41,15 @@
         <img src="<?php echo $img;?>" style="width:100%;height:100%;">
     </div>
     <div class="course-action-dsk">
-        <?php echo do_shortcode('[student course_id="228"]'.$boton.'[/student]'); ?>
-        <?php echo do_shortcode('[learndash_payment_buttons course_id="228"]'); ?>
-        <a class="btn-join" href="https://www.facebook.com/sharer.php?u=<?php echo $current_url; ?>" style="margin-top: 20px;background: #84BFB9 !important;" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Compartir</a>
+        <?php echo do_shortcode('[student course_id="'.$post->ID.'"]'.$boton.'[/student]'); ?>
+        <?php echo do_shortcode('[learndash_payment_buttons course_id="'.$post->ID.'"]'); ?>
+        <?php echo do_shortcode('[student course_id="'.$post->ID.'"]<style>.compartir{margin-top: 0px !important;}</style>[/student]'); ?>
+        <a class="btn-join compartir" href="https://www.facebook.com/sharer.php?u=<?php echo $current_url; ?>" style="margin-top: 15px;background: #84BFB9 !important;" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Compartir</a>
+        <?php if(!is_user_logged_in()) :?>
+        <div class="already">
+            Ya tienes una cuenta? <a href="https://proyemi.com/sign-in/">Inicia Sesión</a>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 <div class="course-container">
@@ -85,9 +91,14 @@
                 </p>
             </div>
             <div class="course-action">
-                <?php echo do_shortcode('[student course_id="228"]'.$boton.'[/student]'); ?>
-                <?php echo do_shortcode('[learndash_payment_buttons course_id="228"]'); ?>
+                <?php echo do_shortcode('[student course_id="'.$post->ID.'"]'.$boton.'[/student]'); ?>
+                <?php echo do_shortcode('[learndash_payment_buttons course_id="'.$post->ID.'"]'); ?>
                 <a class="btn-join" href="https://www.facebook.com/sharer.php?u=<?php echo $current_url; ?>" style="margin-top: 20px;background: #84BFB9 !important;" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Compartir</a>
+                <?php if(!is_user_logged_in()) :?>
+                <div class="already">
+                    Ya tienes una cuenta? <a href="https://proyemi.com/sign-in/">Inicia Sesión</a>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

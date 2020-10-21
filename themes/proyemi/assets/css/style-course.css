@@ -21,6 +21,10 @@
     padding-right: 0px;
     border-left-width: 0px;
 }
+.already{
+    margin: 5px;
+    text-align: center;
+}
 .entry-content, .post-tags{
     margin: 0px !important;
 }
@@ -166,6 +170,7 @@
     }
     .course-description{
         text-align: left;
+        margin-bottom: 10px;
     }
     .course-body-left{
         width: 100%;
