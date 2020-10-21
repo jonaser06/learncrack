@@ -2,7 +2,9 @@
 #learndash_profile .profile_info .profile_avatar img {
     border-radius: 50%; 
 }
-
+.minimal-header{
+    border: 0px;
+}
 .page-header{display:none;}
 .single-post-title{display:none;}
 .btn-join{
