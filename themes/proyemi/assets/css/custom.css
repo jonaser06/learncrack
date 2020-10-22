@@ -82,3 +82,25 @@ background: #84bfb9 !important;
 .footer-widgets-inner .footer-box{
 	margin-bottom: 0px !important;
 }
+/* my account */
+#learndash_lessons .right, #learndash_profile .learndash_profile_heading .ld_profile_status, #learndash_quizzes .right {
+    width: 60px;
+}
+.learndash-course-points{
+    display: none;
+}
+#learndash_profile .profile_info .profile_avatar {
+    border: 0;
+    display: inline-block;
+    width: 108px;
+}
+#learndash_profile .profile_info {
+    text-align: center;
+    padding: 15px;
+    overflow: hidden;
+}
+#learndash_profile .learndash_profile_details {
+    float: none;
+    margin: auto;
+    width: 330px;
+}

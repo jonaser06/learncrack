@@ -75,7 +75,8 @@
 	<div class="learndash_profile_heading no_radius clear_both">
 		<span class="ld_profile_course"><?php
 		// translators: placeholder: Courses.
-		printf( esc_html_x( 'Registered %s', 'placeholder: Courses', 'learndash' ), LearnDash_Custom_Label::get_label( 'courses' ) ); ?></span>
+		// printf( esc_html_x( 'Registered %s', 'placeholder: Courses', 'learndash' ), LearnDash_Custom_Label::get_label( 'courses' ) ); 
+		?>Cursos Matriculados</span>
 		<span class="ld_profile_status"><?php esc_html_e( 'Status', 'learndash' ); ?></span>
 		<span class="ld_profile_certificate"><?php esc_html_e( 'Certificate', 'learndash' ); ?></span>
 	</div>
