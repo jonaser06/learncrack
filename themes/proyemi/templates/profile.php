@@ -68,6 +68,11 @@
 			<?php if ( ( isset( $shortcode_atts['course_points_user'] ) ) && ( $shortcode_atts['course_points_user'] == 'yes' ) ) { ?>
 				<?php echo do_shortcode('[ld_user_course_points user_id="'. $current_user->ID .'" context="ld_profile"]'); ?>
 			<?php } ?>
+			<a href="<?php echo get_site_url(null, '/my-account/'); ?>" class="my_courses">Mis Cursos</a>
+			<a href="<?php echo get_site_url(null, '/my-account/orders/'); ?>" class="my_pedidos">Mis Pedidos</a>
+			<a href="<?php echo get_site_url(null, '/my-account/downloads/'); ?>" class="my_orders">Mis Descargas</a>
+			<a href="<?php echo get_site_url(null, '/my-account/edit-account/'); ?>" class="my_account">Mi Cuenta</a>
+			<a href="<?php echo get_site_url(null, '/my-account/customer-logout/'); ?>" class="logout">Salir</a>
 		</div>
 	</div>
 	<?php } ?>
@@ -76,38 +81,46 @@
 		<span class="ld_profile_course"><?php
 		// translators: placeholder: Courses.
 		// printf( esc_html_x( 'Registered %s', 'placeholder: Courses', 'learndash' ), LearnDash_Custom_Label::get_label( 'courses' ) ); 
-		?>Cursos Matriculadosaaaa</span>
+		?>Cursos Matriculados</span>
 		<span class="ld_profile_status"><?php esc_html_e( 'Status', 'learndash' ); ?></span>
 		<span class="ld_profile_certificate"><?php esc_html_e( 'Certificate', 'learndash' ); ?></span>
 	</div>
 
 	<div id="course_list">
-
+		<?php 
+			$url = $_SERVER["REQUEST_URI"];
+			$url = explode('/', $url);
+			$url = $url[count($url) - 2];
+			if($url == 'orders' || $url == 'downloads' || $url == 'edit-address' || $url == 'edit-account'):
+				echo do_shortcode('[woocommerce_my_account]');
+			else:
+		?>
+		<!-- cursos -->
 		<?php if ( ! empty( $user_courses ) ) : ?>
 
 			<?php foreach ( $user_courses as $course_id ) : ?>
 				<?php
-                    $course = get_post( $course_id);
+					$course = get_post( $course_id);
 
-                    $course_link = get_permalink( $course_id );
+					$course_link = get_permalink( $course_id );
 
-                    $progress = learndash_course_progress( array(
-                        'user_id'   => $user_id,
-                        'course_id' => $course_id,
-                        'array'     => true
-                    ) );
+					$progress = learndash_course_progress( array(
+						'user_id'   => $user_id,
+						'course_id' => $course_id,
+						'array'     => true
+					) );
 
-                    $status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
+					$status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
 				?>
 				<div id='course-<?php echo esc_attr( $user_id ) . '-' . esc_attr( $course->ID ); ?>'>
 					<div class="list_arrow collapse flippable"  onClick='return flip_expand_collapse("#course-<?php echo esc_attr( $user_id ); ?>", <?php echo esc_attr( $course->ID ); ?>);'></div>
 
 
-                    <?php
-                    /**
-                     * @todo Remove h4 container.
-                     */
-                    ?>
+					<?php
+					/**
+					 * @todo Remove h4 container.
+					 */
+					?>
 					<h4>
 						<div class="learndash-course-link"><a href="<?php echo esc_url( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
 
@@ -164,9 +177,9 @@
 												$status = empty( $quiz_attempt['pass'] ) ? 'failed' : 'passed';
 											}
 
-										    $quiz_title = ! empty( $quiz_attempt['post']->post_title) ? $quiz_attempt['post']->post_title : @$quiz_attempt['quiz_title'];
+											$quiz_title = ! empty( $quiz_attempt['post']->post_title) ? $quiz_attempt['post']->post_title : @$quiz_attempt['quiz_title'];
 
-										    $quiz_link = ! empty( $quiz_attempt['post']->ID ) ? learndash_get_step_permalink( intval( $quiz_attempt['post']->ID ), $course_id ) : '#';
+											$quiz_link = ! empty( $quiz_attempt['post']->ID ) ? learndash_get_step_permalink( intval( $quiz_attempt['post']->ID ), $course_id ) : '#';
 										?>
 										<?php if ( ! empty( $quiz_title ) ) : ?>
 											<div class='<?php echo esc_attr( $status ); ?>'>
@@ -225,8 +238,8 @@
 					</h4>
 				</div>
 			<?php endforeach; ?>
+			<?php endif; ?>
 		<?php endif; ?>
-
 	</div>
 </div>
 <?php

@@ -117,10 +117,44 @@ background: #84bfb9 !important;
 }
 #learndash_profile .profile_info {
     width: 25%;
+    height: fit-content;
 }
 #learndash_lessons a, #learndash_quizzes a, .expand_collapse a, .learndash_topic_dots a, .learndash_topic_dots a>span, #learndash_lesson_topics_list span a, #learndash_profile a, #learndash_profile .profile_edit_profile a, #learndash_profile a span, #learndash_profile div, #learndash_profile .expand_collapse a {
     width: 75%;
 }
 .expand_collapse, .learndash_profile_heading, .learndash_profile_heading{
     display: none !important;
+}
+.woocommerce-MyAccount-tabs{
+    display: none !important;
+}
+.woocommerce-MyAccount-content{
+    width: 100% !important;
+}
+#course_list{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#learndash_lesson_topics_list>div, #learndash_lessons, #learndash_profile, #learndash_quizzes{
+    margin-top: 10px;
+    border: none;
+}
+.profile_edit_profile{
+    display: none;
+}
+.profile_info{
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+}
+#course_list>div>div, #lessons_list>div>div, #quiz_list>div>div, .single-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn, .singular-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn{
+    border: none;
+}
+.my_courses, .my_pedidos, .my_orders, .my_account, .logout{
+    display: block;
+    width: 100% !important;
+    background: #84BFB9;
+    margin: 20px 0px;
+    color: #fff !important;
+    padding: 5px;
+    border-radius: 5px;
 }
