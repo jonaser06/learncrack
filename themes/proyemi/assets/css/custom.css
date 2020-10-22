@@ -105,8 +105,9 @@ background: #84bfb9 !important;
     margin: auto;
     width: 100%;
 }
-.learndash_profile_details > div{
-    margin: 0;
+#learndash_profile .learndash_profile_details>div {
+    margin-top: 9px;
+    margin: 0 !important;
     width: 100%;
 }
 #learndash_profile {
