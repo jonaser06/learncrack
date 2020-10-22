@@ -108,3 +108,14 @@ background: #84bfb9 !important;
 #learndash_lessons .right, #learndash_profile .learndash_profile_heading .ld_profile_status, #learndash_quizzes .right {
     width: 60px;
 }
+#learndash_profile {
+    width: 90%;
+    display: flex;
+    margin: auto;
+}
+#learndash_profile .profile_info {
+    width: 25%;
+}
+#learndash_lessons a, #learndash_quizzes a, .expand_collapse a, .learndash_topic_dots a, .learndash_topic_dots a>span, #learndash_lesson_topics_list span a, #learndash_profile a, #learndash_profile .profile_edit_profile a, #learndash_profile a span, #learndash_profile div, #learndash_profile .expand_collapse a {
+    width: 75%;
+}
