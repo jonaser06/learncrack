@@ -109,9 +109,6 @@ background: #84bfb9 !important;
     margin: 0;
     width: 100%;
 }
-#learndash_lessons .right, #learndash_profile .learndash_profile_heading .ld_profile_status, #learndash_quizzes .right {
-    width: 60px;
-}
 #learndash_profile {
     width: 90%;
     display: flex;
@@ -124,5 +121,5 @@ background: #84bfb9 !important;
     width: 75%;
 }
 .expand_collapse, .learndash_profile_heading, .learndash_profile_heading{
-    display: none;
+    display: none !important;
 }
