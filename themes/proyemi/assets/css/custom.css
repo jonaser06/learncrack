@@ -104,3 +104,6 @@ background: #84bfb9 !important;
     margin: auto;
     width: 330px;
 }
+#learndash_lessons .right, #learndash_profile .learndash_profile_heading .ld_profile_status, #learndash_quizzes .right {
+    width: 60px;
+}
