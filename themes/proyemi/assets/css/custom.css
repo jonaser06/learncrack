@@ -108,7 +108,7 @@ background: #84bfb9 !important;
 #learndash_profile .learndash_profile_details>div {
     margin-top: 9px;
     margin: 0 !important;
-    width: 100%;
+    width: 100% !important;
 }
 #learndash_profile {
     width: 90%;
