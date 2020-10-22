@@ -136,7 +136,8 @@ background: #84bfb9 !important;
     padding-right: 10px;
 }
 #learndash_lesson_topics_list>div, #learndash_lessons, #learndash_profile, #learndash_quizzes{
-    margin-top: 10px;
+    margin-top: 100px;
+    margin-bottom: 100px;
     border: none;
 }
 .profile_edit_profile{
