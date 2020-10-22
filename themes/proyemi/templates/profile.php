@@ -91,7 +91,7 @@
 			$url = $_SERVER["REQUEST_URI"];
 			$url = explode('/', $url);
 			$url = $url[count($url) - 2];
-			if($url == 'orders' || $url == 'downloads' || $url == 'edit-address' || $url == 'edit-account'):
+			if($url == 'orders' || $url == 'downloads' || $url == 'edit-address' || $url == 'edit-account' | $url == 'customer-logout'):
 				echo do_shortcode('[woocommerce_my_account]');
 			else:
 		?>
