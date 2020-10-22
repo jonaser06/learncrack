@@ -92,6 +92,7 @@ background: #84bfb9 !important;
 #learndash_profile .profile_info .profile_avatar {
     border: 0;
     display: inline-block;
+    float: none;
     width: 108px;
 }
 #learndash_profile .profile_info {
