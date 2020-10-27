@@ -159,3 +159,91 @@ background: #84bfb9 !important;
     padding: 5px;
     border-radius: 5px;
 }
+.squeart-container{
+    display: none;
+    width: 100%;
+    margin: auto;
+}
+.squart-option{
+    width: 20%;
+    height: 70px;
+    margin: 2px;
+    background: #84BFB9;
+    text-align: center;
+    padding-top: 12px;
+}
+/* reset para cursos */
+#course_list>div>div, #lessons_list>div>div, #quiz_list>div>div, .single-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn, .singular-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn {
+    display: block;    
+}
+#course_list {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+/* lista de cursos */
+.list-course_{
+    display: flex !important;
+    height: 150px;
+    width: 95% !important;
+    margin: 10px auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+}
+.list-course-cover{
+    width: 150px !important;
+    height: 150px !important;
+}
+
+.list-course-cover img{
+    width: 100%;
+    height: 100%;
+}
+
+.list-course-content{
+    width: calc( 100% - 150px) !important;
+    height: 150px !important;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.list-course-title{
+    text-align: left;
+    width: 100% !important;
+    padding: 20px 15px;
+}
+
+.list-course-title h5{
+    margin: 0px;
+}
+.list-course-progress{
+    width: 100% !important;
+    height: 20px !important;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.percent-coourse{
+    height: 100%;
+    background: #84BFB9;
+}
+.list-course-status{
+    width: 100% !important;
+}
+@media (max-width: 768px){
+    .squeart-container{
+        display: flex;
+    }
+    .profile_info{
+        display: none;
+    }
+    #course_list{
+        width: 100% !important;
+    }
+    #learndash_lesson_topics_list>div, #learndash_lessons, #learndash_profile, #learndash_quizzes{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: none;
+    }
+    #learndash_profile {
+        width: 100%;
+        display: flex;
+        margin: auto;
+    }
+}

@@ -60,7 +60,7 @@ add_shortcode('comments_wp','get_comentarios');
                     <form id="sfwd-mark-complete" class="sfwd-mark-complete" method="post" action="">
                         <input type="hidden" value="<?php echo $post->ID; ?>" name="post">
                         <input type="hidden" value="<?php echo $course_id; ?>" name="course_id">
-                        <input type="hidden" value="e1c192a96c" name="sfwd_mark_complete">
+                        <input type="hidden" value="<?php echo wp_create_nonce( 'sfwd_mark_complete_' . get_current_user_id() . '_' . $post->ID ); ?>" name="sfwd_mark_complete">
                         <input type="submit" id="learndash_mark_complete_button" value="Completar" class="learndash_mark_complete_button">
                     </form>
                 </div>

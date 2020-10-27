@@ -31,6 +31,33 @@
 	}
 	LD_QuizPro::showModalWindow();
 ?>
+<div class="squeart-container">
+	<div class="squart-option">
+		<a href="<?php echo get_site_url(null, '/my-account/'); ?>">
+			<span><svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-3.67176e-07 32.2001L14 32.2001M-1.34631e-06 9.8001C2.73367 9.8001 7 9.8001 7 9.8001L14 9.8001M-1.34631e-06 21.0001L7 21.0001M7 21.0001L7 37.8001C7 39.3465 8.2536 40.6001 9.8 40.6001L37.8 40.6001C39.3464 40.6001 40.6 39.3465 40.6 37.8001L40.6 4.2001C40.6 2.6537 39.3464 1.4001 37.8 1.4001L9.8 1.4001C8.2536 1.4001 7 2.65371 7 4.2001L7 21.0001ZM7 21.0001L14 21.0001" stroke="#FEFEFE" stroke-width="2"/></svg></span>
+		</a>
+	</div>
+	<div class="squart-option" style="padding-top: 15px;">
+		<a href="<?php echo get_site_url(null, '/my-account/orders/'); ?>">
+			<span><svg width="44" height="35" viewBox="0 0 44 35" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2V0ZM42.1244 10.2424L42.9885 10.7457L42.1244 10.2424ZM33.7438 24.631L34.608 25.1343L33.7438 24.631ZM18.7335 24.4115L17.7746 24.6953L18.7335 24.4115ZM10.0678 1.51325L9.19427 2L10.0678 1.51325ZM19.6923 26.1277H32.8797V24.1277H19.6923V26.1277ZM34.608 25.1343L42.9885 10.7457L41.2603 9.73906L32.8797 24.1277L34.608 25.1343ZM9.19427 2L13.2206 9.22581L14.9677 8.25231L10.9414 1.0265L9.19427 2ZM13.1352 9.0229L17.7746 24.6953L19.6923 24.1277L15.053 8.45522L13.1352 9.0229ZM41.2603 7.73906H14.0941V9.73906H41.2603V7.73906ZM9.19427 0H1V2H9.19427V0ZM42.9885 10.7457C43.7651 9.41234 42.8033 7.73906 41.2603 7.73906V9.73906L41.2603 9.73906L42.9885 10.7457ZM32.8797 26.1277C33.5915 26.1277 34.2497 25.7493 34.608 25.1343L32.8797 24.1277L32.8797 24.1277V26.1277ZM19.6923 24.1277L19.6923 24.1277L17.7746 24.6953C18.0261 25.5448 18.8064 26.1277 19.6923 26.1277V24.1277ZM10.9414 1.0265C10.5882 0.392811 9.91969 0 9.19427 0V2L9.19427 2L10.9414 1.0265Z" fill="#FEFEFE"/><ellipse cx="33.1711" cy="31.383" rx="2.68085" ry="2.68085" fill="#FEFEFE"/><ellipse cx="18.8723" cy="31.383" rx="2.68085" ry="2.68085" fill="#FEFEFE"/></svg></span>
+		</a>
+	</div>
+	<div class="squart-option">
+		<a href="<?php echo get_site_url(null, '/my-account/downloads/'); ?>">
+			<span><svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 31.5L12.75 22.5M22.5 31.5L31.5 22.5M22.5 31.5V3M40.5 21V40.5H4.5V21" stroke="white" stroke-width="1.8"/></svg></span>
+		</a>
+	</div>
+	<div class="squart-option">
+		<a href="<?php echo get_site_url(null, '/my-account/edit-account/'); ?>">
+			<span><svg width="33" height="42" viewBox="0 0 33 42" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M25.7547 10.4748C25.7547 15.708 21.599 19.9495 16.4717 19.9495C11.3444 19.9495 7.18868 15.708 7.18868 10.4748C7.18868 5.24153 11.3444 1 16.4717 1C21.599 1 25.7547 5.24153 25.7547 10.4748Z" stroke="white" stroke-width="1.8" stroke-linecap="square"/><path fill-rule="evenodd" clip-rule="evenodd" d="M31.9434 41H1C1 38.756 1 36.6213 1 34.6881C1 29.4519 5.15615 25.2087 10.283 25.2087H22.6604C27.7872 25.2087 31.9434 29.4519 31.9434 34.6881C31.9434 36.6213 31.9434 38.756 31.9434 41Z" stroke="white" stroke-width="1.8" stroke-linecap="square"/></svg></span>
+		</a>
+	</div>
+	<div class="squart-option">
+		<a href="<?php echo get_site_url(null, '/my-account/customer-logout/'); ?>">
+			<span><svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M27.178 0.49168C32.5936 1.64281 37.3947 4.75029 40.6626 9.21958C43.9305 13.6889 45.4359 19.2062 44.8906 24.7159C44.3454 30.2255 41.7878 35.3407 37.7072 39.0828C33.6267 42.8249 28.3097 44.931 22.7735 44.9983C17.2373 45.0656 11.8707 43.0893 7.70035 39.4476C3.53004 35.8058 0.848885 30.7543 0.169857 25.2595C-0.509171 19.7647 0.861609 14.2124 4.01993 9.66501C7.17825 5.1176 11.9023 1.89433 17.2884 0.611899L17.766 2.61788C12.8736 3.78278 8.58244 6.71065 5.71357 10.8413C2.84471 14.972 1.59955 20.0154 2.21635 25.0066C2.83315 29.9978 5.26858 34.5864 9.0567 37.8944C12.8448 41.2024 17.7196 42.9976 22.7484 42.9364C27.7772 42.8753 32.607 40.9622 36.3135 37.563C40.0201 34.1639 42.3433 29.5175 42.8386 24.5128C43.3339 19.508 41.9665 14.4964 38.9981 10.4367C36.0296 6.377 31.6686 3.55431 26.7493 2.50868L27.178 0.49168Z" fill="white"/><line x1="22" x2="22" y2="28" stroke="white" stroke-width="2"/></svg></span>
+		</a>
+	</div>
+</div>
 <div id="learndash_profile">
 
     <div class="expand_collapse">
@@ -76,7 +103,6 @@
 		</div>
 	</div>
 	<?php } ?>
-
 	<div class="learndash_profile_heading no_radius clear_both">
 		<span class="ld_profile_course"><?php
 		// translators: placeholder: Courses.
@@ -99,147 +125,47 @@
 		<?php if ( ! empty( $user_courses ) ) : ?>
 
 			<?php foreach ( $user_courses as $course_id ) : ?>
-				<?php
-					$course = get_post( $course_id);
 
-					$course_link = get_permalink( $course_id );
+			<?php
+				$course = get_post( $course_id);
 
-					$progress = learndash_course_progress( array(
-						'user_id'   => $user_id,
-						'course_id' => $course_id,
-						'array'     => true
-					) );
+				$course_link = get_permalink( $course_id );
 
-					$status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
-				?>
-				<div id='course-<?php echo esc_attr( $user_id ) . '-' . esc_attr( $course->ID ); ?>'>
-					<div class="list_arrow collapse flippable"  onClick='return flip_expand_collapse("#course-<?php echo esc_attr( $user_id ); ?>", <?php echo esc_attr( $course->ID ); ?>);'></div>
+				$progress = learndash_course_progress( array(
+					'user_id'   => $user_id,
+					'course_id' => $course_id,
+					'array'     => true
+				) );
 
+				$status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
 
-					<?php
-					/**
-					 * @todo Remove h4 container.
-					 */
-					?>
-					<h4>
-						<div class="learndash-course-link"><a href="<?php echo esc_url( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
+				$thumbID = get_post_thumbnail_id( $course->ID );
+				$img = (wp_get_attachment_url( $thumbID ))?wp_get_attachment_url( $thumbID ):'null';
+				
+			?>
 
-						<div class="learndash-course-status"><a class="<?php echo esc_attr( $status ); ?>" href="<?php echo esc_url( $course_link ); ?>"><?php echo $course->post_title; ?></a></div>
-						<div class="learndash-course-certificate"><?php
-							$certificateLink = learndash_get_course_certificate_link( $course->ID, $user_id );
-							if ( !empty( $certificateLink ) ) {
-								?><a target="_blank" href="<?php echo esc_url( $certificateLink ); ?>"><div class="certificate_icon_large"></div></a><?php
-							} else {
-								?><a style="padding: 10px 2%;" href="#">-</a><?php
-							}
-						?></div>
-						<div class="flip" style="clear: both; display:none;">
-
-							<div class="learndash_profile_heading course_overview_heading"><?php 
-							// translators: placeholder: Course.
-							printf( esc_html_x( '%s Progress Overview', 'placeholder: Course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></div>
-
-							<div>
-								<dd class="course_progress" title='<?php echo sprintf( esc_html_x( '%1$d out of %2$d steps completed', 'placeholder: completed steps, total steps', 'learndash' ), $progress['completed'], $progress['total'] ); ?>'>
-									<div class="course_progress_blue" style='width: <?php echo esc_attr( $progress['percentage'] ); ?>%;'>
-								</dd>
-
-								<div class="right">
-									<?php 
-									// translators: placeholder: percent complete
-									echo sprintf( esc_html_x( '%s%% Complete', 'placeholder: percent complete', 'learndash' ), $progress['percentage'] ); ?>
-								</div>
-							</div>
-
-							<?php
-							/** This filter is documented in themes/ld30/templates/shortcodes/profile/course-row.php */
-							if ( ( ! empty( $quiz_attempts[ $course_id ] ) ) && ( isset( $shortcode_atts['show_quizzes'] ) ) && ( true === $shortcode_atts['show_quizzes'] ) && ( apply_filters( 'learndash_show_profile_quizzes', $shortcode_atts['show_quizzes'] ) ) ) {
-								?>
-
-								<div class="learndash_profile_quizzes clear_both">
-
-									<div class="learndash_profile_quiz_heading">
-										<div class="quiz_title"><?php echo LearnDash_Custom_Label::get_label( 'quizzes' ); ?></div>
-										<div class="certificate"><?php esc_html_e( 'Certificate', 'learndash' ); ?></div>
-										<div class="scores"><?php esc_html_e( 'Score', 'learndash' ); ?></div>
-										<div class="statistics"><?php esc_html_e( 'Statistics', 'learndash' ); ?></div>
-										<div class="quiz_date"><?php esc_html_e( 'Date', 'learndash' ); ?></div>
-									</div>
-
-									<?php foreach ( $quiz_attempts[ $course_id ] as $k => $quiz_attempt ) : ?>
-										<?php
-											$certificateLink = null;
-											
-											if ( (isset( $quiz_attempt['has_graded'] ) ) && ( true === $quiz_attempt['has_graded'] ) && (true === LD_QuizPro::quiz_attempt_has_ungraded_question( $quiz_attempt )) ) {
-												$status = 'pending';
-											} else {
-												$certificateLink = @$quiz_attempt['certificate']['certificateLink'];
-												$status = empty( $quiz_attempt['pass'] ) ? 'failed' : 'passed';
-											}
-
-											$quiz_title = ! empty( $quiz_attempt['post']->post_title) ? $quiz_attempt['post']->post_title : @$quiz_attempt['quiz_title'];
-
-											$quiz_link = ! empty( $quiz_attempt['post']->ID ) ? learndash_get_step_permalink( intval( $quiz_attempt['post']->ID ), $course_id ) : '#';
-										?>
-										<?php if ( ! empty( $quiz_title ) ) : ?>
-											<div class='<?php echo esc_attr( $status ); ?>'>
-
-												<div class="quiz_title">
-													<span class='<?php echo esc_attr( $status ); ?>_icon'></span>
-													<a href='<?php echo esc_url( $quiz_link ); ?>'><?php echo esc_attr( $quiz_title ); ?></a>
-												</div>
-
-												<div class="certificate">
-													<?php if ( ! empty( $certificateLink ) ) : ?>
-														<a href='<?php echo esc_url( $certificateLink ); ?>&time=<?php echo esc_attr( $quiz_attempt['time'] ) ?>' target="_blank">
-														<div class="certificate_icon"></div></a>
-													<?php else : ?>
-														<?php echo '-';	?>
-													<?php endif; ?>
-												</div>
-
-												<div class="scores">
-													<?php if ( (isset( $quiz_attempt['has_graded'] ) ) && (true === $quiz_attempt['has_graded']) && (true === LD_QuizPro::quiz_attempt_has_ungraded_question( $quiz_attempt )) ) : ?>
-														<?php echo esc_html_x('Pending', 'Pending Certificate Status Label', 'learndash'); ?>
-													<?php else : ?>
-														<?php echo round( $quiz_attempt['percentage'], 2 ); ?>%
-													<?php endif; ?>
-												</div>
-
-												<div class="statistics">
-												<?php													
-													if ( ( $user_id == get_current_user_id() ) || ( learndash_is_admin_user() ) || ( learndash_is_group_leader_user() ) ) {
-														if ( ( !isset( $quiz_attempt['statistic_ref_id'] ) ) || ( empty( $quiz_attempt['statistic_ref_id'] ) ) ) {
-															$quiz_attempt['statistic_ref_id'] = learndash_get_quiz_statistics_ref_for_quiz_attempt( $user_id, $quiz_attempt );
-														}
-
-														if ( ( isset( $quiz_attempt['statistic_ref_id'] ) ) && ( !empty( $quiz_attempt['statistic_ref_id'] ) ) ) {
-															/** This filter is documented in themes/ld30/templates/quiz/partials/attempt.php */
-															if ( apply_filters( 'show_user_profile_quiz_statistics', 
-																		get_post_meta( $quiz_attempt['post']->ID, '_viewProfileStatistics', true ), $user_id, $quiz_attempt, basename( __FILE__ ) ) ) {
-														
-																?><a class="user_statistic" data-statistic_nonce="<?php echo wp_create_nonce( 'statistic_nonce_'. $quiz_attempt['statistic_ref_id'] .'_'. get_current_user_id() . '_'. $user_id ); ?>" data-user_id="<?php echo $user_id ?>" data-quiz_id="<?php echo $quiz_attempt['pro_quizid'] ?>" data-ref_id="<?php echo intval( $quiz_attempt['statistic_ref_id'] ) ?>" href="#"><div class="statistic_icon"></div></a><?php
-															}
-														}
-													}
-												?>
-												</div>
-
-												<div class="quiz_date"><?php echo learndash_adjust_date_time_display(  $quiz_attempt['time'] ); ?></div>
-
-											</div>
-										<?php endif; ?>
-									<?php endforeach; ?>
-
-								</div>
-							<?php } ?>
-
-						</div>
-					</h4>
+			<div class="list-course_">
+				<div class="list-course-cover">
+					<img src="<?php echo $img; ?>" alt="">
 				</div>
+				<div class="list-course-content">
+					<div class="list-course-title">
+						<a href="<?php echo esc_url( $course_link ); ?>"><h5><?php echo $course->post_title; ?></h5></a>
+					</div>
+					<div class="list-course-progress">
+						<div class="percent-coourse" style="width:<?php echo $progress['percentage']; ?>% !important;"></div>
+					</div>
+					<div class="list-course-status">
+						<?php echo $progress['percentage']; ?>%
+					</div>
+				</div>
+			</div>
+
 			<?php endforeach; ?>
-			<?php endif; ?>
+
 		<?php endif; ?>
+		
+	<?php endif; ?>
 	</div>
 </div>
 <?php

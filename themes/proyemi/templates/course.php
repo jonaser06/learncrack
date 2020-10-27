@@ -38,6 +38,7 @@
 <link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/style-course.css', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
 <div class="image-desktop">
     <div class="image-poster" style="width:99%;height:280px;margin:auto;border-radius: 5px;overflow: hidden;">
+        <!-- <?php echo $post->ID;?> -->
         <img src="<?php echo $img;?>" style="width:100%;height:100%;">
     </div>
     <div class="course-action-dsk">
