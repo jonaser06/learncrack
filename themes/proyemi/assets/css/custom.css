@@ -187,6 +187,8 @@ background: #84bfb9 !important;
     width: 95% !important;
     margin: 10px auto;
     box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+    border-radius: 5px;
+    overflow: hidden;
 }
 .list-course-cover{
     width: 150px !important;
@@ -226,7 +228,35 @@ background: #84bfb9 !important;
 .list-course-status{
     width: 100% !important;
 }
+/* pagina de cursos (solo css) */
+#blog-entries{
+    display: grid;
+    grid-gap: 15px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+#blog-entries article{
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+}
+.blog-entry-inner img{
+    width: 100%;
+}
+.course-partial-content, .course-partial-title{
+    padding: 0px 10px;
+}
+.thumbnail{
+    margin: 0px !important;
+}
+.blog-entry-title{
+    margin: 0px !important;
+}
 @media (max-width: 768px){
+    #blog-entries{
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: 1fr;
+    }
     .squeart-container{
         display: flex;
     }

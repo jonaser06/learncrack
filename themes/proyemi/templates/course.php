@@ -34,6 +34,64 @@
     $author_id = $post->post_author;
     $img_autor = the_author_meta( 'avatar' , $author_id );
     // $name_autor = the_author_meta( 'user_nicename' , $author_id );
+
+    /* precio de curso */
+    function learndash_get_course_price( $course = null ) {
+
+        if ( null === $course ) {
+            global $post;
+            $course = $post;
+        }
+    
+        if ( is_numeric( $course ) ) {
+            $course = get_post( $course );
+        }
+    
+        // Get the course price
+        $meta = get_post_meta( $course->ID, '_sfwd-courses', true );
+    
+        $course_price = array(
+            'type'  => ! empty( $meta['sfwd-courses_course_price_type'] ) ? $meta['sfwd-courses_course_price_type'] : LEARNDASH_DEFAULT_COURSE_PRICE_TYPE,
+            'price' => ! empty( $meta['sfwd-courses_course_price'] ) ? $meta['sfwd-courses_course_price'] : '',
+        );
+    
+        if ( 'subscribe' === $course_price['type'] ) {
+    
+            $frequency = get_post_meta( $course->ID, 'course_price_billing_t3', true );
+            $interval  = intval( get_post_meta( $course->ID, 'course_price_billing_p3', true ) );
+    
+            $label = '';
+    
+            switch ( $frequency ) {
+                case ( 'D' ):
+                    $label = _n( 'day', 'days', $interval, 'learndash' );
+                    break;
+                case ( 'W' ):
+                    $label = _n( 'week', 'weeks', $interval, 'learndash' );
+                    break;		
+                case ( 'M' ):
+                    $label = _n( 'month', 'months', $interval, 'learndash' );
+                    break;
+                case ( 'Y' ):
+                    $label = _n( 'year', 'years', $interval, 'learndash' );
+                    break;
+            }
+    
+            $course_price['frequency'] = $label;
+            $course_price['interval']  = $interval;
+    
+        }
+    
+        /**
+         * Filters price details for a course.
+         *
+         * @param array $course_price Course price details.
+         */
+        return apply_filters( 'learndash_get_course_price', $course_price );
+    
+    }
+    $course_pricing = learndash_get_course_price( $post->ID );
+    // echo wp_kses_post( $course_pricing['price'] );
 ?>
 <link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/style-course.css', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
 <div class="image-desktop">
@@ -42,6 +100,7 @@
         <img src="<?php echo $img;?>" style="width:100%;height:100%;">
     </div>
     <div class="course-action-dsk">
+        <h2 style="text-align: center;"><?php echo wp_kses_post( $course_pricing['price'] ); ?></h2>
         <?php echo do_shortcode('[student course_id="'.$post->ID.'"]'.$boton.'[/student]'); ?>
         <?php echo do_shortcode('[learndash_payment_buttons course_id="'.$post->ID.'"]'); ?>
         <?php echo do_shortcode('[student course_id="'.$post->ID.'"]<style>.compartir{margin-top: 0px !important;}</style>[/student]'); ?>
@@ -92,6 +151,7 @@
                 </p>
             </div>
             <div class="course-action">
+                <h2 style="text-align: center;"><?php echo wp_kses_post( $course_pricing['price'] ); ?></h2>
                 <?php echo do_shortcode('[student course_id="'.$post->ID.'"]'.$boton.'[/student]'); ?>
                 <?php echo do_shortcode('[learndash_payment_buttons course_id="'.$post->ID.'"]'); ?>
                 <a class="btn-join" href="https://www.facebook.com/sharer.php?u=<?php echo $current_url; ?>" style="margin-top: 20px;background: #84BFB9 !important;" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Compartir</a>
