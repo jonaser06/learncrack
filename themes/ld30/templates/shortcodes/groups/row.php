@@ -7,7 +7,7 @@ $has_content = ( empty( $group->post_content ) ? false : true ); ?>
 
 <div class="ld-item-list-item ld-expandable ld-item-group-item" id="<?php echo esc_attr( 'ld-expand-' . $group->ID ); ?>">
 	<div class="ld-item-list-item-preview ld-group-row">
-		<a href="<?php echo esc_url( get_the_permalink( $group->ID ) ); ?>" class="ld-item-name">
+		<a href="aaa<?php echo esc_url( get_the_permalink( $group->ID ) ); ?>" class="ld-item-name">
 			<span class="ld-item-name"><?php echo esc_html( get_the_title( $group->ID ) ); ?></span>
 		</a>
 		<?php if ( $has_content ) : ?>

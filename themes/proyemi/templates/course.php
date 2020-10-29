@@ -35,6 +35,61 @@
     $img_autor = the_author_meta( 'avatar' , $author_id );
     // $name_autor = the_author_meta( 'user_nicename' , $author_id );
 
+    /* seccion del curso */
+    function learndash_30_get_course_sections( $course_id = null ) {
+
+        if ( empty( $course_id ) ) {
+            $course_id = get_the_ID();
+        }
+    
+        if ( get_post_type( $course_id ) != 'sfwd-courses' ) {
+            $course_id = learndash_get_course_id( $course_id );
+        }
+    
+        $sections       = array();
+        $sections_index = array();
+    
+        $sections_raw = get_post_meta( $course_id, 'course_sections', true );
+    
+        if ( ! $sections_raw || empty( $sections_raw ) ) {
+            return false;
+        }
+    
+        /**
+         * Because sections only store total order, but lessons might be paginated -- we need to pass them in relative to their parent. Not great for performance.
+         *
+         * @var [type]
+         */
+    
+        $sections_raw = json_decode( $sections_raw );
+    
+        if ( ! is_array( $sections_raw ) ) {
+            return false;
+        }
+    
+        $lessons = learndash_get_course_lessons_list( $course_id, null, array( 'num' => -1 ) );
+    
+        if ( ! $lessons || empty( $lessons ) || ! is_array( $lessons ) ) {
+            return false;
+        }
+    
+        $lessons = array_values( $lessons );
+        $i       = 0;
+    
+        foreach ( $lessons as $lesson ) {
+            foreach ( $sections_raw as $section ) {
+                if ( $section->order == $i ) {
+                    $sections[ $lesson['post']->ID ] = $section;
+                    $i++;
+                }
+            }
+            $i++;
+        }
+    
+        return $sections;
+    
+    }
+
     /* precio de curso */
     function learndash_get_course_price( $course = null ) {
 
@@ -189,7 +244,18 @@
             <!-- <a class="ld-item-name ld-primary-color-hover" href="<?php echo esc_url( learndash_get_step_permalink( get_the_ID() ) ); ?>"><?php echo esc_html( get_the_title() ); ?></a> -->
             <div class="card-content">
                 <h1>Contenido</h1>
+                <?php $sections = learndash_30_get_course_sections( $course_id ); ?>
                 <?php foreach($lessons as $lesson) : ?>
+
+                <?php if ( isset( $sections[ $lesson['post']->ID ] ) ): ?>
+                <div class="heading">
+                    <span>
+                        <svg width="12" height="17" viewBox="0 0 12 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.66977 13.4483L2.5048 16.5657C1.02911 17.5668 1.28108e-06 16.3267 1.33126e-06 15.0184L1.46219e-06 11.6053C1.47528e-06 11.2639 0.135921 11.0364 0.330092 10.9113L2.4951 9.28434C2.80577 9.06817 2.94169 8.76099 2.94169 8.46519C2.94169 8.16939 2.80577 7.86221 2.4951 7.64604L0.330092 6.01912C0.194173 5.9281 1.69086e-06 5.64368 1.70047e-06 5.39338L1.83401e-06 1.912C1.88419e-06 0.603636 1.02911 -0.636465 2.50481 0.364717L6.66977 3.48203L11.0872 6.79276C11.7279 7.22509 12.0095 7.85083 11.9998 8.46519C12.0095 9.07955 11.7279 9.70529 11.0872 10.1376L6.66977 13.4483Z" fill="#F25116"/></svg>
+                    </span>
+                    <?php echo $sections[$lesson['post']->ID]->post_title; ?>
+                </div>
+                <?php endif; ?>
+
                 <div class='post-<?php echo esc_attr( $lesson['post']->ID ); ?> <?php echo esc_attr( $lesson['sample'] ); ?>'>
                     <div class="list-count">
                         <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a></p>

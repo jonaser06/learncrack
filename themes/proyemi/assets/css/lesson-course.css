@@ -183,6 +183,14 @@ html{
 #comment-submit{
     border-radius: 8px;
 }
+.heading{
+    border-bottom: 1px solid #F2E6D0;
+    padding: 10px 20px;
+}
+
+.heading span{
+    margin-right: 5px;
+}
 @media (max-width: 768px){
     .tabs{
         height: inherit;

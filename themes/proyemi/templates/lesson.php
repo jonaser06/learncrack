@@ -37,6 +37,61 @@ function get_comentarios($atts){
 	return $comentario;
 }
 
+/* seccion del curso */
+function learndash_30_get_course_sections( $course_id = null ) {
+
+    if ( empty( $course_id ) ) {
+        $course_id = get_the_ID();
+    }
+
+    if ( get_post_type( $course_id ) != 'sfwd-courses' ) {
+        $course_id = learndash_get_course_id( $course_id );
+    }
+
+    $sections       = array();
+    $sections_index = array();
+
+    $sections_raw = get_post_meta( $course_id, 'course_sections', true );
+
+    if ( ! $sections_raw || empty( $sections_raw ) ) {
+        return false;
+    }
+
+    /**
+     * Because sections only store total order, but lessons might be paginated -- we need to pass them in relative to their parent. Not great for performance.
+     *
+     * @var [type]
+     */
+
+    $sections_raw = json_decode( $sections_raw );
+
+    if ( ! is_array( $sections_raw ) ) {
+        return false;
+    }
+
+    $lessons = learndash_get_course_lessons_list( $course_id, null, array( 'num' => -1 ) );
+
+    if ( ! $lessons || empty( $lessons ) || ! is_array( $lessons ) ) {
+        return false;
+    }
+
+    $lessons = array_values( $lessons );
+    $i       = 0;
+
+    foreach ( $lessons as $lesson ) {
+        foreach ( $sections_raw as $section ) {
+            if ( $section->order == $i ) {
+                $sections[ $lesson['post']->ID ] = $section;
+                $i++;
+            }
+        }
+        $i++;
+    }
+
+    return $sections;
+
+}
+
 
 add_shortcode('comments_wp','get_comentarios');
 
@@ -54,7 +109,19 @@ add_shortcode('comments_wp','get_comentarios');
             <div class="tab-content">
                 <div class="pad1 active">
                     <?php  $lessons = learndash_get_course_lessons_list( $course_id ); ?>
+
+                    <?php $sections = learndash_30_get_course_sections( $course_id ); ?>
                     <?php foreach($lessons as $lesson) : ?>
+
+                        <?php if ( isset( $sections[ $lesson['post']->ID ] ) ): ?>
+                        <div class="heading">
+                            <span>
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.5"><path d="M1 5L7.5 12L14 5" stroke="#333333" stroke-linecap="square"/></g></svg>
+                            </span>
+                            <?php echo $sections[$lesson['post']->ID]->post_title; ?>
+                        </div>
+                        <?php endif; ?>
+                        
                         <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a></p>
                     <?php endforeach; ?>
                     <form id="sfwd-mark-complete" class="sfwd-mark-complete" method="post" action="">
