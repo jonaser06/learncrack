@@ -266,7 +266,7 @@
         </div>
     </div>
 </div>
-<!-- <script src="<?php echo plugins_url( 'themes/proyemi/assets/js/main.js', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>"></script> -->
+<!-- <script src="<?php echo plugins_url( 'themes/proyemi/assets/js/main.js?v1', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>"></script> -->
 <?php
     // echo do_shortcode('[learndash_payment_buttons course_id="'.$post->ID.'"]');
 ?>

@@ -170,7 +170,7 @@ add_shortcode('comments_wp','get_comentarios');
     </div>
 </div>
 <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
-<script src="<?php echo plugins_url( 'themes/proyemi/assets/js/main.js', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>"></script>
+<script src="<?php echo plugins_url( 'themes/proyemi/assets/js/main.js?v1', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>"></script>
 <?php 
 global $post;
 // $thumbID = get_post_thumbnail_id( $post->ID );
