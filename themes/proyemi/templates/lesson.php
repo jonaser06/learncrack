@@ -97,7 +97,7 @@ add_shortcode('comments_wp','get_comentarios');
 
 ?>
 <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
-<link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/lesson-course.css', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
+<link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/lesson-course.css?v1', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
 <div class="course-container">
     <div class="content-course-leeson">
         <div class="tabs">

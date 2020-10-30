@@ -148,7 +148,7 @@
     $course_pricing = learndash_get_course_price( $post->ID );
     // echo wp_kses_post( $course_pricing['price'] );
 ?>
-<link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/style-course.css', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
+<link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/style-course.css?v1', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
 <div class="image-desktop">
     <div class="image-poster" style="width:99%;height:280px;margin:auto;border-radius: 5px;overflow: hidden;">
         <!-- <?php echo $post->ID;?> -->
