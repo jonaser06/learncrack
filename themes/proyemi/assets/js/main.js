@@ -1,7 +1,27 @@
+var reproductor = videojs('my-video',{
+    fluid: true,
+});
+
 objCourse = {
     init: ()=>{
         objCourse.resizer();
         objCourse.tap();
+        objCourse.video();
+    },
+    video: ()=>{
+        reproductor.on('play',()=>{
+            console.log(reproductor.readyState());
+            // console.log(reproductor.duration());
+            
+        });
+        reproductor.on('ended', ()=>{
+            document.querySelector("#sfwd-mark-complete").setAttribute("style","display: inline-block;");
+            console.log('Terminado!');
+        });
+        // if (reproductor.readyState() < 1) {
+        //     var vid = document.getElementById("my-video");
+        //     console.log(vid.duration);
+        // }
     },
     resizer: ()=>{
         let header       = document.querySelector("#site-header-inner").offsetHeight;
@@ -10,10 +30,10 @@ objCourse = {
             let windowwidth  = window.innerWidth;
             let altura_cont  = windowheight - header;
 			if(windowwidth < 768){
-				document.querySelector(".content-course-player").setAttribute("style","width:100%;height:"+ (0.5*windowwidth) +"px");
+				document.querySelector(".content-course-player").setAttribute("style","width:100%;height:auto;");
 			}else{
 				// document.querySelector(".content-course-leeson").setAttribute("style","height:"+ altura_cont +"px");
-				document.querySelector(".content-course-player").setAttribute("style","height:"+ altura_cont +"px");
+				document.querySelector(".content-course-player").setAttribute("style","height:auto;");
 				// document.querySelector(".tab-content").setAttribute("style","overflow-y: scroll;width:100%;height:"+(player-extra-30)+"px");
 			}
         };
@@ -23,10 +43,10 @@ objCourse = {
             let windowwidth  = window.innerWidth;
             let altura_cont  = windowheight - header;
             if(windowwidth < 768){
-				document.querySelector(".content-course-player").setAttribute("style","width:100%;height:"+ (0.5*windowwidth) +"px");
+				document.querySelector(".content-course-player").setAttribute("style","width:100%;height:auto;");
 			}else{
 				// document.querySelector(".content-course-leeson").setAttribute("style","height:"+ altura_cont +"px");
-				document.querySelector(".content-course-player").setAttribute("style","height:"+ altura_cont +"px");
+				document.querySelector(".content-course-player").setAttribute("style","height:auto;");
 				// document.querySelector(".tab-content").setAttribute("style","overflow-y: scroll;width:100%;height:"+(player-extra-30)+"px");
 			}
         });
@@ -75,4 +95,6 @@ objCourse = {
     }
 };
 
-objCourse.init();
+window.addEventListener("load", function() {
+    objCourse.init();
+});

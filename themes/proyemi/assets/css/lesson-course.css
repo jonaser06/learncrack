@@ -48,7 +48,8 @@ html{
 }
 .content-course-player{
     width: calc( 100% - 340px);
-    height: 100px;
+    height: calc(100vh - 100px );
+    /* height: 100px; */
 }
 /* taps */
 .tabs{
@@ -191,6 +192,21 @@ html{
 .heading span{
     margin-right: 5px;
 }
+#sfwd-mark-complete{
+    position: absolute;
+    z-index: 99999;
+    display: none;
+    right: 10px;
+    bottom: 0px;
+    transform: translate(0, -100%);
+}
+.learndash_mark_complete_button{
+    background: rgba(0,0,0,0.7) !important;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+}
+.video-content-play{
+    width: 100%;
+}
 @media (max-width: 768px){
     .tabs{
         height: inherit;
@@ -200,6 +216,8 @@ html{
         flex-direction: column-reverse;
     }
     .content-course-player{
+        height: calc(100vh * 0.3 );
+        position: relative;
         width: 100%;
     }
     .content-course-leeson{

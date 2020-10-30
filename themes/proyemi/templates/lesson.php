@@ -121,15 +121,9 @@ add_shortcode('comments_wp','get_comentarios');
                             <?php echo $sections[$lesson['post']->ID]->post_title; ?>
                         </div>
                         <?php endif; ?>
-                        
+
                         <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a></p>
                     <?php endforeach; ?>
-                    <form id="sfwd-mark-complete" class="sfwd-mark-complete" method="post" action="">
-                        <input type="hidden" value="<?php echo $post->ID; ?>" name="post">
-                        <input type="hidden" value="<?php echo $course_id; ?>" name="course_id">
-                        <input type="hidden" value="<?php echo wp_create_nonce( 'sfwd_mark_complete_' . get_current_user_id() . '_' . $post->ID ); ?>" name="sfwd_mark_complete">
-                        <input type="submit" id="learndash_mark_complete_button" value="Completar" class="learndash_mark_complete_button">
-                    </form>
                 </div>
                 <div class="pad2">
                     <?php echo preg_replace('/\[.*\]/','',get_post_field('post_content', $post->ID, 'edit')); ?>
@@ -152,21 +146,27 @@ add_shortcode('comments_wp','get_comentarios');
         </div>
     </div>
     <div class="content-course-player">
-        <video
-            id="my-video"
-            class="video-js"
-            controls
-            preload="auto"
-            poster="MY_VIDEO_POSTER.jpg"
-            data-setup='{"fluid": true }'
-        >
-        <source src="<?php echo do_shortcode($videopro); ?>" type='video/mp4'>
-        <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that
-            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-        </p>
-    </video>
+        <div class="video-content-play">
+            <video
+                id="my-video"
+                class="video-js vjs-big-play-centered"
+                controls
+                preload="auto"
+            >
+                <source src="<?php echo do_shortcode($videopro); ?>" type='video/mp4'>
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a
+                    web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video>
+        </div>
+        <form id="sfwd-mark-complete" class="sfwd-mark-complete" method="post" action="">
+            <input type="hidden" value="<?php echo $post->ID; ?>" name="post">
+            <input type="hidden" value="<?php echo $course_id; ?>" name="course_id">
+            <input type="hidden" value="<?php echo wp_create_nonce( 'sfwd_mark_complete_' . get_current_user_id() . '_' . $post->ID ); ?>" name="sfwd_mark_complete">
+            <input type="submit" id="learndash_mark_complete_button" value="Siguiente" class="learndash_mark_complete_button">
+        </form>
     </div>
 </div>
 <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
