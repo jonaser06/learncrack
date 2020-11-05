@@ -111,18 +111,27 @@ add_shortcode('comments_wp','get_comentarios');
                     <?php  $lessons = learndash_get_course_lessons_list( $course_id ); ?>
 
                     <?php $sections = learndash_30_get_course_sections( $course_id ); ?>
+                    <?php $i = 0; ?>
+                    <?php $all_lesson = count($lessons); ?>
+                    <!-- <?php echo json_encode($lessons); ?> -->
                     <?php foreach($lessons as $lesson) : ?>
-
                         <?php if ( isset( $sections[ $lesson['post']->ID ] ) ): ?>
                         <div class="heading">
+                            <div class="line_lesson" style="background: #ffffff;top: -1.8rem;"></div>
                             <span>
                                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><g opacity="0.5"><path d="M1 5L7.5 12L14 5" stroke="#333333" stroke-linecap="square"/></g></svg>
                             </span>
                             <?php echo $sections[$lesson['post']->ID]->post_title; ?>
                         </div>
                         <?php endif; ?>
-
-                        <p><a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a></p>
+                        <?php $i++; ?>
+                        <div class="lesson_item" style="<?php if($lesson['status']=='completed'): ?>fill:#84bfb9;<?php endif; ?>">
+                            <?php if($i != $all_lesson): ?>
+                            <div class="line_lesson" style="<?php if($lesson['status']=='completed'): ?>background:#84bfb9;<?php endif; ?>"></div>
+                            <?php endif; ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 44 44" class="svg-icon flex-none s-mr-1 fill small grey-400"><path d="m22,0c-12.2,0-22,9.8-22,22s9.8,22 22,22 22-9.8 22-22-9.8-22-22-22zm12.7,15.1l0,0-16,16.6c-0.2,0.2-0.4,0.3-0.7,0.3-0.3,0-0.6-0.1-0.7-0.3l-7.8-8.4-.2-.2c-0.2-0.2-0.3-0.5-0.3-0.7s0.1-0.5 0.3-0.7l1.4-1.4c0.4-0.4 1-0.4 1.4,0l.1,.1 5.5,5.9c0.2,0.2 0.5,0.2 0.7,0l13.4-13.9h0.1c0.4-0.4 1-0.4 1.4,0l1.4,1.4c0.4,0.3 0.4,0.9 0,1.3z"></path></svg>
+                                <a href="<?php echo $lesson['permalink']; ?>"><?php echo $lesson['post']->post_title; ?></a>
+                        </div>
                     <?php endforeach; ?>
                 </div>
                 <div class="pad2">
@@ -147,6 +156,7 @@ add_shortcode('comments_wp','get_comentarios');
     </div>
     <div class="content-course-player">
         <div class="video-content-play">
+            <h3 id="title_video_"><?php the_title_attribute(); ?></h3>
             <video
                 id="my-video"
                 class="video-js vjs-big-play-centered"

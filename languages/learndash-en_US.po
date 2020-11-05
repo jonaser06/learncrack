@@ -11,6 +11,60 @@ msgstr ""
 "Language: en_US\n"
 "Project-Id-Version: LearnDash LMS\n"
 
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:327
+msgid "Anonymous visitors only"
+msgstr ""
+
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:312
+msgid "Use a cookie to restrict anonymous visitors"
+msgstr ""
+
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:63
+msgid "Statistics not enabled."
+msgstr ""
+
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:27
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:74
+msgctxt "placeholder: Quiz"
+msgid "Edit %s Settings"
+msgstr ""
+
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:16
+msgid "Leaderboard not enabled."
+msgstr ""
+
+#. translators: placeholder: Course.
+#: includes/admin/classes-posts-listings/class-learndash-admin-lessons-listing.php:45
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:45
+#: includes/admin/classes-posts-listings/class-learndash-admin-topics-listing.php:45
+msgctxt "placeholder: Course"
+msgid "-- No %s --"
+msgstr ""
+
+#. translators: Assigned Quiz Label.
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:141
+msgctxt "Assigned Quiz Label"
+msgid "Assigned %s"
+msgstr ""
+
+#. translators: placeholder: Group.
+#: includes/admin/classes-posts-listings/class-learndash-admin-courses-listing.php:52
+msgctxt "placeholder: Group"
+msgid "-- No %s --"
+msgstr ""
+
+#. translators: placeholder: Topic.
+#: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:732
+msgctxt "placeholder: Quiz"
+msgid "Edit %s Settings (new window)"
+msgstr ""
+
+#. translators: placeholder: Post Type singular name.
+#: includes/admin/class-learndash-admin-posts-listing.php:387
+msgctxt "placeholder: Post Type singular name"
+msgid "Filter by %s"
+msgstr ""
+
 #: themes/legacy/templates/quiz/partials/show_quiz_review_legend.php:42
 msgid "Review / Skip"
 msgstr ""
@@ -260,7 +314,7 @@ msgid "Filter listing by %s type"
 msgstr ""
 
 #. translators: placeholder: Status.
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:385
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:525
 msgctxt "placeholder: Status"
 msgid "Status: %s"
 msgstr ""
@@ -277,27 +331,27 @@ msgid "All Users"
 msgstr ""
 
 #. translators: placeholder: Points label.
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:224
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:364
 msgctxt "placeholder: Points label"
 msgid "%s: Not Enabled"
 msgstr ""
 
 #. translators: placeholders: Points label, current points, maximum points.
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:215
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:419
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:355
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:559
 msgctxt "placeholders: Points label, points input, maximum points"
 msgid "%1$s: %2$d / %3$d"
 msgstr ""
 
 #. translators: placeholders: Points label, points input, maximum points.
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:207
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:411
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:347
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:551
 msgctxt "placeholders: Points label, points input, maximum points"
 msgid "%1$s: %2$s / %3$d"
 msgstr ""
 
 #. translators: placeholder: Status label, Status value.
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:193
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:333
 msgctxt "placeholder: Status label, Status value"
 msgid "%1$s: %2$s"
 msgstr ""
@@ -333,37 +387,37 @@ msgid "User is automatically enrolled in all Courses."
 msgstr ""
 
 #. translators: placeholder: Post title.
-#: includes/admin/class-learndash-admin-posts-listing.php:2583
+#: includes/admin/class-learndash-admin-posts-listing.php:2589
 msgctxt "placeholder: Post title"
 msgid "View \"%s\""
 msgstr ""
 
 #. translators: placeholder: Post title.
-#: includes/admin/class-learndash-admin-posts-listing.php:2575
+#: includes/admin/class-learndash-admin-posts-listing.php:2581
 msgctxt "placeholder: Post title"
 msgid "Edit \"%s\""
 msgstr ""
 
 #. translators: placeholder: Post title.
-#: includes/admin/class-learndash-admin-posts-listing.php:2567
+#: includes/admin/class-learndash-admin-posts-listing.php:2573
 msgctxt "placeholder: Post title"
 msgid "Filter listing by \"%s\""
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/class-learndash-admin-posts-listing.php:1178
+#: includes/admin/class-learndash-admin-posts-listing.php:1183
 msgctxt "placeholder: Quiz"
 msgid "%s Required"
 msgstr ""
 
 #. translators: Placeholders: Topic label, Topic Filter Anchor.
-#: includes/admin/class-learndash-admin-posts-listing.php:1106
+#: includes/admin/class-learndash-admin-posts-listing.php:1111
 msgctxt "Placeholders: Topic label, Topic Filter Anchor"
 msgid "%1$s: %2$s"
 msgstr ""
 
 #. translators: Placeholders: Lesson label, Lesson Filter Anchor.
-#: includes/admin/class-learndash-admin-posts-listing.php:1063
+#: includes/admin/class-learndash-admin-posts-listing.php:1068
 msgctxt "Placeholders: Lesson label, Lesson Filter Anchor"
 msgid "%1$s: %2$s"
 msgstr ""
@@ -539,7 +593,7 @@ msgid "The %1$s can only be accessed through admin enrollment (manual), %2$s enr
 msgstr ""
 
 #. translators: placeholder: Course.
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:226
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:228
 msgctxt "placeholder: Course"
 msgid "Essay %s"
 msgstr ""
@@ -1990,25 +2044,25 @@ msgid "Unknown error."
 msgstr ""
 
 #. translators: placeholder: Lesson.
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:246
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:248
 msgctxt "placeholder: Lesson"
 msgid "Essay %s"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:206
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:208
 msgctxt "placeholder: Quiz"
 msgid "Essay %s"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:180
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:182
 msgctxt "placeholder: Quiz"
 msgid "No %s"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:173
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:175
 msgctxt "placeholder: Quiz."
 msgid "Essay %s"
 msgstr ""
@@ -2028,14 +2082,14 @@ msgid "Assigned %s"
 msgstr ""
 
 #. translators: placeholders: Date From, Date To.
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:157
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:171
 msgctxt "placeholders: Date From, Date To"
 msgid "Search to date limit from %1$s to %2$s"
 msgstr ""
 
 #. translators: placeholder: quiz.
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:223
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:229
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:243
 msgctxt "placeholder: quiz"
 msgid "Show only users, who solved the %s:"
 msgstr ""
@@ -2264,7 +2318,7 @@ msgid "LearnDash %1$s: One user completed a %2$s"
 msgstr ""
 
 #. translators: placeholder: quiz.
-#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:655
+#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:674
 msgctxt "placeholder: quiz"
 msgid "Create %s"
 msgstr ""
@@ -2272,7 +2326,7 @@ msgstr ""
 #. translators: placeholder: quiz.
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:178
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:356
-#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:579
+#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:598
 msgctxt "placeholder: quiz"
 msgid "Edit %s"
 msgstr ""
@@ -2300,7 +2354,7 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Question.php:26
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:77
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:219
-#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:587
+#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:606
 msgctxt "placeholder: Quiz"
 msgid "%s not found"
 msgstr ""
@@ -2393,7 +2447,7 @@ msgctxt "placeholders: FAQ update link."
 msgid "LearnDash update and license calls are temporarily disabled. Click %s for more information."
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:1101
+#: includes/ld-assignment-uploads.php:1074
 msgid "Pending"
 msgstr ""
 
@@ -3381,12 +3435,6 @@ msgctxt "placeholder: Groups"
 msgid "All %s"
 msgstr ""
 
-#. translators: placeholder: Groups.
-#: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:82
-msgctxt "placeholder: Groups"
-msgid "Show All %s"
-msgstr ""
-
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:45
 msgid "Show All Transactions Types"
 msgstr ""
@@ -3613,7 +3661,7 @@ msgstr ""
 msgid "View Submitted Essays"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:915
+#: includes/ld-assignment-uploads.php:888
 msgid "View Assignments"
 msgstr ""
 
@@ -4088,14 +4136,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: View Questions Button Label.
-#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:329
+#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:327
 msgctxt "View Questions Button Label"
 msgid "View %s"
 msgstr ""
 
 #. translators: Quiz Summary.
 #: themes/legacy/templates/quiz/partials/show_quiz_check_page_box.php:27
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:723
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:735
 #: themes/legacy/templates/quiz/partials/show_quiz_review_buttons.php:42
 msgctxt "Quiz Summary"
 msgid "%s Summary"
@@ -4108,12 +4156,12 @@ msgid "Import completed successfully: %s"
 msgstr ""
 
 #. translators: placeholders: question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1292
+#: includes/admin/class-learndash-admin-menus-tabs.php:1296
 msgctxt "Warning when no question was entered"
 msgid "The %s is empty, click here to edit it."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1105
+#: includes/admin/class-learndash-admin-menus-tabs.php:1109
 msgid "Answer is missing"
 msgstr ""
 
@@ -4654,7 +4702,7 @@ msgid "Back to %s"
 msgstr ""
 
 #. translators: placeholder: Questions.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1607
+#: includes/admin/class-learndash-admin-menus-tabs.php:1611
 msgctxt "placeholder: Questions"
 msgid "%s"
 msgstr ""
@@ -4666,9 +4714,9 @@ msgid "Page %1$s of %2$s"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1660
-#: includes/admin/class-learndash-admin-menus-tabs.php:1859
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:333
+#: includes/admin/class-learndash-admin-menus-tabs.php:1664
+#: includes/admin/class-learndash-admin-menus-tabs.php:1873
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:337
 msgctxt "placeholder: Quiz"
 msgid "Export %s"
 msgstr ""
@@ -4877,11 +4925,11 @@ msgstr ""
 msgid "Value should be zero or greater with up to 2 decimal places."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:358
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:366
 msgid "e.g. 0"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:355
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:363
 msgid "Automatically Submit After"
 msgstr ""
 
@@ -5153,73 +5201,73 @@ msgid "Focus Mode Content Width"
 msgstr ""
 
 #. translators: placeholders: Questions
-#: includes/admin/class-learndash-admin-menus-tabs.php:1245
+#: includes/admin/class-learndash-admin-menus-tabs.php:1249
 msgctxt "placeholders: Questions"
 msgid "All available %1$s have been added."
 msgstr ""
 
 #. translators: placeholders: Topics
-#: includes/admin/class-learndash-admin-menus-tabs.php:1240
+#: includes/admin/class-learndash-admin-menus-tabs.php:1244
 msgctxt "placeholders: Topics"
 msgid "All available %1$s have been added."
 msgstr ""
 
 #. translators: placeholders: Quizzes
-#: includes/admin/class-learndash-admin-menus-tabs.php:1235
+#: includes/admin/class-learndash-admin-menus-tabs.php:1239
 msgctxt "placeholders: Quizzes"
 msgid "All available %1$s have been added."
 msgstr ""
 
 #. translators: placeholders: Lessons
-#: includes/admin/class-learndash-admin-menus-tabs.php:1230
+#: includes/admin/class-learndash-admin-menus-tabs.php:1234
 msgctxt "placeholders: Lessons"
 msgid "All available %1$s have been added."
 msgstr ""
 
 #. translators: placeholders: Question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1223
+#: includes/admin/class-learndash-admin-menus-tabs.php:1227
 msgctxt "placeholders: Question"
 msgid "Start adding your first %1$s"
 msgstr ""
 
 #. translators: placeholders: Topic
-#: includes/admin/class-learndash-admin-menus-tabs.php:1218
+#: includes/admin/class-learndash-admin-menus-tabs.php:1222
 msgctxt "placeholders: Topic"
 msgid "Start adding your first %1$s"
 msgstr ""
 
 #. translators: placeholders: Quiz
-#: includes/admin/class-learndash-admin-menus-tabs.php:1213
+#: includes/admin/class-learndash-admin-menus-tabs.php:1217
 msgctxt "placeholders: Quiz"
 msgid "Start adding your first %1$s"
 msgstr ""
 
 #. translators: placeholders: Lesson
-#: includes/admin/class-learndash-admin-menus-tabs.php:1208
+#: includes/admin/class-learndash-admin-menus-tabs.php:1212
 msgctxt "placeholders: Lesson"
 msgid "Start adding your first %1$s"
 msgstr ""
 
 #. translators: placeholders: questions
-#: includes/admin/class-learndash-admin-menus-tabs.php:1199
+#: includes/admin/class-learndash-admin-menus-tabs.php:1203
 msgctxt "placeholders: questions"
 msgid "Search %1$s"
 msgstr ""
 
 #. translators: placeholders: topics
-#: includes/admin/class-learndash-admin-menus-tabs.php:1194
+#: includes/admin/class-learndash-admin-menus-tabs.php:1198
 msgctxt "placeholders: topics"
 msgid "Search %1$s"
 msgstr ""
 
 #. translators: placeholders: quizzes
-#: includes/admin/class-learndash-admin-menus-tabs.php:1189
+#: includes/admin/class-learndash-admin-menus-tabs.php:1193
 msgctxt "placeholders: quizzes"
 msgid "Search %1$s"
 msgstr ""
 
 #. translators: placeholders: lessons
-#: includes/admin/class-learndash-admin-menus-tabs.php:1184
+#: includes/admin/class-learndash-admin-menus-tabs.php:1188
 msgctxt "placeholders: lessons"
 msgid "Search %1$s"
 msgstr ""
@@ -5241,72 +5289,72 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1171
+#: includes/admin/class-learndash-admin-menus-tabs.php:1175
 msgid "Add Section Heading"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1170
+#: includes/admin/class-learndash-admin-menus-tabs.php:1174
 msgid "Add answer"
 msgstr ""
 
 #. translators: placeholders: Lesson
-#: includes/admin/class-learndash-admin-menus-tabs.php:1167
+#: includes/admin/class-learndash-admin-menus-tabs.php:1171
 msgctxt "placeholder: Lesson"
 msgid "Add %1$s"
 msgstr ""
 
 #. translators: placeholders: Topic
-#: includes/admin/class-learndash-admin-menus-tabs.php:1162
+#: includes/admin/class-learndash-admin-menus-tabs.php:1166
 msgctxt "placeholder: Topic"
 msgid "Add %1$s"
 msgstr ""
 
 #. translators: placeholders: Quiz
-#: includes/admin/class-learndash-admin-menus-tabs.php:1157
+#: includes/admin/class-learndash-admin-menus-tabs.php:1161
 msgctxt "placeholder: Quiz"
 msgid "Add %1$s"
 msgstr ""
 
 #. translators: placeholders: Question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1152
+#: includes/admin/class-learndash-admin-menus-tabs.php:1156
 msgctxt "placeholder: Questions"
 msgid "Add %1$s"
 msgstr ""
 
 #. translators: placeholders: Question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1147
+#: includes/admin/class-learndash-admin-menus-tabs.php:1151
 msgctxt "placeholder: Question"
 msgid "Add %1$s"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1138
+#: includes/admin/class-learndash-admin-menus-tabs.php:1142
 msgid "New Section Heading"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1137
+#: includes/admin/class-learndash-admin-menus-tabs.php:1141
 msgid "New answer"
 msgstr ""
 
 #. translators: placeholders: Lesson
-#: includes/admin/class-learndash-admin-menus-tabs.php:1134
+#: includes/admin/class-learndash-admin-menus-tabs.php:1138
 msgctxt "placeholder: Lesson"
 msgid "New %1$s"
 msgstr ""
 
 #. translators: placeholders: Topic
-#: includes/admin/class-learndash-admin-menus-tabs.php:1129
+#: includes/admin/class-learndash-admin-menus-tabs.php:1133
 msgctxt "placeholder: Topic"
 msgid "New %1$s"
 msgstr ""
 
 #. translators: placeholders: Quiz
-#: includes/admin/class-learndash-admin-menus-tabs.php:1124
+#: includes/admin/class-learndash-admin-menus-tabs.php:1128
 msgctxt "placeholder: Quiz"
 msgid "New %1$s"
 msgstr ""
 
 #. translators: placeholders: Question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1119
+#: includes/admin/class-learndash-admin-menus-tabs.php:1123
 msgctxt "placeholder: Question"
 msgid "New %1$s"
 msgstr ""
@@ -5406,17 +5454,17 @@ msgstr ""
 msgid "minute"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:24
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:49
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:1012
 msgid "oldest entry"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:23
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:48
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:1008
 msgid "newest entry"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:22
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:47
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:1004
 msgid "best user"
 msgstr ""
@@ -5442,8 +5490,8 @@ msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:278
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:940
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:109
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:126
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:123
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:140
 msgid "all users"
 msgstr ""
 
@@ -5454,7 +5502,7 @@ msgid "Time limit"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Admin.php:303
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:202
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:216
 #: includes/quiz/ld-quiz-pro.php:1616
 msgid "Close"
 msgstr ""
@@ -5469,7 +5517,7 @@ msgctxt "placeholders: lesson label"
 msgid "Please go back and complete the previous %s."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1030
+#: includes/admin/class-learndash-admin-menus-tabs.php:1034
 msgid "answer"
 msgstr ""
 
@@ -5497,7 +5545,7 @@ msgid "%s Price"
 msgstr ""
 
 #. translators: placeholder: Question.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:327
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:335
 msgctxt "placeholder: Question"
 msgid "%s Completion"
 msgstr ""
@@ -6047,7 +6095,7 @@ msgstr ""
 msgid "Certificate restored to revision from %s"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:1264
+#: includes/ld-assignment-uploads.php:1237
 msgid "Number of allowed assignment uploads reached."
 msgstr ""
 
@@ -6168,8 +6216,8 @@ msgid "Submitted Essay Not found"
 msgstr ""
 
 #. translators: placeholders: Quiz, Questions.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1642
-#: includes/admin/class-learndash-admin-menus-tabs.php:1842
+#: includes/admin/class-learndash-admin-menus-tabs.php:1646
+#: includes/admin/class-learndash-admin-menus-tabs.php:1856
 msgctxt "placeholders: Quiz, Questions"
 msgid "Reprocess %1$s %2$s"
 msgstr ""
@@ -6193,13 +6241,13 @@ msgid "Back to %s"
 msgstr ""
 
 #. translators: placeholder: Post Type Plural Name.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1415
+#: includes/admin/class-learndash-admin-menus-tabs.php:1419
 msgctxt "placeholder: Post Type Plural Name"
 msgid "%s"
 msgstr ""
 
 #. translators: placeholder: Essays.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1402
+#: includes/admin/class-learndash-admin-menus-tabs.php:1406
 msgctxt "placeholder: Essays"
 msgid "%s"
 msgstr ""
@@ -6216,331 +6264,331 @@ msgctxt "placeholder: Courses"
 msgid "Back to %s"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1312
+#: includes/admin/class-learndash-admin-menus-tabs.php:1316
 msgctxt "Essay answer grading option has not been set"
 msgid "Not set"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1311
+#: includes/admin/class-learndash-admin-menus-tabs.php:1315
 msgctxt "Essay answer grading option"
 msgid "Graded, Full Points Awarded"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1310
+#: includes/admin/class-learndash-admin-menus-tabs.php:1314
 msgctxt "Essay answer grading option"
 msgid "Not Graded, Full Points Awarded"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1309
+#: includes/admin/class-learndash-admin-menus-tabs.php:1313
 msgctxt "Essay answer grading option"
 msgid "Not Graded, No Points Awarded"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1308
+#: includes/admin/class-learndash-admin-menus-tabs.php:1312
 msgctxt "What grading options should be used after essay submission"
 msgid "What should happen on quiz submission?"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1307
+#: includes/admin/class-learndash-admin-menus-tabs.php:1311
 msgctxt "Submit essay answer as an upload"
 msgid "File upload"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1306
+#: includes/admin/class-learndash-admin-menus-tabs.php:1310
 msgctxt "Submit essay answer in a text box"
 msgid "Text entry"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1305
+#: includes/admin/class-learndash-admin-menus-tabs.php:1309
 msgctxt "Type of essay answer"
 msgid "Answer format"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1304
+#: includes/admin/class-learndash-admin-menus-tabs.php:1308
 msgctxt "Content type, e.g. lesson"
 msgid "or add an existing one from the sidebar"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1303
+#: includes/admin/class-learndash-admin-menus-tabs.php:1307
 msgctxt "Content type, e.g. lesson"
 msgid "Add a new"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1302
+#: includes/admin/class-learndash-admin-menus-tabs.php:1306
 msgctxt "Displayed when the post type, e.g. course, has no content"
 msgid "has no content yet."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1301
+#: includes/admin/class-learndash-admin-menus-tabs.php:1305
 msgctxt "Total points"
 msgid "TOTAL:"
 msgstr ""
 
 #. translators: placeholders: Questions
-#: includes/admin/class-learndash-admin-menus-tabs.php:1298
+#: includes/admin/class-learndash-admin-menus-tabs.php:1302
 msgctxt "Manage Questions in builder"
 msgid "Manage %1$s in builder"
 msgstr ""
 
 #. translators: placeholders: %1$s: Quiz, %2$s:   Questions
-#: includes/admin/class-learndash-admin-menus-tabs.php:1286
+#: includes/admin/class-learndash-admin-menus-tabs.php:1290
 msgctxt "This quiz has no questions."
 msgid "This %1$s has no %2$s yet"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1283
+#: includes/admin/class-learndash-admin-menus-tabs.php:1287
 msgctxt "Builder - Final quiz. Placeholder in JavaScript"
 msgid "Final"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1282
+#: includes/admin/class-learndash-admin-menus-tabs.php:1286
 msgctxt "Amount of steps in this course or quiz"
 msgid "in this"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1281
+#: includes/admin/class-learndash-admin-menus-tabs.php:1285
 msgctxt "plural - Amount of steps in a course or quiz"
 msgid "steps"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1280
+#: includes/admin/class-learndash-admin-menus-tabs.php:1284
 msgctxt "singular - Amount of steps in a course or quiz"
 msgid "step"
 msgstr ""
 
 #. translators: placeholders: %1$s: Topics, %2$s: Quizzes
-#: includes/admin/class-learndash-admin-menus-tabs.php:1276
+#: includes/admin/class-learndash-admin-menus-tabs.php:1280
 msgctxt "placeholder: %1$s: Topics, %2$s: Quizzes"
 msgid "Drop %1$s or %2$s here"
 msgstr ""
 
 #. translators: placeholders: Quizzes
-#: includes/admin/class-learndash-admin-menus-tabs.php:1271
+#: includes/admin/class-learndash-admin-menus-tabs.php:1275
 msgctxt "placeholder: Quizzes"
 msgid "Drop %1$s here"
 msgstr ""
 
 #. translators: placeholders: Question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1266
+#: includes/admin/class-learndash-admin-menus-tabs.php:1270
 msgctxt "placeholder: Question"
 msgid "Drop %1$s here"
 msgstr ""
 
 #. translators: placeholders: Lessons
-#: includes/admin/class-learndash-admin-menus-tabs.php:1261
+#: includes/admin/class-learndash-admin-menus-tabs.php:1265
 msgctxt "placeholder: Lessons"
 msgid "Drop %1$s here"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1258
+#: includes/admin/class-learndash-admin-menus-tabs.php:1262
 msgctxt "No matching Lesson, Topic, Quiz or Question found"
 msgid "Nothing matches your search"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1257
+#: includes/admin/class-learndash-admin-menus-tabs.php:1261
 msgctxt "Select an option"
 msgid "Select"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1256
+#: includes/admin/class-learndash-admin-menus-tabs.php:1260
 msgctxt "Question settings. Placeholder in JavaScript"
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1255
+#: includes/admin/class-learndash-admin-menus-tabs.php:1259
 msgctxt "Sort matrix answer element"
 msgid "Sort element"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1254
+#: includes/admin/class-learndash-admin-menus-tabs.php:1258
 msgctxt "Matrix answer Criteroion"
 msgid "Criterion"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1253
+#: includes/admin/class-learndash-admin-menus-tabs.php:1257
 msgctxt "Undo action in the builder"
 msgid "Undo"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1252
+#: includes/admin/class-learndash-admin-menus-tabs.php:1256
 msgctxt "Builder - Add selected Lessons, Topics, Quizzes or Questions"
 msgid "Add Selected"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1251
+#: includes/admin/class-learndash-admin-menus-tabs.php:1255
 msgctxt "Builder - Load more Lessons, Topics, Quizzes or Questions"
 msgid "Load More"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1250
+#: includes/admin/class-learndash-admin-menus-tabs.php:1254
 msgctxt "Builder - Refresh list of  Lessons, Topics, Quizzes or Questions"
 msgid "Refresh"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1249
+#: includes/admin/class-learndash-admin-menus-tabs.php:1253
 msgctxt "Lesson, Topic, Quiz or Question"
 msgid "Start adding your first"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1204
+#: includes/admin/class-learndash-admin-menus-tabs.php:1208
 msgctxt "Lesson, Topic, Quiz or Question posts"
 msgid "View all"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1203
+#: includes/admin/class-learndash-admin-menus-tabs.php:1207
 msgctxt "List of recent lessons, topics, quizzes or questions"
 msgid "Recent"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1180
+#: includes/admin/class-learndash-admin-menus-tabs.php:1184
 msgctxt "Rename the current element in the builder interface"
 msgid "Rename"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1179
+#: includes/admin/class-learndash-admin-menus-tabs.php:1183
 msgctxt "Move the current element down in the builder interface"
 msgid "Move down"
 msgstr ""
 
 #. translators: placeholders: question
-#: includes/admin/class-learndash-admin-menus-tabs.php:1176
+#: includes/admin/class-learndash-admin-menus-tabs.php:1180
 msgctxt "Warning when no question was entered"
 msgid "The %s is empty."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1173
+#: includes/admin/class-learndash-admin-menus-tabs.php:1177
 msgctxt "Move the current element up in the builder interface"
 msgid "Move up"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1143
+#: includes/admin/class-learndash-admin-menus-tabs.php:1147
 msgctxt "Add lesson, topic, quiz..."
 msgid "Add"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1142
+#: includes/admin/class-learndash-admin-menus-tabs.php:1146
 msgctxt "Please wait while the form is loading"
 msgid "Please wait..."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1141
+#: includes/admin/class-learndash-admin-menus-tabs.php:1145
 msgctxt "Answer for a question"
 msgid "Enter an answer"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1140
+#: includes/admin/class-learndash-admin-menus-tabs.php:1144
 msgctxt "Title for the new course, lesson, quiz"
 msgid "Enter a title"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1115
+#: includes/admin/class-learndash-admin-menus-tabs.php:1119
 msgid "Click here to edit the matrix"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1113
+#: includes/admin/class-learndash-admin-menus-tabs.php:1117
 msgid "Edit answer settings"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1112
+#: includes/admin/class-learndash-admin-menus-tabs.php:1116
 msgid "Answer updated"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1111
+#: includes/admin/class-learndash-admin-menus-tabs.php:1115
 msgctxt "nth sort answer correct"
 msgid "<sup>th</sup>"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1110
+#: includes/admin/class-learndash-admin-menus-tabs.php:1114
 msgctxt "Third sort answer correct"
 msgid "3<sup>rd</sup>"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1109
+#: includes/admin/class-learndash-admin-menus-tabs.php:1113
 msgctxt "Second sort answer correct"
 msgid "2<sup>nd</sup>"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1108
+#: includes/admin/class-learndash-admin-menus-tabs.php:1112
 msgctxt "First sort answer correct"
 msgid "1<sup>st</sup>"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1104
+#: includes/admin/class-learndash-admin-menus-tabs.php:1108
 msgid "Update Answer"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1103
+#: includes/admin/class-learndash-admin-menus-tabs.php:1107
 msgid "Click here to edit the answer"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1101
+#: includes/admin/class-learndash-admin-menus-tabs.php:1105
 msgid "Solution hint"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1100
+#: includes/admin/class-learndash-admin-menus-tabs.php:1104
 msgid "Message for incorrect answer - optional"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1099
+#: includes/admin/class-learndash-admin-menus-tabs.php:1103
 msgid "Currently same message is displayed as above."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1098
+#: includes/admin/class-learndash-admin-menus-tabs.php:1102
 msgid "Use different message for incorrect answer"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1097
+#: includes/admin/class-learndash-admin-menus-tabs.php:1101
 msgid "Message for correct answer - optional"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1096
+#: includes/admin/class-learndash-admin-menus-tabs.php:1100
 msgid "Click here to edit the question"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1090
+#: includes/admin/class-learndash-admin-menus-tabs.php:1094
 msgid "An error occurred while submitting your request. Please try again."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1089
+#: includes/admin/class-learndash-admin-menus-tabs.php:1093
 msgctxt "Builder elements"
 msgid "Collapse All"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1088
+#: includes/admin/class-learndash-admin-menus-tabs.php:1092
 msgctxt "Builder elements"
 msgid "Expand All"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1087
+#: includes/admin/class-learndash-admin-menus-tabs.php:1091
 msgctxt "Builder actions dropdown"
 msgid "Actions"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1086
+#: includes/admin/class-learndash-admin-menus-tabs.php:1090
 msgctxt "Link back to the post type overview"
 msgid "Back to"
 msgstr ""
 
 #. translators: placeholder: Lesson.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1054
+#: includes/admin/class-learndash-admin-menus-tabs.php:1058
 msgctxt "placeholder: Lesson"
 msgid "Start by adding a %s."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1031
+#: includes/admin/class-learndash-admin-menus-tabs.php:1035
 msgid "answers"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1029
+#: includes/admin/class-learndash-admin-menus-tabs.php:1033
 msgid "Section Headings"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1028
+#: includes/admin/class-learndash-admin-menus-tabs.php:1032
 msgid "Section Heading"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1024
-#: includes/admin/class-learndash-admin-menus-tabs.php:1025
+#: includes/admin/class-learndash-admin-menus-tabs.php:1028
+#: includes/admin/class-learndash-admin-menus-tabs.php:1029
 msgid "There was an unexpected error while loading. Please try refreshing the page. If the error continues, contact LearnDash support."
 msgstr ""
 
@@ -6717,13 +6765,13 @@ msgid "You don't have any Certificates yet"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:310
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:313
 msgctxt "placeholder: Quiz"
 msgid "Show %s Leaderboard"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:284
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:285
 msgctxt "placeholder: Quiz"
 msgid "Show %s Statistics"
 msgstr ""
@@ -6763,12 +6811,12 @@ msgctxt "placeholder: Courses"
 msgid "All %s"
 msgstr ""
 
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:188
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:328
 msgctxt "Assignment approval status"
 msgid "Not Approved"
 msgstr ""
 
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:185
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:325
 msgctxt "Assignment approval status"
 msgid "Approved"
 msgstr ""
@@ -7475,7 +7523,7 @@ msgstr ""
 msgid "MM"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1093
+#: includes/admin/class-learndash-admin-menus-tabs.php:1097
 #: includes/settings/settings-fields/class-ld-settings-fields-quiz-custom-fields.php:144
 msgid "Remove"
 msgstr ""
@@ -7756,43 +7804,43 @@ msgid "Controls how the %s will look and what will be displayed"
 msgstr ""
 
 #. translators: placeholders: lesson.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:265
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:266
 msgctxt "placeholders: lesson"
 msgid "The %s will be available on a specific date."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:262
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:263
 msgid "Specific date"
 msgstr ""
 
 #. translators: placeholder: lesson, course.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:252
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:253
 msgctxt "placeholder: lesson, course."
 msgid "The %1$s will be available X days after %2$s enrollment."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:249
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:250
 msgid "Enrollment-based"
 msgstr ""
 
 #. translators: placeholder: lesson, course.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:243
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:244
 msgctxt "placeholder: lesson, course"
 msgid "The %1$s is made available on %2$s enrollment."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:240
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:241
 msgid "Immediately"
 msgstr ""
 
 #. Translators: placeholder: Lesson.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:233
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:234
 msgctxt "placeholder: Lessons"
 msgid "%s Release Schedule"
 msgstr ""
 
 #. Translators: placeholder: lesson, course.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:222
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:223
 msgctxt "placeholder: lesson, course"
 msgid "This %1$s is accessible to all visitors regardless of %2$s enrollment"
 msgstr ""
@@ -7801,8 +7849,8 @@ msgstr ""
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:70
 #: includes/class-ld-lms.php:1735 includes/class-ld-lms.php:1892
 #: includes/class-ld-lms.php:2077
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:194
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:326
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:195
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:253
 msgctxt "placeholder: Course"
 msgid "Associated %s"
 msgstr ""
@@ -8122,52 +8170,48 @@ msgid "Results Page Display"
 msgstr ""
 
 #. translators: placeholder: Questions.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:334
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:342
 msgctxt "placeholder: Questions"
 msgid "All %s required to complete"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:308
-msgid "Use a cookie to restrict ALL users, including anonymous visitors"
-msgstr ""
-
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:292
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:296
 msgid "Retries Applicable to"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:275
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:279
 msgid "You must input a whole number value or leave blank to default to 0."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:274
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:278
 msgid "Number of Retries Allowed"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:261
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:265
 msgctxt "placeholder: Quiz"
 msgid "Restrict %s Retakes"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:246
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:250
 msgid "% score"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:245
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:249
 msgid "Set the score needed to receive a certificate. This can be different from the \"Passing Score\"."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:240
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:244
 msgid "Certificate Awarded for"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:226
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:230
 msgctxt "placeholder: Quiz"
 msgid " %s Certificate"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:209
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:213
 msgid "Passing Score"
 msgstr ""
 
@@ -8190,48 +8234,48 @@ msgid "Progression and Restriction Settings"
 msgstr ""
 
 #. translators: placeholder: quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:398
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:320
 msgctxt "placeholder: quiz"
 msgid "Only registered users can take this quiz"
 msgstr ""
 
 #. translators: placeholders: quizzes, courses, quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:389
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:311
 msgctxt "placeholders: quizzes, courses, quiz."
 msgid "This option is especially useful if administering %1$s via shortcodes on non-course pages, or if your %2$s are open but you wish only authenticated users to take the %3$s."
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:385
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:307
 msgid "Allowed Users"
 msgstr ""
 
 #. translators: placeholderss: quizzes, quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:369
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:296
 msgctxt "placeholderss: Quizzes Quiz"
 msgid "Select one or more %1$s that must be completed prior to taking this %2$s."
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:364
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:291
 msgctxt "placeholder: Quiz"
 msgid "%s Prerequisites"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:242
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:298
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:218
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:226
 msgctxt "placeholder: Quiz."
 msgid "No previous %s required"
 msgstr ""
 
 #. translators: placeholder: Lesson, Topic.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:215
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:197
 msgctxt "placeholder: Lesson, Topic"
 msgid "Select a %1$s or %2$s"
 msgstr ""
 
 #. translators: placeholder: Lesson, Topic.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:206
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:186
 msgctxt "placeholder: Lesson, Topic"
 msgid "Search or select a %1$s or %2$s…"
 msgstr ""
@@ -8608,13 +8652,13 @@ msgstr ""
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-course-display-content.php:168
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-course-display-content.php:172
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-group-display-content.php:124
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:194
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:198
 msgid "Select Certificate"
 msgstr ""
 
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-course-display-content.php:139
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-group-display-content.php:120
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:165
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:169
 msgid "Search or select a certificate…"
 msgstr ""
 
@@ -8642,7 +8686,7 @@ msgstr ""
 msgid "Browser Cookie Answer Protection"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1828
+#: includes/admin/class-learndash-admin-menus-tabs.php:1842
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:716
 msgid "Advanced Settings"
 msgstr ""
@@ -8785,7 +8829,7 @@ msgstr ""
 
 #. translators: placeholders: Lesson, Course.
 #: includes/class-ld-lms.php:1739
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:224
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:225
 msgctxt "placeholders: Lesson, Course"
 msgid "Associate this %1$s with a %2$s."
 msgstr ""
@@ -8793,36 +8837,36 @@ msgstr ""
 #. translators: placeholder: Lesson.
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:132
 #: includes/class-ld-lms.php:1902 includes/class-ld-lms.php:2087
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:344
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:217
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:271
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:218
 msgctxt "placeholder: Lesson"
 msgid "Associated %s"
 msgstr ""
 
 #. translators: placeholders: Topic, Course.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:199
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:200
 msgctxt "placeholder: Topic, Course."
 msgid "Associate this %1$s with a %2$s."
 msgstr ""
 
 #. translators: placeholder: Lesson.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:165
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:166
 msgctxt "placeholder: Lesson"
 msgid "Select %s"
 msgstr ""
 
 #. translators: placeholder: Lesson.
 #: includes/class-ld-lms.php:4228
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:157
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:158
 msgctxt "placeholder: Lesson"
 msgid "Search or select a %s…"
 msgstr ""
 
 #. translators: placeholder: course.
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php:228
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:144
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:179
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:134
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:145
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:159
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:135
 msgctxt "placeholder: course"
 msgid "Select %s"
 msgstr ""
@@ -8830,7 +8874,7 @@ msgstr ""
 #. translators: placeholder: course.
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-course-access-settings.php:179
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:111
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:146
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-access-settings.php:125
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:101
 msgctxt "placeholder: course"
 msgid "Search or select a %s…"
@@ -10408,7 +10452,7 @@ msgstr ""
 msgid "points_total"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1102
+#: includes/admin/class-learndash-admin-menus-tabs.php:1106
 #: includes/admin/classes-data-reports-actions/class-learndash-admin-data-reports-user-quizzes.php:335
 #: includes/admin/ld-quiz-builder-helpers.php:123
 msgid "points"
@@ -11091,12 +11135,12 @@ msgstr ""
 msgid "[course_content] shortcode output shown here"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1095
-#: includes/admin/class-learndash-admin-menus-tabs.php:1374
-#: includes/admin/class-learndash-admin-menus-tabs.php:1395
-#: includes/admin/class-learndash-admin-menus-tabs.php:1739
-#: includes/admin/class-learndash-admin-menus-tabs.php:1790
-#: includes/admin/class-learndash-admin-menus-tabs.php:2024
+#: includes/admin/class-learndash-admin-menus-tabs.php:1099
+#: includes/admin/class-learndash-admin-menus-tabs.php:1378
+#: includes/admin/class-learndash-admin-menus-tabs.php:1399
+#: includes/admin/class-learndash-admin-menus-tabs.php:1753
+#: includes/admin/class-learndash-admin-menus-tabs.php:1804
+#: includes/admin/class-learndash-admin-menus-tabs.php:2048
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizOverall.php:93
 #: includes/settings/settings-pages/class-ld-settings-page-assignments-options.php:27
 #: includes/gutenberg/blocks/ld-certificate/index.js:105
@@ -11845,7 +11889,7 @@ msgid "Description"
 msgstr ""
 
 #. translators: placeholder: points awarded values (30/100) 30%.
-#: includes/ld-assignment-uploads.php:1076
+#: includes/ld-assignment-uploads.php:1049
 msgctxt "placeholder: points awarded values (30/100) 30%"
 msgid "Points Awarded: %s"
 msgstr ""
@@ -12250,11 +12294,11 @@ msgstr ""
 msgid "Front"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:108
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:122
 msgid "special filter"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:71
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:85
 msgid "History"
 msgstr ""
 
@@ -12274,12 +12318,12 @@ msgid "(view)"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:306
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:111
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:125
 msgid "only anonymous users"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:305
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:110
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:124
 msgid "only registered users"
 msgstr ""
 
@@ -12288,15 +12332,15 @@ msgid "all"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:302
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:105
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:119
 msgid "Which users should be displayed:"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:196
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:279
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:354
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:186
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:272
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:200
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:286
 msgid "Reset entire statistic"
 msgstr ""
 
@@ -12349,25 +12393,23 @@ msgstr ""
 msgid "Please select user name:"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1387
+#: includes/admin/class-learndash-admin-menus-tabs.php:1391
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:46
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:72
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:86
 #: includes/settings/settings-pages/class-ld-settings-page-overview.php:58
 msgid "Overview"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:2007
+#: includes/admin/class-learndash-admin-menus-tabs.php:2031
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:45
 msgid "Users"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:40
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:66
 msgid "Activate statistics"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:39
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:65
 msgid "Stats not enabled"
 msgstr ""
 
@@ -12407,7 +12449,7 @@ msgstr ""
 msgid "Choose the respective Quiz, which you would like to export and press on \"Start export\""
 msgstr ""
 
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:341
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:345
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizOverall.php:171
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizOverall.php:176
 msgid "Export"
@@ -12634,7 +12676,7 @@ msgstr ""
 
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:380
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:499
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:298
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:302
 msgid "Registered users only"
 msgstr ""
 
@@ -12958,12 +13000,12 @@ msgid "Resets user identification for all users."
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:301
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:318
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:325
 msgid "User identification has been reset."
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:300
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:318
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:325
 msgid "Reset the user identification"
 msgstr ""
 
@@ -12975,7 +13017,7 @@ msgstr ""
 msgid "user identification by cookie"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:299
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:303
 msgid "Anonymous user only"
 msgstr ""
 
@@ -12984,7 +13026,7 @@ msgid "registered users only"
 msgstr ""
 
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:379
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:297
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:301
 msgid "All users"
 msgstr ""
 
@@ -13181,7 +13223,7 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:525
 #: themes/ld30/templates/assignment/upload.php:134
 #: themes/legacy/templates/learndash_lesson_assignment_upload_form.php:62
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:414
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:426
 msgid "Upload"
 msgstr ""
 
@@ -13254,7 +13296,7 @@ msgstr ""
 msgid "Delete answer"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1106
+#: includes/admin/class-learndash-admin-menus-tabs.php:1110
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:331
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:390
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:396
@@ -13264,7 +13306,7 @@ msgstr ""
 msgid "Allow HTML"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1114
+#: includes/admin/class-learndash-admin-menus-tabs.php:1118
 msgid "Answer:"
 msgstr ""
 
@@ -13854,29 +13896,29 @@ msgstr ""
 msgid "Pos."
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:709
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:712
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:721
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:724
 msgid "Page %d"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:691
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:703
 msgid "Next"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:677
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:689
 msgid "Check"
 msgstr ""
 
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:462
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:467
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:632
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:644
 msgid "Skip question"
 msgstr ""
 
 #: includes/admin/classes-posts-edits/class-learndash-admin-question-edit.php:312
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:167
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:614
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:662
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:626
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:674
 msgid "Hint"
 msgstr ""
 
@@ -13885,19 +13927,19 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:36
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:131
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:832
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:548
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:591
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:560
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:603
 #: themes/legacy/templates/quiz/partials/show_quiz_review_legend.php:89
 #: themes/legacy/templates/quiz/partials/show_quiz_review_legend.php:143
 msgid "Incorrect"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:515
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:577
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:527
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:589
 msgid "Grading can be reviewed and adjusted."
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1107
+#: includes/admin/class-learndash-admin-menus-tabs.php:1111
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:325
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:113
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:250
@@ -13905,33 +13947,33 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:130
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:439
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:831
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:488
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:528
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:500
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:540
 #: themes/legacy/templates/quiz/partials/show_quiz_review_legend.php:72
 msgid "Correct"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:458
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:470
 msgid "This response will be reviewed and graded after submission."
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:445
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:457
 msgid "This response will be awarded full points automatically, but it will be reviewed and possibly adjusted after submission."
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:432
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:444
 msgid "This response will be awarded full points automatically, but it can be reviewed and adjusted after submission."
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:420
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:432
 msgid "Essay type not found"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:407
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:419
 msgid "Upload your answer to this question."
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:393
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:405
 msgid "Type your response here"
 msgstr ""
 
@@ -13967,12 +14009,12 @@ msgctxt "placeholder: question number, questions total"
 msgid "Question %1$s of %2$s"
 msgstr ""
 
-#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:348
+#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:344
 msgid "Show leaderboard"
 msgstr ""
 
 #. translators: Restart Quiz Button Label.
-#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:306
+#: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:305
 msgctxt "Restart Quiz Button Label"
 msgid "Restart %s"
 msgstr ""
@@ -14027,7 +14069,7 @@ msgstr ""
 msgid "Answered"
 msgstr ""
 
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:343
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-progress-settings.php:351
 msgid "Time Limit"
 msgstr ""
 
@@ -14064,30 +14106,30 @@ msgstr ""
 #. translators: Finish Quiz Button Label.
 #: themes/legacy/templates/quiz/partials/show_quiz_check_page_box.php:73
 #: themes/legacy/templates/quiz/partials/show_quiz_info_page_box.php:32
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:736
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:748
 msgctxt "Finish Quiz Button Label"
 msgid "Finish %s"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:108
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:133
 msgid "Delete all entries"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:107
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:132
 msgid "Apply"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:86
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:111
 msgid "cancel"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:85
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:110
 msgid "save"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:80
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:105
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:130
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_GobalSettings.php:147
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_GobalSettings.php:186
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_GobalSettings.php:224
@@ -14101,7 +14143,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:65
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:90
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:118
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:254
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:333
@@ -14113,43 +14155,43 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:63
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:88
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_FrontToplist.php:22
 msgid "Entered on"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:61
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:86
 #: themes/legacy/templates/quiz/partials/show_quiz_toplist_add_box.php:43
 msgid "E-Mail"
 msgstr ""
 
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:86
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:60
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:85
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:248
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:829
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:114
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:128
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:670
 msgid "User"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:42
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:67
 msgid "UR = unregistered user, R = registered user"
 msgstr ""
 
 #: includes/admin/classes-posts-listings/class-learndash-admin-questions-listing.php:88
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:42
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:62
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:67
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:87
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionOverall.php:53
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:1231
 #: includes/settings/settings-fields/class-ld-settings-fields-quiz-custom-fields.php:64
 msgid "Type"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:30
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:55
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:229
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:312
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:141
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:235
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:155
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:249
 msgid "How many entries should be shown on one page:"
 msgstr ""
 
@@ -14165,7 +14207,7 @@ msgstr ""
 msgid "Best user"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:20
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:45
 msgid "Sort by:"
 msgstr ""
 
@@ -14262,8 +14304,8 @@ msgstr ""
 msgid "No category"
 msgstr ""
 
-#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:1202
-#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_QuizCompleted.php:270
+#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Quiz.php:1258
+#: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_QuizCompleted.php:302
 #: themes/legacy/templates/quiz/partials/show_quiz_result_box.php:239
 msgid "Not categorized"
 msgstr ""
@@ -15753,8 +15795,8 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:277
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:352
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:359
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:184
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:270
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:198
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:284
 #: includes/settings/settings-sections/class-ld-settings-section-translations-refresh.php:63
 msgid "Refresh"
 msgstr ""
@@ -15795,7 +15837,7 @@ msgid "Enable Nested URLs"
 msgstr ""
 
 #. translators: placeholder: Quizzes.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1408
+#: includes/admin/class-learndash-admin-menus-tabs.php:1412
 #: includes/settings/settings-pages/class-ld-settings-page-overview.php:1021
 #: includes/settings/settings-sections/class-ld-settings-section-permalinks.php:169
 msgctxt "placeholder: Quizzes"
@@ -15818,7 +15860,7 @@ msgid "%s"
 msgstr ""
 
 #. translators: placeholder: Courses.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1987
+#: includes/admin/class-learndash-admin-menus-tabs.php:2011
 #: includes/settings/settings-pages/class-ld-settings-page-overview.php:1003
 #: includes/settings/settings-sections/class-ld-settings-section-groups-management-display.php:184
 #: includes/settings/settings-sections/class-ld-settings-section-permalinks.php:136
@@ -16066,7 +16108,7 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1094
+#: includes/admin/class-learndash-admin-menus-tabs.php:1098
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_GobalSettings.php:38
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:283
 #: includes/settings/settings-sections/class-ld-settings-section-side-submit.php:65
@@ -16134,9 +16176,9 @@ msgctxt "placeholder: Course"
 msgid "%s Points"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1366
-#: includes/admin/class-learndash-admin-menus-tabs.php:1729
-#: includes/admin/class-learndash-admin-menus-tabs.php:1779
+#: includes/admin/class-learndash-admin-menus-tabs.php:1370
+#: includes/admin/class-learndash-admin-menus-tabs.php:1743
+#: includes/admin/class-learndash-admin-menus-tabs.php:1793
 #: includes/admin/classes-posts-listings/class-learndash-admin-courses-listing.php:137
 #: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:228
 #: includes/settings/settings-pages/class-ld-settings-page-courses-builder-single.php:156
@@ -16307,13 +16349,13 @@ msgstr ""
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Front.php:62
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Front.php:94
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Preview.php:21
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:52
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:77
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionOverall.php:174
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:53
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:78
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:170
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:208
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:256
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:92
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:184
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:222
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:270
 #: includes/quiz/ld-quiz-pro.php:1622
 #: themes/legacy/templates/quiz/partials/show_quiz_toplist_add_box.php:35
 msgid "Loading"
@@ -16331,47 +16373,47 @@ msgstr ""
 msgid "Invalid essay uploaded file type."
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:298
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:300
 msgid "Move to Trash"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:296
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:298
 msgid "Delete Permanently"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:268
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:270
 msgid "Submitted on: <b>%1$s</b>"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:146
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:148
 msgid "We could not find the essay question for this response"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:139
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:141
 msgid "Points awarded"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:137
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:139
 msgid "Points available"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1092
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:135
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:77
+#: includes/admin/class-learndash-admin-menus-tabs.php:1096
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:137
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:102
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionOverall.php:87
 msgid "Edit"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:111
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:113
 msgid "Essay Question"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:101
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:103
 #: includes/lib/wp-pro-quiz/lib/controller/WpProQuiz_Controller_Statistics.php:865
 msgid "Graded"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:99
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:101
 msgid "Not Graded"
 msgstr ""
 
@@ -16379,7 +16421,7 @@ msgstr ""
 msgid "Essay Grading Status"
 msgstr ""
 
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:333
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:335
 msgid "Upload was not provided for this question"
 msgstr ""
 
@@ -16547,7 +16589,7 @@ msgid "No users."
 msgstr ""
 
 #: includes/group/ld-groups-membership.php:250
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:104
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:129
 #: includes/shortcodes/ld_group_user_list.php:59
 #: includes/shortcodes/ld_group_user_list.php:68
 msgid "Action"
@@ -16661,40 +16703,40 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:1246
+#: includes/ld-assignment-uploads.php:1219
 msgid "The uploaded file type is not allowed."
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:1229
+#: includes/ld-assignment-uploads.php:1202
 msgid "Uploaded file size exceeds allowed limit."
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:919
+#: includes/ld-assignment-uploads.php:892
 msgid "Parent:"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:918
+#: includes/ld-assignment-uploads.php:891
 msgid "No assignment found in Trash"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:917
+#: includes/ld-assignment-uploads.php:890
 msgid "No assignment found"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:916
+#: includes/ld-assignment-uploads.php:889
 msgid "Search Assignments"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:914
+#: includes/ld-assignment-uploads.php:887
 msgid "View Assignment"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:913
+#: includes/ld-assignment-uploads.php:886
 msgid "Edit Assignment"
 msgstr ""
 
-#: includes/ld-assignment-uploads.php:911
-#: includes/ld-assignment-uploads.php:920
+#: includes/ld-assignment-uploads.php:884
+#: includes/ld-assignment-uploads.php:893
 #: themes/ld30/templates/assignment/listing.php:177
 #: themes/ld30/templates/shortcodes/profile/assignments.php:11
 msgid "Assignments"
@@ -16717,15 +16759,14 @@ msgid "Update & Approve"
 msgstr ""
 
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:39
-#: includes/ld-assignment-uploads.php:912
+#: includes/ld-assignment-uploads.php:885
 msgid "Assignment"
 msgstr ""
 
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:186
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:304
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:256
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:226
-#: includes/ld-assignment-uploads.php:785
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:396
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:366
 msgid "Approve"
 msgstr ""
 
@@ -16834,8 +16875,8 @@ msgid "Remove translation from server"
 msgstr ""
 
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:209
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:310
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:311
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:312
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:313
 #: includes/class-ld-translations.php:607
 #: includes/settings/settings-sections/class-ld-settings-section-questions-management-display.php:112
 #: includes/settings/settings-sections/class-ld-settings-section-questions-taxonomies.php:221
@@ -16868,7 +16909,7 @@ msgid "No Translations installed"
 msgstr ""
 
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:239
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:254
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:394
 #: includes/class-ld-translations.php:514
 #: includes/ld-assignment-uploads.php:779
 #: includes/settings/settings-sections/class-ld-settings-section-support-copy-system-info.php:62
@@ -17028,7 +17069,7 @@ msgid "week(s)"
 msgstr ""
 
 #: includes/class-ld-lms.php:3084
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:165
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:166
 msgid "day(s)"
 msgstr ""
 
@@ -17125,7 +17166,7 @@ msgstr ""
 
 #. translators: placeholder: Lesson.
 #: includes/class-ld-lms.php:1821
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:214
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-lesson-access-settings.php:215
 #: themes/ld30/includes/helpers.php:751
 msgctxt "placeholder: Lesson"
 msgid "Sample %s"
@@ -17227,7 +17268,7 @@ msgid "Forced %s Timer"
 msgstr ""
 
 #. translators: placeholders: course.
-#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:192
+#: includes/settings/settings-metaboxes/class-ld-settings-metabox-topic-access-settings.php:193
 msgctxt "Associated Course Label"
 msgid "Associated %s"
 msgstr ""
@@ -18037,7 +18078,6 @@ msgstr ""
 
 #. translators: placeholder: Topic.
 #: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:705
-#: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:732
 #: includes/admin/classes-builders/class-learndash-admin-quiz-builder-metabox.php:726
 msgctxt "placeholder: Topic"
 msgid "Edit %s Settings (new window)"
@@ -18081,7 +18121,7 @@ msgctxt "placeholder: Lesson"
 msgid "Move %s"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1091
+#: includes/admin/class-learndash-admin-menus-tabs.php:1095
 #: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:619
 #: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:689
 #: includes/admin/classes-builders/class-learndash-admin-course-builder-metabox.php:717
@@ -18287,13 +18327,13 @@ msgid "Expand All"
 msgstr ""
 
 #: includes/admin/classes-posts-listings/class-learndash-admin-users-listing.php:120
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:15
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:40
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:216
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Statistics.php:297
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:99
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:161
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:222
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:247
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:113
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:175
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:236
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsNew.php:261
 msgid "Filter"
 msgstr ""
 
@@ -18312,20 +18352,20 @@ msgstr ""
 msgid "Changelog"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1691
-#: includes/admin/class-learndash-admin-menus-tabs.php:1717
-#: includes/admin/class-learndash-admin-menus-tabs.php:1890
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:318
+#: includes/admin/class-learndash-admin-menus-tabs.php:1704
+#: includes/admin/class-learndash-admin-menus-tabs.php:1731
+#: includes/admin/class-learndash-admin-menus-tabs.php:1913
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:321
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_FrontToplist.php:12
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:924
 #: includes/settings/settings-metaboxes/class-ld-settings-metabox-quiz-admin-data-handling-settings.php:483
 msgid "Leaderboard"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1680
-#: includes/admin/class-learndash-admin-menus-tabs.php:1709
-#: includes/admin/class-learndash-admin-menus-tabs.php:1879
-#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:292
+#: includes/admin/class-learndash-admin-menus-tabs.php:1685
+#: includes/admin/class-learndash-admin-menus-tabs.php:1723
+#: includes/admin/class-learndash-admin-menus-tabs.php:1894
+#: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:293
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:182
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuizEdit.php:187
 #: themes/ld30/templates/shortcodes/profile/quizzes.php:32
@@ -18335,7 +18375,7 @@ msgid "Statistics"
 msgstr ""
 
 #. translators: placeholder: Quiz.
-#: includes/admin/class-learndash-admin-menus-tabs.php:1805
+#: includes/admin/class-learndash-admin-menus-tabs.php:1819
 #: includes/admin/classes-posts-listings/class-learndash-admin-quizzes-listing.php:266
 #: includes/class-ld-custom-label.php:68
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_Import.php:63
@@ -18371,13 +18411,13 @@ msgstr ""
 #: includes/admin/class-learndash-admin-posts-listing.php:906
 #: includes/admin/class-learndash-admin-posts-listing.php:946
 #: includes/admin/class-learndash-admin-posts-listing.php:999
-#: includes/admin/class-learndash-admin-posts-listing.php:1068
-#: includes/admin/class-learndash-admin-posts-listing.php:1111
-#: includes/admin/class-learndash-admin-posts-listing.php:1154
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:454
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:483
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:533
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:589
+#: includes/admin/class-learndash-admin-posts-listing.php:1073
+#: includes/admin/class-learndash-admin-posts-listing.php:1116
+#: includes/admin/class-learndash-admin-posts-listing.php:1159
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:594
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:623
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:673
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:729
 #: includes/admin/classes-posts-listings/class-learndash-admin-questions-listing.php:211
 #: includes/admin/classes-posts-listings/class-learndash-admin-questions-listing.php:251
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:230
@@ -18387,8 +18427,8 @@ msgstr ""
 msgid "filter"
 msgstr ""
 
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:233
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:432
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:373
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:572
 msgid "approve"
 msgstr ""
 
@@ -18410,13 +18450,13 @@ msgstr ""
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:201
 #: includes/admin/classes-posts-edits/class-learndash-admin-question-edit.php:267
 #: includes/admin/classes-posts-edits/class-learndash-admin-question-edit.php:490
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:208
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:216
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:225
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:412
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:420
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:348
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:356
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:365
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:552
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:560
 #: includes/admin/classes-posts-listings/class-learndash-admin-questions-listing.php:93
-#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:64
+#: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_AdminToplist.php:89
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_FrontToplist.php:23
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:60
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_QuestionEdit.php:67
@@ -18434,8 +18474,8 @@ msgstr ""
 #: includes/settings/shortcodes-sections/quizinfo.php:39
 #: themes/ld30/templates/shortcodes/profile.php:118
 #: themes/ld30/templates/shortcodes/profile/quiz-row.php:161
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:500
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:561
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:512
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:573
 #: themes/legacy/templates/quiz_progress_rows.php:148
 msgid "Points"
 msgstr ""
@@ -18534,14 +18574,14 @@ msgstr ""
 #: includes/admin/class-learndash-admin-posts-listing.php:913
 #: includes/admin/class-learndash-admin-posts-listing.php:965
 #: includes/admin/class-learndash-admin-posts-listing.php:1017
-#: includes/admin/class-learndash-admin-posts-listing.php:1087
-#: includes/admin/class-learndash-admin-posts-listing.php:1130
-#: includes/admin/class-learndash-admin-posts-listing.php:1172
+#: includes/admin/class-learndash-admin-posts-listing.php:1092
+#: includes/admin/class-learndash-admin-posts-listing.php:1135
+#: includes/admin/class-learndash-admin-posts-listing.php:1177
 #: includes/admin/class-learndash-admin-user-profile-edit.php:524
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:460
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:502
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:554
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:606
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:600
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:642
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:694
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:746
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:237
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:261
 #: includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_StatisticsAjax.php:594
@@ -18561,7 +18601,7 @@ msgstr ""
 #. translators: placeholder: Courses.
 #: includes/admin/class-learndash-admin-user-profile-edit.php:490
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:174
-#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:194
+#: includes/admin/classes-posts-listings/class-learndash-admin-assignments-listing.php:334
 #: themes/ld30/templates/shortcodes/profile/assignments.php:24
 #: themes/ld30/templates/shortcodes/profile/quiz-row.php:157
 #: themes/legacy/templates/course.php:163
@@ -19103,27 +19143,27 @@ msgctxt "placeholder: Quiz"
 msgid "Advanced %s"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:789
+#: includes/admin/class-learndash-admin-menus-tabs.php:793
 msgctxt "LMS License Tab Label"
 msgid "LMS License"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:699
+#: includes/admin/class-learndash-admin-menus-tabs.php:703
 msgctxt "Transactions Tab Label"
 msgid "Transactions"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:688
+#: includes/admin/class-learndash-admin-menus-tabs.php:692
 msgctxt "Reports Menu Label"
 msgid "Reports"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:673
+#: includes/admin/class-learndash-admin-menus-tabs.php:676
 msgctxt "Quiz Leaderboard Tab Label"
 msgid "Leaderboard"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:663
+#: includes/admin/class-learndash-admin-menus-tabs.php:664
 msgctxt "Quiz Statistics Tab Label"
 msgid "Statistics"
 msgstr ""
@@ -19134,7 +19174,7 @@ msgctxt "Edit Quiz Label"
 msgid "Edit %s"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1422
+#: includes/admin/class-learndash-admin-menus-tabs.php:1426
 msgctxt "Quiz Import/Export Tab Label"
 msgid "Import/Export"
 msgstr ""
@@ -19188,7 +19228,7 @@ msgid "Both Email Subject and Message are required and cannot be empty."
 msgstr ""
 
 #: includes/admin/class-learndash-admin-groups-users-list.php:283
-#: includes/admin/class-learndash-admin-posts-listing.php:1296
+#: includes/admin/class-learndash-admin-posts-listing.php:1301
 #: themes/ld30/templates/shortcodes/profile/search-results.php:13
 msgid "Reset"
 msgstr ""
@@ -19246,9 +19286,9 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: includes/admin/class-learndash-admin-menus-tabs.php:1531
+#: includes/admin/class-learndash-admin-menus-tabs.php:1535
 #: themes/ld30/templates/modules/messages/lesson-progression.php:15
-#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:647
+#: themes/legacy/templates/quiz/partials/show_quiz_questions_box.php:659
 msgid "Back"
 msgstr ""
 
@@ -19280,18 +19320,18 @@ msgstr ""
 #: includes/admin/class-learndash-admin-posts-listing.php:909
 #: includes/admin/class-learndash-admin-posts-listing.php:955
 #: includes/admin/class-learndash-admin-posts-listing.php:1008
-#: includes/admin/class-learndash-admin-posts-listing.php:1077
-#: includes/admin/class-learndash-admin-posts-listing.php:1120
-#: includes/admin/class-learndash-admin-posts-listing.php:1163
+#: includes/admin/class-learndash-admin-posts-listing.php:1082
+#: includes/admin/class-learndash-admin-posts-listing.php:1125
+#: includes/admin/class-learndash-admin-posts-listing.php:1168
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:115
 #: includes/admin/classes-posts-edits/class-learndash-admin-assignment-edit.php:161
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:211
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:231
-#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:251
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:457
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:493
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:544
-#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:599
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:213
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:233
+#: includes/admin/classes-posts-edits/class-learndash-admin-essay-edit.php:253
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:597
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:633
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:684
+#: includes/admin/classes-posts-listings/class-learndash-admin-essays-listing.php:739
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:233
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:257
 #: includes/admin/classes-posts-listings/class-learndash-admin-transactions-listing.php:297

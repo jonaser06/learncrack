@@ -9,13 +9,23 @@ objCourse = {
         objCourse.video();
     },
     video: ()=>{
+        setTimeout(() => {
+            document.querySelector("#title_video_").setAttribute("style","opacity: 0;");
+        }, 500);
         reproductor.on('play',()=>{
             console.log(reproductor.readyState());
+            document.querySelector("#title_video_").setAttribute("style","opacity: 0;");
+            // console.log(reproductor.duration());
+            
+        });
+        reproductor.on('pause',()=>{
+            console.log('pause');
+            document.querySelector("#title_video_").setAttribute("style","opacity: 100;");
             // console.log(reproductor.duration());
             
         });
         reproductor.on('ended', ()=>{
-            document.querySelector("#sfwd-mark-complete").setAttribute("style","display: inline-block;");
+            document.querySelector("#sfwd-mark-complete").setAttribute("style","opacity: 100;");
             console.log('Terminado!');
         });
         // if (reproductor.readyState() < 1) {

@@ -117,13 +117,23 @@ html{
     z-index: 9;
     height: calc( 100% - 50px );
 }
-.pad1 p{
-    border-bottom: 1px solid #F2E6D0;
+.pad1 .lesson_item{
+    position: relative;
     margin: 0;
-}
-.pad1 p a{
     display: block;
     padding: 10px 20px;
+    fill: #c8cdd0;
+}
+.line_lesson{
+    position: absolute;
+    top: 2.3rem;
+    left: 2.7rem;
+    width: 2px;
+    height: 40px;
+    background: #c8cdd0;
+}
+.pad1 p a{
+    
 }
 .pad1 p:first-child{
     border-top: 1px solid #F2E6D0;
@@ -185,7 +195,8 @@ html{
     border-radius: 8px;
 }
 .heading{
-    border-bottom: 1px solid #F2E6D0;
+    position: relative;
+    background: #fff;
     padding: 10px 20px;
 }
 
@@ -195,10 +206,11 @@ html{
 #sfwd-mark-complete{
     position: absolute;
     z-index: 99999;
-    display: none;
+    opacity: 0;
     right: 10px;
     bottom: 0px;
     transform: translate(0, -100%);
+    transition: opacity 0.5s linear;
 }
 .learndash_mark_complete_button{
     background: rgba(0,0,0,0.7) !important;
@@ -206,6 +218,19 @@ html{
 }
 .video-content-play{
     width: 100%;
+}
+.video-content-play h3{
+    opacity: 100;
+    position: absolute;
+    z-index: 99;
+    margin: 5px 20px;
+    display: block;
+    color: #FFF;
+    transition: opacity 0.5s linear;
+    text-shadow: 1px 1px 4px #000;
+    font-weight: 100;
+    font-size: 1.5rem;
+
 }
 @media (max-width: 768px){
     .tabs{
