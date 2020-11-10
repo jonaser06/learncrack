@@ -232,6 +232,16 @@ html{
     font-size: 1.5rem;
 
 }
+.title-resources{
+    width: 100%;
+    border: 1px solid #007791;
+}
+.title-resources a{
+    color: #007791;
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+}
 @media (max-width: 768px){
     .tabs{
         height: inherit;
