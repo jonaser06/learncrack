@@ -279,7 +279,7 @@ background: #84bfb9 !important;
         display: none;
     }
     #course_list{
-        width: 100% !important;
+        width: 100% !important; 
     }
     #learndash_lesson_topics_list>div, #learndash_lessons, #learndash_profile, #learndash_quizzes{
         margin-top: 0px;
