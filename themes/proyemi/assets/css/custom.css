@@ -253,6 +253,17 @@ background: #84bfb9 !important;
 .blog-entry-title{
     margin: 0px !important;
 }
+#course-reviews-section{
+    max-width: 65rem;
+    margin-left: 4.8rem;
+    margin-right: 4.8rem;
+}
+.filter-options select.select-text{
+    line-height: 18px;
+}
+.ratings-after-title span{
+    
+}
 @media (max-width: 768px){
     .list-course-title {
         text-align: left;
