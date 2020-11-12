@@ -166,14 +166,13 @@ background: #84bfb9 !important;
 }
 .squart-option{
     width: 20%;
-    height: 80px;
+    height: 60px;
     margin: 5px;
-    /* background: #84BFB9; */
+    background: #84BFB9;
     text-align: center;
-    padding-top: 10px;
-    /* border-radius: 15px; */
-    fill: #84BFB9;
-    box-shadow: 0 2px 4px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+    padding-top: 8px;
+    border-radius: 15px;
+    /* fill: #84BFB9; */
 }
 /* reset para cursos */
 #course_list>div>div, #lessons_list>div>div, #quiz_list>div>div, .single-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn, .singular-sfwd-lessons #learndash_lesson_topics_list ul>li>span.sn {
@@ -269,10 +268,12 @@ background: #84bfb9 !important;
         display: flex;
     }
     .squeart-container .active{
-        border-bottom: 4px solid #84BFB9;
+        /* border-bottom: 4px solid #84BFB9; */
+        box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.6);
     }
     .title-opcion{
         font-size: 1rem;
+        margin-top: 4px;
     }
     .profile_info{
         display: none;
