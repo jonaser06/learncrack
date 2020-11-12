@@ -261,10 +261,11 @@ background: #84bfb9 !important;
 .filter-options select.select-text{
     line-height: 18px;
 }
-.ratings-after-title span{
-    
-}
 @media (max-width: 768px){
+    #course-reviews-section{
+        margin-left: 1.8rem;
+        margin-right: 1.8rem;
+    }
     .list-course-title {
         text-align: left;
         width: 100% !important;
