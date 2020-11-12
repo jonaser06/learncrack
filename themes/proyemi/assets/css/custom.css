@@ -255,8 +255,8 @@ background: #84bfb9 !important;
 }
 #course-reviews-section{
     max-width: 65rem;
-    margin-left: 4.8rem;
-    margin-right: 4.8rem;
+    margin-left: 18%;
+    margin-right: 8rem;
 }
 .filter-options select.select-text{
     line-height: 18px;
