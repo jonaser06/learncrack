@@ -77,7 +77,7 @@
 		</div>
 	</div>
 </div>
-<div id="learndash_profile" style="overflow: hidden;">
+<div id="learndash_profile" style="overflow: hidden; box-shadow: none; padding-bottom: 5px;">
 
     <div class="expand_collapse">
         <a href="#" onClick='return flip_expand_all("#course_list");'><?php esc_html_e( 'Expand All', 'learndash' ); ?></a> | <a href="#" onClick='return flip_collapse_all("#course_list");'><?php esc_html_e( 'Collapse All', 'learndash' ); ?></a>
