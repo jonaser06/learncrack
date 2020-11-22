@@ -262,6 +262,30 @@
                     </div>
                 </div>
                 <?php endforeach; ?>
+                
+                <?php /*
+
+                        if ( ! empty( $quizzes ) ) { ?>
+                            <div id="learndash_quizzes" class="learndash_quizzes">
+                                <div id="quiz_heading">
+                                        <span><?php echo LearnDash_Custom_Label::get_label( 'quizzes' ); ?></span><span class="right"><?php esc_html_e( 'Status', 'learndash' ); ?></span>
+                                </div>
+                                <div id="quiz_list" class=“quiz_list”>
+
+                                    <?php foreach ( $quizzes as $quiz ) : ?>
+                                        <div id='post-<?php echo esc_attr( $quiz['post']->ID ); ?>' class='<?php echo esc_attr( $quiz['sample'] ); ?>'>
+                                            <div class="list-count"><?php echo $quiz['sno']; ?></div>
+                                            <h4>
+                                                <a class='<?php echo esc_attr( $quiz['status'] ); ?>' href='<?php echo esc_url( learndash_get_step_permalink( $quiz['post']->ID, $course_id ) ); ?>'><?php echo apply_filters( 'the_title', $quiz['post']->post_title, $quiz['post']->ID ); ?></a>
+                                            </h4>
+                                        </div>						
+                                    <?php endforeach; ?>
+
+                                </div>
+                            </div>
+                        <?php }
+                */
+                ?>
             </div>
         </div>
     </div>
