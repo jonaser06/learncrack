@@ -133,7 +133,7 @@
 
 	<div id="course_list">
 		<?php 
-			if($url == 'orders' || $url == 'downloads' || $url == 'edit-address' || $url == 'edit-account' | $url == 'customer-logout'):
+			if($url == 'orders' || $url == 'downloads' || $url == 'edit-address' || $url == 'edit-account' | $url == 'customer-logout' || $url == 'lost-password'):
 				echo do_shortcode('[woocommerce_my_account]');
 			else:
 		?>
