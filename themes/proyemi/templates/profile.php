@@ -121,7 +121,9 @@
 			<a href="<?php echo get_site_url(null, '/my-account/customer-logout/'); ?>" class="logout">Salir</a>
 		</div>
 	</div>
+
 	<?php } ?>
+
 	<div class="learndash_profile_heading no_radius clear_both">
 		<span class="ld_profile_course"><?php
 		// translators: placeholder: Courses.
@@ -137,51 +139,51 @@
 				echo do_shortcode('[woocommerce_my_account]');
 			else:
 		?>
-		<!-- cursos -->
-		<?php if ( ! empty( $user_courses ) ) : ?>
+			<!-- cursos -->
+			<?php if ( ! empty( $user_courses ) ) : ?>
 
-			<?php foreach ( $user_courses as $course_id ) : ?>
+				<?php foreach ( $user_courses as $course_id ) : ?>
 
-			<?php
-				$course = get_post( $course_id);
+				<?php
+					$course = get_post( $course_id);
 
-				$course_link = get_permalink( $course_id );
+					$course_link = get_permalink( $course_id );
 
-				$progress = learndash_course_progress( array(
-					'user_id'   => $user_id,
-					'course_id' => $course_id,
-					'array'     => true
-				) );
+					$progress = learndash_course_progress( array(
+						'user_id'   => $user_id,
+						'course_id' => $course_id,
+						'array'     => true
+					) );
 
-				$status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
+					$status = ( $progress['percentage'] == 100 ) ? 'completed' : 'notcompleted';
 
-				$thumbID = get_post_thumbnail_id( $course->ID );
-				$img = (wp_get_attachment_url( $thumbID ))?wp_get_attachment_url( $thumbID ):'null';
-				
-			?>
+					$thumbID = get_post_thumbnail_id( $course->ID );
+					$img = (wp_get_attachment_url( $thumbID ))?wp_get_attachment_url( $thumbID ):'null';
+					
+				?>
 
-			<div class="list-course_">
-				<div class="list-course-cover">
-					<img src="<?php echo $img; ?>" alt="">
+				<div class="list-course_">
+					<div class="list-course-cover">
+						<img src="<?php echo $img; ?>" alt="">
+					</div>
+					<div class="list-course-content">
+						<div class="list-course-title">
+							<a href="<?php echo esc_url( $course_link ); ?>"><h5><?php echo $course->post_title; ?></h5></a>
+						</div>
+						<div class="list-course-progress">
+							<div class="percent-coourse" style="width:<?php echo $progress['percentage']; ?>% !important;"></div>
+						</div>
+						<div class="list-course-status">
+							<?php echo $progress['percentage']; ?>%
+						</div>
+					</div>
 				</div>
-				<div class="list-course-content">
-					<div class="list-course-title">
-						<a href="<?php echo esc_url( $course_link ); ?>"><h5><?php echo $course->post_title; ?></h5></a>
-					</div>
-					<div class="list-course-progress">
-						<div class="percent-coourse" style="width:<?php echo $progress['percentage']; ?>% !important;"></div>
-					</div>
-					<div class="list-course-status">
-						<?php echo $progress['percentage']; ?>%
-					</div>
-				</div>
-			</div>
 
-			<?php endforeach; ?>
+				<?php endforeach; ?>
 
-		<?php endif; ?>
+			<?php endif; ?>
 		
-	<?php endif; ?>
+		<?php endif; ?>
 	</div>
 </div>
 <?php
