@@ -131,9 +131,14 @@ background: #84bfb9 !important;
 .woocommerce-MyAccount-content{
     width: 100% !important;
 }
+.woocommerce-message a{
+    width: auto;
+}
 #course_list{
-    padding-left: 10px;
-    padding-right: 10px;
+    /* padding-left: 10px;
+    padding-right: 10px; */
+    padding: 50px;
+    box-sizing: border-box;
 }
 #learndash_lesson_topics_list>div, #learndash_lessons, #learndash_profile, #learndash_quizzes{
     margin-top: 100px;
