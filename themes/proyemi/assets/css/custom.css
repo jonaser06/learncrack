@@ -184,8 +184,8 @@ background: #84bfb9 !important;
     display: block;    
 }
 #course_list {
-    padding-left: 0px;
-    padding-right: 0px;
+    /* padding-left: 0px;
+    padding-right: 0px; */
 }
 /* lista de cursos */
 .list-course_{
