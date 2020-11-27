@@ -177,7 +177,7 @@
         <div class="top-container">
             <h1><?php the_title(); ?></h1>
             <div class="course-description">
-                <p>Creado por: <?php the_author_meta( 'user_nicename' , $author_id ); ?></p>
+                <p>Creado por: <?php the_author_meta( 'display_name' , $author_id ); ?></p>
                 <p>
                     <span>
                         <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 6.00388L6.74821 5.56984C6.59347 5.48135 6.40331 5.48193 6.24911 5.57138C6.09491 5.66083 6 5.82562 6 6.00388H6.5ZM6.5 10.007H6C6 10.1852 6.09491 10.35 6.24911 10.4395C6.40331 10.5289 6.59347 10.5295 6.74821 10.441L6.5 10.007ZM10 8.00543L10.2482 8.43947C10.4039 8.35043 10.5 8.1848 10.5 8.00543C10.5 7.82606 10.4039 7.66044 10.2482 7.57139L10 8.00543ZM7.5 14.5109C3.91051 14.5109 1 11.5986 1 8.00543H0C0 12.1502 3.3575 15.5109 7.5 15.5109V14.5109ZM14 8.00543C14 11.5986 11.0895 14.5109 7.5 14.5109V15.5109C11.6425 15.5109 15 12.1502 15 8.00543H14ZM7.5 1.5C11.0895 1.5 14 4.41222 14 8.00543H15C15 3.86066 11.6425 0.5 7.5 0.5V1.5ZM7.5 0.5C3.3575 0.5 0 3.86066 0 8.00543H1C1 4.41222 3.91051 1.5 7.5 1.5V0.5ZM6 6.00388V10.007H7V6.00388H6ZM6.74821 10.441L10.2482 8.43947L9.75179 7.57139L6.25179 9.57295L6.74821 10.441ZM10.2482 7.57139L6.74821 5.56984L6.25179 6.43792L9.75179 8.43947L10.2482 7.57139Z" fill="#333333"/></svg>
@@ -227,7 +227,7 @@
         <div class="autor-course">
             <div class="autor-course-info">
                 <h2>Dictado por</h2>
-                <h2 style="margin:0px;text-transform:capitalize;"><?php the_author_meta( 'user_nicename' , $author_id ); ?></h2>
+                <h2 style="margin:0px;text-transform:capitalize;"><?php the_author_meta( 'display_name' , $author_id ); ?></h2>
                 <h5>Diseñadora y Creativa</h5>
             </div>
             <div class="autor-course-avatar">
