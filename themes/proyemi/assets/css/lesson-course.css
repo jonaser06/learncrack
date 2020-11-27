@@ -116,6 +116,7 @@ html{
     top: 0%;
     z-index: 9;
     height: calc( 100% - 50px );
+    overflow: scroll;
 }
 .pad1 .lesson_item{
     position: relative;
