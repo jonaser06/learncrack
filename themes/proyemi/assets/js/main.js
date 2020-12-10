@@ -65,17 +65,21 @@ objCourse = {
         let tab1 = document.querySelector(".tab1");
         let tab2 = document.querySelector(".tab2");
         let tab3 = document.querySelector(".tab3");
+        let tab4 = document.querySelector(".tab4");
 
         let pad1 = document.querySelector(".pad1");
         let pad2 = document.querySelector(".pad2");
         let pad3 = document.querySelector(".pad3");
+        let pad4 = document.querySelector(".pad4");
 
         tab1.addEventListener("click",()=>{
             tab2.classList.remove("active");
             tab3.classList.remove("active");
+            tab4.classList.remove("active");
 
             pad2.classList.remove("active");
             pad3.classList.remove("active");
+            pad4.classList.remove("active");
 
             tab1.classList.add("active");
             pad1.classList.add("active");
@@ -84,9 +88,11 @@ objCourse = {
         tab2.addEventListener("click",()=>{
             tab1.classList.remove("active");
             tab3.classList.remove("active");
+            tab4.classList.remove("active");
 
             pad1.classList.remove("active");
             pad3.classList.remove("active");
+            pad4.classList.remove("active");
 
             tab2.classList.add("active");
             pad2.classList.add("active");
@@ -95,13 +101,28 @@ objCourse = {
         tab3.addEventListener("click",()=>{
             tab1.classList.remove("active");
             tab2.classList.remove("active");
+            tab4.classList.remove("active");
 
             pad1.classList.remove("active");
             pad2.classList.remove("active");
+            pad4.classList.remove("active");
 
             tab3.classList.add("active");
             pad3.classList.add("active");
-        });  
+        });
+        
+        tab4.addEventListener("click",()=>{
+            tab1.classList.remove("active");
+            tab2.classList.remove("active");
+            tab3.classList.remove("active");
+
+            pad1.classList.remove("active");
+            pad2.classList.remove("active");
+            pad3.classList.remove("active");
+
+            tab4.classList.add("active");
+            pad4.classList.add("active");
+        });
     }
 };
 

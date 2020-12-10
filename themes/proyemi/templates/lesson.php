@@ -119,6 +119,68 @@ function learndash_30_get_course_sections( $course_id = null ) {
 
 add_shortcode('comments_wp','get_comentarios');
 
+#para la subida de archivos
+
+function learndash_get_template_part( $filepath, $args = null, $echo = false ) {
+	// Keep this in the logic from LD core to allow the same overrides.
+	$filepath = SFWD_LMS::get_template( $filepath, null, null, true );
+
+	if ( ( ! empty( $filepath ) ) && ( file_exists( $filepath ) ) ) {
+
+		ob_start();
+		extract( $args );
+		include $filepath;
+		$output = ob_get_clean();
+
+		if ( $echo ) {
+			echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Outputting HTML from templates
+		} else {
+			return $output;
+		}
+	}
+}
+
+function learndash_get_points_awarded_array( $assignment_id ) {
+
+	$points_enabled = learndash_assignment_is_points_enabled( $assignment_id );
+
+	if ( ! $points_enabled ) {
+		return false;
+	}
+
+	$current = get_post_meta( $assignment_id, 'points', true );
+
+	if ( is_numeric( $current ) ) {
+		$assignment_settings_id = intval( get_post_meta( $assignment_id, 'lesson_id', true ) );
+		$max_points             = learndash_get_setting( $assignment_settings_id, 'lesson_assignment_points_amount' );
+		$max_points             = intval( $max_points );
+		if ( ! empty( $max_points ) ) {
+			$percentage = ( intval( $current ) / intval( $max_points ) ) * 100;
+			$percentage = round( $percentage, 2 );
+		} else {
+			$percentage = 0.00;
+		}
+
+		/**
+		 * Filters Points awarded data. Used to modify points given for any particular assignment.
+		 *
+		 * @param array $points_awarded Array for points awarded details.
+		 * @param int   $assignment_id  Assignment ID.
+		 */
+		return apply_filters(
+			'learndash_get_points_awarded_array',
+			array(
+				'current'    => $current,
+				'max'        => $max_points,
+				'percentage' => $percentage,
+			),
+			$assignment_id
+		);
+
+	}
+
+}
+
 ?>
 <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
 <link rel="stylesheet" href="<?php echo plugins_url( 'themes/proyemi/assets/css/lesson-course.css?v1', LEARNDASH_LMS_PLUGIN_DIR . 'index.php' ); ?>">
@@ -128,7 +190,10 @@ add_shortcode('comments_wp','get_comentarios');
             <div class="tab-header">
                 <div class="tab1 active">Modulos</div>
                 <div class="tab2">Recursos</div>
-                <div class="tab3">Comentarios</div>
+                <div class="tab3">Preguntas</div>
+                <?php if( lesson_hasassignments( $post ) && ! empty( $user_id ) ): ?>
+                <div class="tab4">Tareas</div>
+                <?php endif; ?>
             </div>
             <div class="tab-content">
                 <div class="pad1 active">
@@ -181,6 +246,55 @@ add_shortcode('comments_wp','get_comentarios');
                         </p>
                     </form>
                 </div>
+                <?php if( lesson_hasassignments( $post ) && ! empty( $user_id ) ): ?>
+                <div class="pad4">
+                    <?php 
+                        /**
+                         * $course_step_post = $post
+                         */
+                        $post_settings = learndash_get_setting( $post->ID );
+                        $assignments   = learndash_get_user_assignments( $post->ID, $user_id );
+                        
+                        do_action( 'learndash-assignment-list-before', $post->ID, $course_id, $user_id );
+                        if ( ! empty( $assignments ) ) :
+
+                            $assignment_post_type_object = get_post_type_object( 'sfwd-assignment' );
+                            
+                            foreach ( $assignments as $assignment ) :
+                                learndash_get_template_part(
+                                    'assignment/row.php',
+                                    array(
+                                        'assignment'                  => $assignment,
+                                        'post_settings'               => $post_settings,
+                                        'course_id'                   => $course_id,
+                                        'user_id'                     => $user_id,
+                                        'assignment_post_type_object' => $assignment_post_type_object,
+                                    ),
+                                    true
+                                );
+                            endforeach;
+            
+                            else :
+            
+                                esc_html_x( 'No assignments submitted at this time', 'No assignments message', 'learndash' );
+            
+                        endif;
+
+                        do_action( 'learndash-assignment-list-after', $post->ID, $course_id, $user_id );
+                        // echo json_encode($assignments);
+                        learndash_get_template_part(
+                            'assignment/upload.php',
+                            array(
+                                'post_settings'    => $post_settings,
+                                'course_step_post' => $course_step_post,
+                                'user_id'          => $user_id,
+                                'course_id'        => $course_id,
+                            ),
+                            true
+                        );
+                    ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

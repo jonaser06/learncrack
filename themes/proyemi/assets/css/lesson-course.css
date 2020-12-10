@@ -243,9 +243,31 @@ html{
     width: 100%;
     padding: 10px 20px;
 }
+.close_file{
+    padding: 5px 2px;
+    background: #ccc;
+    text-align: center;
+    border-radius: 50%;
+}
+.close_file:hover{
+    background: rgb(37, 37, 37);
+}
+.close_file:hover .svg_file{
+    fill: #fff;
+}
+.svg_file{
+    width: 15px;
+    height: 11px;
+    fill: #4a4a4a;
+    margin-left: 4px;
+}
+/* .close_file:hover{
+    background: #333333;
+} */
 @media (max-width: 768px){
     .tabs{
         height: inherit;
+        font-size: 1.4rem;
     }
     .course-container{
         display: flex;
