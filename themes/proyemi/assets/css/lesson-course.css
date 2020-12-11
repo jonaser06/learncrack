@@ -261,9 +261,56 @@ html{
     fill: #4a4a4a;
     margin-left: 4px;
 }
-/* .close_file:hover{
-    background: #333333;
-} */
+.ld-table-list-title, .ld-table-list-columns, .ld-table-list-column{
+    display: inline !important;
+}
+/* estado del curso */
+.ld-status-waiting{
+    background: yellow;
+    padding: 4px 7px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.ld-status-complete{
+    background: green;
+    padding: 4px 7px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+.ld-status-complete{
+    background: green;
+    padding: 4px 7px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+/* fin del estado del curso */
+.title_assigment{
+    margin: 0px;
+    text-align: center;
+}
+.ld-file-input{
+    display: none;
+}
+.submit_group{
+    text-align: center;
+    margin-top: 10px;   
+}
+.zone-upload{
+    display: inline;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-style: dashed;
+    cursor: pointer;
+}
+.ld-button{
+    border-radius: 20px !important;
+    padding: 7px 20px !important;
+    margin-left: 5px !important;
+}
 @media (max-width: 768px){
     .tabs{
         height: inherit;

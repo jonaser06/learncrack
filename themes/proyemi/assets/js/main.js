@@ -7,6 +7,7 @@ objCourse = {
         objCourse.resizer();
         objCourse.tap();
         objCourse.video();
+        objCourse.input_change();
     },
     video: ()=>{
         setTimeout(() => {
@@ -123,6 +124,15 @@ objCourse = {
             tab4.classList.add("active");
             pad4.classList.add("active");
         });
+    },
+    input_change: ()=>{
+        if(document.querySelector('.ld-file-input') != null){
+            document.querySelector('.ld-file-input').onchange = (e)=>{
+                var filename = e.target.value;
+                filename = filename.split('\\').pop();
+                document.querySelector('.span_file').innerHTML = filename ;
+            }
+        }
     }
 };
 
