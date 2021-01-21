@@ -76,11 +76,11 @@ objCourse = {
         tab1.addEventListener("click",()=>{
             tab2.classList.remove("active");
             tab3.classList.remove("active");
-            tab4.classList.remove("active");
+            if( tab4 != null) tab4.classList.remove("active");
 
             pad2.classList.remove("active");
             pad3.classList.remove("active");
-            pad4.classList.remove("active");
+            if( pad4 != null) pad4.classList.remove("active");
 
             tab1.classList.add("active");
             pad1.classList.add("active");
@@ -89,11 +89,11 @@ objCourse = {
         tab2.addEventListener("click",()=>{
             tab1.classList.remove("active");
             tab3.classList.remove("active");
-            tab4.classList.remove("active");
+            if( tab4 != null) tab4.classList.remove("active");
 
             pad1.classList.remove("active");
             pad3.classList.remove("active");
-            pad4.classList.remove("active");
+            if( pad4 != null) pad4.classList.remove("active");
 
             tab2.classList.add("active");
             pad2.classList.add("active");
@@ -102,28 +102,30 @@ objCourse = {
         tab3.addEventListener("click",()=>{
             tab1.classList.remove("active");
             tab2.classList.remove("active");
-            tab4.classList.remove("active");
+            if( tab4 != null) tab4.classList.remove("active");
 
             pad1.classList.remove("active");
             pad2.classList.remove("active");
-            pad4.classList.remove("active");
+            if( pad4 != null) pad4.classList.remove("active");
 
             tab3.classList.add("active");
             pad3.classList.add("active");
         });
         
-        tab4.addEventListener("click",()=>{
-            tab1.classList.remove("active");
-            tab2.classList.remove("active");
-            tab3.classList.remove("active");
-
-            pad1.classList.remove("active");
-            pad2.classList.remove("active");
-            pad3.classList.remove("active");
-
-            tab4.classList.add("active");
-            pad4.classList.add("active");
-        });
+        if( tab4 != null) {
+            tab4.addEventListener("click",()=>{
+                tab1.classList.remove("active");
+                tab2.classList.remove("active");
+                tab3.classList.remove("active");
+    
+                pad1.classList.remove("active");
+                pad2.classList.remove("active");
+                pad3.classList.remove("active");
+    
+                tab4.classList.add("active");
+                pad4.classList.add("active");
+            });
+        }
     },
     input_change: ()=>{
         if(document.querySelector('.ld-file-input') != null){
